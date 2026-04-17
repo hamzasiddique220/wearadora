@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Heart, Eye, ShoppingBag } from 'lucide-react';
 import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
@@ -29,7 +30,20 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       (product.colors && product.colors.length > 0));
   const outOfStock = product.stock === 0;
 
+  const primaryImage =
+    (product.images && product.images[0]) ||
+    product.image ||
+    'https://via.placeholder.com/400x400?text=No+Image';
+  const hoverImage =
+    product.images && product.images.length > 1 ? product.images[1] : null;
+
+  const isTransparentProductShot =
+    /wearadora\.com/.test(primaryImage) || /\.png(\?|$)/i.test(primaryImage);
+
+  const detailHref = `/product/${product.id}`;
+
   const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (outOfStock) return;
     if (hasVariants) {
@@ -41,9 +55,16 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     const added = toggleWishlist(product);
     showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClick();
   };
 
   return (
@@ -51,18 +72,30 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       className="group relative animate-in"
       style={{ animationDelay: `${delay}s` }}
     >
-      <div
-        onClick={onClick}
-        className="relative aspect-[3/4] bg-sand overflow-hidden cursor-pointer rounded-sm"
+      <Link
+        href={detailHref}
+        className="relative block aspect-square bg-gradient-to-br from-sand/70 via-cream to-sand/40 overflow-hidden rounded-sm shadow-sm group-hover:shadow-lg transition-shadow duration-500"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={product.image || 'https://via.placeholder.com/400x500?text=No+Image'}
+          src={primaryImage}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-110"
+          className={`absolute inset-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105 ${
+            isTransparentProductShot ? 'object-contain p-3' : 'object-cover'
+          } ${hoverImage ? 'group-hover:opacity-0' : ''}`}
         />
+        {hoverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={hoverImage}
+            alt={product.name}
+            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ${
+              isTransparentProductShot ? 'object-contain p-3' : 'object-cover'
+            }`}
+          />
+        )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {outOfStock && (
@@ -75,10 +108,16 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
               New
             </span>
           )}
+          {product.originalPrice && product.originalPrice > product.price && !outOfStock && (
+            <span className="bg-[#c94b4b] text-white text-[9px] tracking-[0.2em] uppercase px-2.5 py-1">
+              -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+            </span>
+          )}
         </div>
 
         <div className="absolute top-3 right-3 flex flex-col gap-2">
           <button
+            type="button"
             onClick={handleWishlist}
             className="w-9 h-9 bg-white/95 backdrop-blur flex items-center justify-center hover:bg-bronze hover:text-white transition-colors shadow-sm"
             aria-label="Add to wishlist"
@@ -90,10 +129,8 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
             />
           </button>
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick();
-            }}
+            type="button"
+            onClick={handleQuickView}
             className="w-9 h-9 bg-white/95 backdrop-blur flex items-center justify-center hover:bg-charcoal hover:text-cream transition-colors shadow-sm opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 duration-300"
             aria-label="Quick view"
           >
@@ -102,6 +139,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
         </div>
 
         <button
+          type="button"
           onClick={handleAddToCart}
           disabled={outOfStock}
           className="absolute bottom-0 left-0 right-0 bg-charcoal text-cream py-3.5 text-[10px] tracking-[0.3em] uppercase translate-y-full group-hover:translate-y-0 transition-transform duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
@@ -109,7 +147,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           <ShoppingBag size={12} />
           {hasVariants ? 'Select Options' : 'Add to Bag'}
         </button>
-      </div>
+      </Link>
 
       <div className="pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -122,14 +160,21 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
             </div>
           )}
         </div>
-        <h3
-          onClick={onClick}
-          className="font-serif text-lg leading-tight mb-2 cursor-pointer hover:text-bronze transition-colors line-clamp-2"
+        <Link
+          href={detailHref}
+          className="block font-serif text-lg leading-tight mb-2 hover:text-bronze transition-colors line-clamp-2"
         >
           {product.name}
-        </h3>
+        </Link>
         <div className="flex items-center justify-between">
-          <div className="font-medium">{formatPrice(product.price)}</div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-medium">{formatPrice(product.price)}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-xs text-mocha line-through">
+                {formatPrice(product.originalPrice)}
+              </span>
+            )}
+          </div>
           {isSlippers && product.colors && product.colors.length > 0 && (
             <div className="flex gap-1">
               {product.colors.slice(0, 4).map((c) => (

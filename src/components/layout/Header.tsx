@@ -66,8 +66,8 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/jewelry', label: 'Jewelry' },
     { href: '/slippers', label: 'Slippers' },
+    { href: '/jewelry', label: 'Jewelry' },
     { href: '/about', label: 'About' },
   ];
 
@@ -219,7 +219,7 @@ export default function Header() {
                     ✦ Quick Links
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {['Necklace', 'Ring', 'Earring', 'Sandal', 'Khussa'].map((cat) => (
+                    {['Slides', 'Heels', 'Sandal', 'Necklace', 'Ring', 'Earring'].map((cat) => (
                       <button
                         key={cat}
                         onClick={() => {
@@ -245,7 +245,7 @@ export default function Header() {
                     <button
                       key={p.id}
                       onClick={() => {
-                        router.push(`/shop?product=${p.id}`);
+                        router.push(`/product/${p.id}`);
                         closeAll();
                       }}
                       className="w-full flex items-center gap-4 p-4 hover:bg-sand/50 border-b border-stone/50 text-left transition"

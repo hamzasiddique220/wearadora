@@ -1,7 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { X, Heart, ShoppingBag, Star, Truck, Shield, RotateCcw } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import {
+  X,
+  Heart,
+  ShoppingBag,
+  Star,
+  Truck,
+  Shield,
+  RotateCcw,
+  ArrowRight,
+} from 'lucide-react';
 import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
@@ -25,11 +35,22 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
   const [selectedSize, setSelectedSize] = useState<number | undefined>(undefined);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
+  const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     setSelectedSize(undefined);
     setSelectedColor(undefined);
+    setActiveImage(0);
   }, [product?.id]);
+
+  const galleryImages = useMemo(() => {
+    if (!product) return [];
+    const list = [
+      ...(product.images || []),
+      ...(product.image ? [product.image] : []),
+    ];
+    return Array.from(new Set(list.filter(Boolean)));
+  }, [product]);
 
   if (!product) return null;
 
@@ -38,6 +59,10 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const isSlippers = productType === 'slippers';
   const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
   const hasColors = isSlippers && product.colors && product.colors.length > 0;
+  const currentImage = galleryImages[activeImage] || product.image;
+  const isTransparent =
+    currentImage &&
+    (/wearadora\.com/.test(currentImage) || /\.png(\?|$)/i.test(currentImage));
 
   const handleAddToCart = () => {
     if (hasSizes && !selectedSize) {
@@ -70,23 +95,57 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   return (
     <Modal isOpen={!!product} onClose={onClose} maxWidth="max-w-5xl">
       <div className="grid md:grid-cols-2">
-        <div className="relative aspect-square bg-sand md:aspect-auto md:min-h-[600px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 bg-white/95 flex items-center justify-center hover:bg-white shadow"
-            aria-label="Close"
-          >
-            <X size={18} />
-          </button>
-          {product.isNew && (
-            <div className="absolute top-4 left-4 bg-bronze text-white text-[10px] tracking-[0.3em] uppercase px-3 py-1.5">
-              New
+        <div className="relative bg-gradient-to-br from-sand/70 via-cream to-sand/40 md:min-h-[600px] flex flex-col">
+          <div className="relative aspect-square md:aspect-auto md:flex-1 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={currentImage}
+              alt={product.name}
+              className={`w-full h-full ${
+                isTransparent ? 'object-contain p-8 md:p-12' : 'object-cover'
+              }`}
+            />
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 w-10 h-10 bg-white/95 flex items-center justify-center hover:bg-white shadow"
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+            {product.isNew && (
+              <div className="absolute top-4 left-4 bg-bronze text-white text-[10px] tracking-[0.3em] uppercase px-3 py-1.5">
+                New
+              </div>
+            )}
+          </div>
+
+          {galleryImages.length > 1 && (
+            <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide bg-white/50">
+              {galleryImages.map((img, i) => {
+                const thumbTransparent =
+                  /wearadora\.com/.test(img) || /\.png(\?|$)/i.test(img);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImage(i)}
+                    aria-label={`View image ${i + 1}`}
+                    className={`relative shrink-0 w-16 h-16 overflow-hidden border-2 transition-all bg-gradient-to-br from-sand/60 via-cream to-sand/30 ${
+                      activeImage === i
+                        ? 'border-bronze'
+                        : 'border-transparent hover:border-stone'
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img}
+                      alt=""
+                      className={`w-full h-full ${
+                        thumbTransparent ? 'object-contain p-0.5' : 'object-cover'
+                      }`}
+                    />
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -108,7 +167,19 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             <span className="text-xs text-mocha">Premium Quality</span>
           </div>
 
-          <div className="text-3xl font-medium mb-6">{formatPrice(product.price)}</div>
+          <div className="flex items-baseline gap-3 mb-6 flex-wrap">
+            <span className="text-3xl font-medium">{formatPrice(product.price)}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <>
+                <span className="text-lg text-mocha line-through">
+                  {formatPrice(product.originalPrice)}
+                </span>
+                <span className="bg-[#c94b4b] text-white text-[10px] tracking-[0.2em] uppercase px-2 py-1">
+                  Save {Math.round((1 - product.price / product.originalPrice) * 100)}%
+                </span>
+              </>
+            )}
+          </div>
 
           <p className="text-sm text-mocha leading-relaxed mb-6">
             {product.description ||
@@ -197,7 +268,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
           </div>
 
-          <div className="flex gap-3 mb-6">
+          <div className="flex gap-3 mb-4">
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
@@ -217,6 +288,14 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               />
             </button>
           </div>
+
+          <Link
+            href={`/product/${product.id}`}
+            onClick={onClose}
+            className="flex items-center justify-center gap-2 text-[11px] tracking-[0.25em] uppercase text-bronze hover:text-charcoal border-b border-bronze/40 hover:border-charcoal pb-1 mb-6 w-fit mx-auto transition"
+          >
+            View Full Details <ArrowRight size={12} />
+          </Link>
 
           <div className="grid grid-cols-3 gap-3 pt-4 border-t border-stone text-center">
             <div className="flex flex-col items-center gap-1.5">

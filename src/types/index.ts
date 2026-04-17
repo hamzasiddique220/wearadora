@@ -16,8 +16,10 @@ export interface Product {
   category: ProductCategory | string;
   productType?: ProductType;
   price: number;
+  originalPrice?: number;
   stock: number;
   image: string;
+  images?: string[];
   description: string;
   sizes?: number[];
   colors?: string[];

@@ -6,6 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Slide {
   image: string;
+  bg: string;
   eyebrow: string;
   title: string;
   italic: string;
@@ -18,45 +19,99 @@ interface Slide {
 const slides: Slide[] = [
   {
     image:
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1800&q=85',
-    eyebrow: '✦ Spring Collection 2026',
-    title: 'Where',
+      'https://wearadora.com/wp-content/uploads/2016/07/main-WA-1-black-card-img.png',
+    bg: 'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)',
+    eyebrow: '✦ New Arrivals',
+    title: 'Step into',
     italic: 'elegance',
-    tail: 'meets artistry',
+    tail: 'redefined',
     description:
-      'Discover handcrafted jewelry and artisan footwear — each piece telling a story of tradition woven with modern elegance.',
-    primary: { label: 'Explore Collection', href: '/shop' },
+      'Discover our signature embellished slides — where contemporary design meets timeless sparkle. Crafted for the woman who makes every moment her own.',
+    primary: { label: 'Shop Now', href: '/slippers' },
+    secondary: { label: 'View All', href: '/shop' },
+  },
+  {
+    image:
+      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-7.png',
+    bg: 'linear-gradient(135deg, #e8ddc7 0%, #d4c9b8 100%)',
+    eyebrow: '✦ Luxury Collection',
+    title: 'Golden',
+    italic: 'luxury',
+    tail: 'for every stride',
+    description:
+      'Shimmering golden bow heels for unforgettable occasions. Every detail handcrafted to make you shine — perfect for weddings, festivities, and defining moments.',
+    primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
+    secondary: { label: 'Bestsellers', href: '/slippers' },
+  },
+  {
+    image:
+      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-12.png',
+    bg: 'linear-gradient(135deg, #f5f1ea 0%, #ede4d3 100%)',
+    eyebrow: '✦ Signature Slides',
+    title: 'Subtle',
+    italic: 'grace',
+    tail: 'in every detail',
+    description:
+      'Elegant nude bow slides — refined minimalism with a touch of glamour. Designed for comfort that never compromises on sophistication.',
+    primary: { label: 'Shop Slides', href: '/slippers?category=Slides' },
     secondary: { label: 'View Jewelry', href: '/jewelry' },
   },
   {
     image:
-      'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1800&q=85',
-    eyebrow: '✦ Signature Jewelry',
-    title: 'Timeless',
-    italic: 'luxury',
-    tail: 'for every moment',
+      'https://wearadora.com/wp-content/uploads/2026/03/remove.photos-removed-background-4.png',
+    bg: 'linear-gradient(135deg, #efe6d5 0%, #d6c7b0 100%)',
+    eyebrow: '✦ Statement Pieces',
+    title: 'Dark',
+    italic: 'romance',
+    tail: 'for evenings',
     description:
-      'From delicate necklaces to statement rings, our jewelry is crafted for those who cherish refined sophistication.',
-    primary: { label: 'Shop Jewelry', href: '/jewelry' },
-    secondary: { label: 'Bestsellers', href: '/shop' },
+      'Boldly refined black heels with sculpted silhouettes — the kind of shoes that finish a look and start a conversation.',
+    primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
+    secondary: { label: 'View All', href: '/slippers' },
   },
   {
     image:
-      'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=1800&q=85',
-    eyebrow: '✦ Artisan Footwear',
-    title: 'Step into',
-    italic: 'grace',
-    tail: 'with every stride',
+      'https://wearadora.com/wp-content/uploads/2026/03/remove.photos-removed-background-2.png',
+    bg: 'linear-gradient(135deg, #f1e6d3 0%, #d8c6aa 100%)',
+    eyebrow: '✦ Heritage Craft',
+    title: 'Crafted',
+    italic: 'in bronze',
+    tail: 'tones',
     description:
-      'Handcrafted khussas and sandals that blend traditional artistry with contemporary comfort.',
-    primary: { label: 'Shop Slippers', href: '/slippers' },
-    secondary: { label: 'See Sizes', href: '/slippers' },
+      'Warm bronze-toned heels — a nod to artisan heritage, reimagined for the modern wardrobe. Made for women who love detail.',
+    primary: { label: 'Shop Now', href: '/slippers' },
+    secondary: { label: 'Shop Jewelry', href: '/jewelry' },
+  },
+  {
+    image:
+      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-9.png',
+    bg: 'linear-gradient(135deg, #f5ede0 0%, #e2d0b4 100%)',
+    eyebrow: '✦ New Season',
+    title: 'Walk in',
+    italic: 'light',
+    tail: 'and lustre',
+    description:
+      'Shimmering sandals for the season ahead — weightless comfort, unmistakable polish, and a finish that catches every eye.',
+    primary: { label: 'Shop Sandals', href: '/slippers?category=Sandal' },
+    secondary: { label: 'View All', href: '/shop' },
+  },
+  {
+    image:
+      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-8-3.png',
+    bg: 'linear-gradient(135deg, #ece2ce 0%, #d0bf9f 100%)',
+    eyebrow: '✦ Editor\u2019s Pick',
+    title: 'The perfect',
+    italic: 'pair',
+    tail: 'for every story',
+    description:
+      'Considered details, timeless silhouettes. Our editor-loved styles have a way of quietly finding their way into every outfit.',
+    primary: { label: 'Shop Now', href: '/slippers' },
+    secondary: { label: 'Discover', href: '/about' },
   },
 ];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % slides.length);
@@ -67,38 +122,26 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    if (paused) return;
-    const timer = setInterval(next, 6000);
+    const timer = setInterval(next, 4500);
     return () => clearInterval(timer);
-  }, [paused, next]);
+  }, [next]);
 
   const slide = slides[current];
 
   return (
-    <section
-      className="relative min-h-[90vh] md:min-h-screen overflow-hidden grain"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    <section className="relative min-h-[92vh] md:min-h-screen overflow-hidden grain">
       {slides.map((s, i) => (
         <div
           key={i}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 transition-opacity duration-[1000ms] ease-in-out ${
             i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
           }`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={s.image}
-            alt={s.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/70 md:via-cream/50 to-cream/10" />
-        </div>
+          style={{ background: s.bg }}
+        />
       ))}
 
-      <div className="relative z-20 max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-32 flex items-center min-h-[90vh] md:min-h-screen">
-        <div key={current} className="max-w-2xl animate-in">
+      <div className="relative z-20 max-w-[1500px] mx-auto px-4 md:px-10 py-6 md:py-0 min-h-[92vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-4 md:gap-6 items-center">
+        <div key={`text-${current}`} className="animate-in order-2 md:order-1">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-12 bg-bronze" />
             <span className="text-[10px] tracking-[0.4em] uppercase text-bronze font-medium">
@@ -106,7 +149,7 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] font-light mb-6">
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-6">
             {slide.title}{' '}
             <span className="font-italic-serif text-bronze">{slide.italic}</span>
             <br />
@@ -132,6 +175,26 @@ export default function Hero() {
               {slide.secondary.label}
             </Link>
           </div>
+        </div>
+
+        <div
+          key={`img-${current}`}
+          className="relative order-1 md:order-2 animate-in min-h-[60vh] md:min-h-[92vh] flex items-center justify-center"
+          style={{ animationDelay: '0.15s' }}
+        >
+          <div
+            className="absolute inset-0 rounded-full blur-3xl opacity-50"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
+            }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className="relative w-full h-full max-h-[75vh] md:max-h-[88vh] object-contain drop-shadow-2xl scale-110 md:scale-125"
+          />
         </div>
       </div>
 

@@ -96,7 +96,14 @@ export default function CartPage() {
                     </div>
                   )}
 
-                  <div className="text-sm mb-3">{formatPrice(item.price)}</div>
+                  <div className="flex items-baseline gap-2 mb-3">
+                    <span className="text-sm">{formatPrice(item.price)}</span>
+                    {item.originalPrice && item.originalPrice > item.price && (
+                      <span className="text-xs text-mocha line-through">
+                        {formatPrice(item.originalPrice)}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-3">
                     <div className="inline-flex items-center border border-stone">
                       <button

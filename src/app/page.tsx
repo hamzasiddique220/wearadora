@@ -19,22 +19,22 @@ export default function HomePage() {
       <FeaturedProducts
         products={products}
         loading={loading}
-        productType="jewelry"
-        eyebrow="✦ Jewelry Collection"
-        title="Handcrafted Jewelry"
-        description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
-        viewAllHref="/jewelry"
+        productType="slippers"
+        eyebrow="✦ Signature Footwear"
+        title="Slides & Heels"
+        description="Handcrafted footwear with embellished detailing — where contemporary design meets lasting comfort."
+        viewAllHref="/slippers"
         limit={8}
       />
 
       <FeaturedProducts
         products={products}
         loading={loading}
-        productType="slippers"
-        eyebrow="✦ Artisan Footwear"
-        title="Khussas & Sandals"
-        description="Traditional artistry meets modern comfort — step into grace with every stride."
-        viewAllHref="/slippers"
+        productType="jewelry"
+        eyebrow="✦ Jewelry Collection"
+        title="Handcrafted Jewelry"
+        description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
+        viewAllHref="/jewelry"
         limit={8}
         theme="dark"
       />

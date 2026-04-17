@@ -52,15 +52,24 @@ function ShopContent() {
         <div className="mb-8 max-w-md mx-auto relative">
           <Search
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-bronze"
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-bronze pointer-events-none"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="input-field pl-12"
+            className="search-field"
           />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-mocha hover:text-charcoal"
+              aria-label="Clear"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         <div className="flex gap-2 mb-10 overflow-x-auto scrollbar-hide pb-2 justify-start md:justify-center">

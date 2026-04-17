@@ -18,7 +18,7 @@ export const JEWELRY_CATEGORIES = [
   'Anklet',
 ] as const;
 
-export const SLIPPERS_CATEGORIES = ['Sandal', 'Khussa'] as const;
+export const SLIPPERS_CATEGORIES = ['Slides', 'Heels', 'Sandal'] as const;
 
 export const PRODUCT_CATEGORIES = [
   ...JEWELRY_CATEGORIES,
@@ -30,8 +30,12 @@ export const SLIPPER_SIZES = [6, 7, 8, 9, 10, 11] as const;
 export const DEFAULT_SLIPPER_COLORS = [
   'Black',
   'Gold',
+  'Golden',
   'Silver',
   'Beige',
+  'Nude',
+  'Tan',
+  'Ash',
   'Brown',
   'Red',
   'Maroon',
@@ -41,8 +45,12 @@ export const DEFAULT_SLIPPER_COLORS = [
 export const COLOR_HEX: Record<string, string> = {
   Black: '#1a1614',
   Gold: '#d4af37',
+  Golden: '#d4af37',
   Silver: '#c0c0c0',
   Beige: '#e8ddc7',
+  Nude: '#e3c9b7',
+  Tan: '#c9a27d',
+  Ash: '#b5b0a8',
   Brown: '#6b4423',
   Red: '#c94b4b',
   Maroon: '#800000',
@@ -58,12 +66,16 @@ export const ORDER_STATUSES = [
 ] as const;
 
 export const CATEGORY_IMAGES: Record<string, string> = {
+  Slides:
+    'https://wearadora.com/wp-content/uploads/2016/07/main-WA-1-black-card-img.png',
+  Heels:
+    'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-7.png',
+  Sandal:
+    'https://wearadora.com/wp-content/uploads/2016/07/remove.photos-removed-background.png',
   Necklace: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800',
   Ring: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
   Earring: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800',
   Bracelet: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=800',
-  Sandal: 'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=800',
-  Khussa: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800',
 };
 
 export const getProductType = (category?: string): ProductType => {

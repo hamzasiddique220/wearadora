@@ -1,3 +1,5 @@
+export type ProductType = 'jewelry' | 'slippers';
+
 export type ProductCategory =
   | 'Necklace'
   | 'Ring'
@@ -12,16 +14,22 @@ export interface Product {
   id: string;
   name: string;
   category: ProductCategory | string;
+  productType?: ProductType;
   price: number;
   stock: number;
   image: string;
   description: string;
+  sizes?: number[];
+  colors?: string[];
   isNew?: boolean;
   createdAt: string;
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  selectedSize?: number;
+  selectedColor?: string;
+  cartLineId: string;
 }
 
 export type OrderStatus =

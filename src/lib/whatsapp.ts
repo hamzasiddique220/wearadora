@@ -10,9 +10,6 @@ export interface OrderMessageData {
   total: number;
 }
 
-/**
- * Build a formatted WhatsApp order message
- */
 export const buildOrderMessage = (data: OrderMessageData): string => {
   const { orderId, date, customer, items, total } = data;
 
@@ -30,6 +27,12 @@ export const buildOrderMessage = (data: OrderMessageData): string => {
 
   items.forEach((item, i) => {
     msg += `${i + 1}. ${item.name}\n`;
+    const variantParts: string[] = [];
+    if (item.selectedSize) variantParts.push(`Size ${item.selectedSize}`);
+    if (item.selectedColor) variantParts.push(item.selectedColor);
+    if (variantParts.length > 0) {
+      msg += `   _${variantParts.join(' • ')}_\n`;
+    }
     msg += `   ${item.quantity} × ${formatPrice(item.price)} = ${formatPrice(
       item.quantity * item.price
     )}\n`;
@@ -43,9 +46,6 @@ export const buildOrderMessage = (data: OrderMessageData): string => {
   return msg;
 };
 
-/**
- * Generate WhatsApp URL with pre-filled message
- */
 export const getWhatsAppUrl = (message: string, phoneNumber?: string): string => {
   const number = phoneNumber || STORE_CONFIG.whatsappNumber;
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;

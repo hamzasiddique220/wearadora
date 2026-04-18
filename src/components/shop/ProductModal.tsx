@@ -19,6 +19,7 @@ import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import Modal from '@/components/ui/Modal';
+import { heartBurst } from '@/lib/heartBurst';
 
 interface ProductModalProps {
   product: Product | null;
@@ -87,8 +88,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     onClose();
   };
 
-  const handleWishlist = () => {
+  const handleWishlist = (e: React.MouseEvent) => {
     const added = toggleWishlist(product);
+    if (added) heartBurst(e.clientX, e.clientY);
     showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 

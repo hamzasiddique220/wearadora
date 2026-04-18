@@ -29,6 +29,8 @@ export default function Header() {
   const cartCount = useCartStore((state) => state.getCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
   const { products } = useProducts();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (searchOpen) {
@@ -128,7 +130,7 @@ export default function Header() {
               className="relative hover:text-bronze hide-mobile transition-colors"
             >
               <Heart size={20} />
-              {wishlistCount > 0 && (
+              {mounted && wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                   {wishlistCount}
                 </span>
@@ -140,7 +142,7 @@ export default function Header() {
               className="relative hover:text-bronze transition-colors"
             >
               <ShoppingBag size={20} />
-              {cartCount > 0 && (
+              {mounted && cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
@@ -177,7 +179,7 @@ export default function Header() {
               onClick={() => setMobileMenu(false)}
               className="block text-xs tracking-[0.2em] uppercase py-2 border-b border-stone"
             >
-              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+              Wishlist {mounted && wishlistCount > 0 && `(${wishlistCount})`}
             </Link>
             <Link
               href="/admin/login"

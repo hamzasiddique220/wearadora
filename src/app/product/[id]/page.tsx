@@ -23,6 +23,7 @@ import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
 import ProductModal from '@/components/shop/ProductModal';
 import Loading from '@/components/ui/Loading';
+import { heartBurst } from '@/lib/heartBurst';
 import EmptyState from '@/components/ui/EmptyState';
 import type { Product } from '@/types';
 
@@ -133,8 +134,9 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     router.push('/cart');
   };
 
-  const handleWishlist = () => {
+  const handleWishlist = (e: React.MouseEvent) => {
     const added = toggleWishlist(product);
+    if (added) heartBurst(e.clientX, e.clientY);
     showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 

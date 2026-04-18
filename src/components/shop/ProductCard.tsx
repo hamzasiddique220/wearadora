@@ -8,6 +8,8 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
+import Tilt3D from '@/components/ui/Tilt3D';
+import { heartBurst } from '@/lib/heartBurst';
 
 interface ProductCardProps {
   product: Product;
@@ -58,6 +60,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
     e.preventDefault();
     e.stopPropagation();
     const added = toggleWishlist(product);
+    if (added) heartBurst(e.clientX, e.clientY);
     showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 
@@ -72,9 +75,10 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       className="group relative animate-in"
       style={{ animationDelay: `${delay}s` }}
     >
+      <Tilt3D max={10} scale={1.03} className="relative block rounded-sm">
       <Link
         href={detailHref}
-        className="relative block aspect-square bg-gradient-to-br from-sand/70 via-cream to-sand/40 overflow-hidden rounded-sm shadow-sm group-hover:shadow-lg transition-shadow duration-500"
+        className="relative block aspect-square bg-gradient-to-br from-sand/70 via-cream to-sand/40 overflow-hidden rounded-sm shadow-sm group-hover:shadow-xl group-hover:shadow-bronze/20 transition-shadow duration-500"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -148,6 +152,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           {hasVariants ? 'Select Options' : 'Add to Bag'}
         </button>
       </Link>
+      </Tilt3D>
 
       <div className="pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-3 mb-1.5">

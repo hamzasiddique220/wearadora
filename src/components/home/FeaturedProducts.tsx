@@ -9,6 +9,7 @@ import ProductCard from '@/components/shop/ProductCard';
 import ProductModal from '@/components/shop/ProductModal';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
+import Reveal from '@/components/ui/Reveal';
 
 interface FeaturedProductsProps {
   products: Product[];
@@ -55,37 +56,39 @@ export default function FeaturedProducts({
         }`}
       >
         <div className="max-w-[1400px] mx-auto">
-          <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
-            <div>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
-                {eyebrow}
-              </span>
-              <h2
-                className={`font-serif text-4xl md:text-5xl font-light mt-2 leading-tight ${
-                  isDark ? '' : ''
+          <Reveal>
+            <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+              <div>
+                <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+                  {eyebrow}
+                </span>
+                <h2
+                  className={`font-serif text-4xl md:text-5xl font-light mt-2 leading-tight ${
+                    isDark ? '' : ''
+                  }`}
+                >
+                  {title}
+                </h2>
+                <p
+                  className={`text-sm mt-3 max-w-xl ${
+                    isDark ? 'text-stone' : 'text-mocha'
+                  }`}
+                >
+                  {description}
+                </p>
+              </div>
+              <Link
+                href={viewAllHref}
+                className={`text-xs tracking-[0.2em] uppercase flex items-center gap-2 border-b pb-1 hover:gap-3 transition-all ${
+                  isDark
+                    ? 'border-stone/40 hover:border-bronze text-cream'
+                    : 'border-charcoal hover:text-bronze hover:border-bronze'
                 }`}
               >
-                {title}
-              </h2>
-              <p
-                className={`text-sm mt-3 max-w-xl ${
-                  isDark ? 'text-stone' : 'text-mocha'
-                }`}
-              >
-                {description}
-              </p>
+                View All <ArrowRight size={14} />
+              </Link>
             </div>
-            <Link
-              href={viewAllHref}
-              className={`text-xs tracking-[0.2em] uppercase flex items-center gap-2 border-b pb-1 hover:gap-3 transition-all ${
-                isDark
-                  ? 'border-stone/40 hover:border-bronze text-cream'
-                  : 'border-charcoal hover:text-bronze hover:border-bronze'
-              }`}
-            >
-              View All <ArrowRight size={14} />
-            </Link>
-          </div>
+          </Reveal>
 
           {loading ? (
             <Loading message="Loading collection..." />

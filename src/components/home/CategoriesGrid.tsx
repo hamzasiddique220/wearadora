@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import Reveal from '@/components/ui/Reveal';
 
 const categories = [
   {
@@ -49,31 +50,33 @@ const categories = [
 export default function CategoriesGrid() {
   return (
     <section className="py-20 px-6 md:px-12 max-w-[1400px] mx-auto">
-      <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
-        <div>
-          <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
-            ✦ Explore
-          </span>
-          <h2 className="font-serif text-4xl md:text-5xl font-light mt-2">
-            Shop by Category
-          </h2>
+      <Reveal>
+        <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+          <div>
+            <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+              ✦ Explore
+            </span>
+            <h2 className="font-serif text-4xl md:text-5xl font-light mt-2">
+              Shop by Category
+            </h2>
+          </div>
+          <Link
+            href="/shop"
+            className="text-xs tracking-[0.2em] uppercase hover:text-bronze flex items-center gap-2"
+          >
+            View All <ArrowRight size={14} />
+          </Link>
         </div>
-        <Link
-          href="/shop"
-          className="text-xs tracking-[0.2em] uppercase hover:text-bronze flex items-center gap-2"
-        >
-          View All <ArrowRight size={14} />
-        </Link>
-      </div>
+      </Reveal>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
-        {categories.map((cat) => {
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 perspective-1000">
+        {categories.map((cat, i) => {
           const isProductImage = cat.image.includes('wearadora.com');
           return (
+            <Reveal key={cat.name} delay={i * 70}>
             <Link
-              key={cat.name}
               href={cat.href}
-              className="group relative aspect-[3/4] overflow-hidden hover-lift rounded-sm bg-gradient-to-br from-sand/70 via-cream to-sand/40"
+              className="tilt-card group relative block aspect-[3/4] overflow-hidden rounded-sm bg-gradient-to-br from-sand/70 via-cream to-sand/40 shadow-sm hover:shadow-2xl hover:shadow-bronze/25 transition-all duration-500"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -81,18 +84,20 @@ export default function CategoriesGrid() {
                 alt={cat.name}
                 className={`w-full h-full ${
                   isProductImage
-                    ? 'object-contain p-2 group-hover:scale-105'
-                    : 'object-cover group-hover:scale-110'
+                    ? 'object-contain p-2 group-hover:scale-110'
+                    : 'object-cover group-hover:scale-115'
                 } transition-transform duration-700`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shine-overlay" />
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white translate-z-10">
                 <div className="font-serif text-lg">{cat.name}</div>
                 <div className="text-[9px] tracking-[0.3em] uppercase opacity-70">
                   Shop Now →
                 </div>
               </div>
             </Link>
+            </Reveal>
           );
         })}
       </div>

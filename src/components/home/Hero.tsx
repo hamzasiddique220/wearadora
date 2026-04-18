@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import Magnetic from '@/components/ui/Magnetic';
 
 interface Slide {
   image: string;
@@ -112,6 +113,8 @@ const slides: Slide[] = [
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
+  const imgWrapRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % slides.length);
@@ -125,6 +128,22 @@ export default function Hero() {
     const timer = setInterval(next, 4500);
     return () => clearInterval(timer);
   }, [next]);
+
+  const handleHeroMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const wrap = imgWrapRef.current;
+    const img = imgRef.current;
+    if (!wrap || !img) return;
+    const rect = wrap.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    img.style.transform = `perspective(1200px) rotateY(${px * 14}deg) rotateX(${-py * 10}deg) translateZ(30px) scale(1.12)`;
+  };
+
+  const handleHeroLeave = () => {
+    const img = imgRef.current;
+    if (!img) return;
+    img.style.transform = '';
+  };
 
   const slide = slides[current];
 
@@ -161,29 +180,36 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-4 flex-wrap">
-            <Link
-              href={slide.primary.href}
-              className="btn-primary group flex items-center gap-3"
-            >
-              {slide.primary.label}{' '}
-              <ArrowRight
-                size={14}
-                className="group-hover:translate-x-1 transition-transform"
-              />
-            </Link>
-            <Link href={slide.secondary.href} className="btn-outline">
-              {slide.secondary.label}
-            </Link>
+            <Magnetic strength={0.3}>
+              <Link
+                href={slide.primary.href}
+                className="btn-primary group flex items-center gap-3"
+              >
+                {slide.primary.label}{' '}
+                <ArrowRight
+                  size={14}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </Link>
+            </Magnetic>
+            <Magnetic strength={0.25}>
+              <Link href={slide.secondary.href} className="btn-outline">
+                {slide.secondary.label}
+              </Link>
+            </Magnetic>
           </div>
         </div>
 
         <div
+          ref={imgWrapRef}
+          onMouseMove={handleHeroMove}
+          onMouseLeave={handleHeroLeave}
           key={`img-${current}`}
           className="relative order-1 md:order-2 animate-in min-h-[60vh] md:min-h-[92vh] flex items-center justify-center"
-          style={{ animationDelay: '0.15s' }}
+          style={{ animationDelay: '0.15s', perspective: '1200px' }}
         >
           <div
-            className="absolute inset-0 rounded-full blur-3xl opacity-50"
+            className="absolute inset-0 rounded-full blur-3xl opacity-50 float-3d"
             style={{
               background:
                 'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
@@ -191,9 +217,15 @@ export default function Hero() {
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
+            ref={imgRef}
             src={slide.image}
             alt={slide.title}
-            className="relative w-full h-full max-h-[75vh] md:max-h-[88vh] object-contain drop-shadow-2xl scale-110 md:scale-125"
+            className="relative w-full h-full max-h-[75vh] md:max-h-[88vh] object-contain drop-shadow-2xl scale-110 md:scale-125 float-3d"
+            style={{
+              transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
+              willChange: 'transform',
+              transformStyle: 'preserve-3d',
+            }}
           />
         </div>
       </div>

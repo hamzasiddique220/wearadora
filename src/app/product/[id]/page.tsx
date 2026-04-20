@@ -10,15 +10,16 @@ import {
   Star,
   Truck,
   Shield,
-  RotateCcw,
+  Award,
   ArrowLeft,
+  Copy,
 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
-import { getProductType, COLOR_HEX } from '@/lib/constants';
+import { getProductType, COLOR_HEX, STORE_CONFIG } from '@/lib/constants';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
 import ProductModal from '@/components/shop/ProductModal';
@@ -141,7 +142,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   };
 
   const collectionHref = isSlippers ? '/slippers' : '/jewelry';
-  const collectionLabel = isSlippers ? 'Slippers' : 'Jewelry';
+  const collectionLabel = isSlippers ? 'Shoes' : 'Jewelry';
 
   return (
     <>
@@ -313,11 +314,30 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-stone">
                 <span className="text-mocha">Delivery</span>
-                <span>2–4 days nationwide</span>
+                <span>{STORE_CONFIG.deliveryDays} nationwide</span>
+              </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone">
+                <span className="text-mocha">Shipping</span>
+                <span className="text-[#2d6a4f]">FREE on 2+ items</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-stone">
                 <span className="text-mocha">Category</span>
                 <span>{product.category}</span>
+              </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone">
+                <span className="text-mocha">SKU / Product ID</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard?.writeText(product.id);
+                    showToast('Product ID copied');
+                  }}
+                  className="font-mono text-xs flex items-center gap-1.5 hover:text-bronze"
+                  title="Click to copy"
+                >
+                  {product.id.slice(0, 10).toUpperCase()}
+                  <Copy size={12} />
+                </button>
               </div>
             </div>
 
@@ -357,19 +377,19 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               <div className="flex flex-col items-center gap-1.5">
                 <Truck size={18} className="text-bronze" />
                 <span className="text-[10px] tracking-[0.2em] uppercase text-mocha">
-                  Fast Delivery
+                  {STORE_CONFIG.deliveryDays}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1.5">
                 <Shield size={18} className="text-bronze" />
                 <span className="text-[10px] tracking-[0.2em] uppercase text-mocha">
-                  Authentic
+                  Handcrafted
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1.5">
-                <RotateCcw size={18} className="text-bronze" />
+                <Award size={18} className="text-bronze" />
                 <span className="text-[10px] tracking-[0.2em] uppercase text-mocha">
-                  Easy Returns
+                  40+ Yrs Craft
                 </span>
               </div>
             </div>

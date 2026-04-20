@@ -60,13 +60,23 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2">
-              <Phone size={14} /> 0311 2032415
+              <Phone size={14} />
+              <a
+                href={`tel:+92${STORE_CONFIG.whatsappNumber.slice(2)}`}
+                className="hover:text-bronze"
+              >
+                {STORE_CONFIG.phoneDisplay}
+              </a>
             </li>
             <li className="flex items-center gap-2">
               <Mail size={14} /> {STORE_CONFIG.email}
             </li>
             <li className="flex items-center gap-2">
               <MapPin size={14} /> {STORE_CONFIG.location}
+            </li>
+            <li className="text-xs text-stone/80 pt-1 leading-relaxed">
+              Delivery in {STORE_CONFIG.deliveryDays} · FREE on 2+ items,
+              otherwise Rs. {STORE_CONFIG.deliveryFee}
             </li>
           </ul>
         </div>

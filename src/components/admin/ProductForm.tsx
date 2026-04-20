@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { X, Upload, Check, Plus, Trash2, Star } from 'lucide-react';
 import { Product } from '@/types';
 import { productService } from '@/lib/services/products';
@@ -31,24 +31,37 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     return Array.from(new Set(list.filter(Boolean)));
   }, [product]);
 
-  const [form, setForm] = useState({
-    name: product?.name || '',
-    category: product?.category || 'Necklace',
-    price: product?.price !== undefined ? String(product.price) : '',
+  const buildInitial = (p?: Product | null) => ({
+    name: p?.name || '',
+    category: p?.category || 'Necklace',
+    price: p?.price !== undefined ? String(p.price) : '',
     originalPrice:
-      product?.originalPrice !== undefined ? String(product.originalPrice) : '',
-    stock: product?.stock !== undefined ? String(product.stock) : '',
-    description: product?.description || '',
-    isNew: product?.isNew || false,
-    sizes: product?.sizes || [],
-    colors: product?.colors || [],
+      p?.originalPrice !== undefined && p.originalPrice > 0
+        ? String(p.originalPrice)
+        : '',
+    stock: p?.stock !== undefined ? String(p.stock) : '',
+    description: p?.description || '',
+    isNew: p?.isNew || false,
+    sizes: p?.sizes ? [...p.sizes] : ([] as number[]),
+    colors: p?.colors ? [...p.colors] : ([] as string[]),
   });
+
+  const [form, setForm] = useState(() => buildInitial(product));
   const [images, setImages] = useState<string[]>(initialGallery);
   const [newImageUrl, setNewImageUrl] = useState('');
   const [customColor, setCustomColor] = useState('');
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Re-sync form whenever the modal opens or the product being edited changes
+  useEffect(() => {
+    if (!isOpen) return;
+    setForm(buildInitial(product));
+    setImages(initialGallery);
+    setNewImageUrl('');
+    setCustomColor('');
+  }, [isOpen, product, initialGallery]);
 
   const productType = useMemo(() => getProductType(form.category), [form.category]);
   const isSlippers = productType === 'slippers';

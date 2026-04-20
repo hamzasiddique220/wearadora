@@ -2,17 +2,25 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Plus, Minus, Trash2, Phone } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, Trash2, Phone, Truck } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/utils';
-import { COLOR_HEX } from '@/lib/constants';
+import { COLOR_HEX, STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import CheckoutModal from '@/components/cart/CheckoutModal';
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
-  const total = useCartStore((state) => state.getTotal());
+  const subtotal = useCartStore((state) => state.getTotal());
+  const itemCount = useCartStore((state) => state.getCount());
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+
+  const deliveryFee = getDeliveryFee(itemCount);
+  const total = subtotal + deliveryFee;
+  const itemsToFreeDelivery = Math.max(
+    0,
+    STORE_CONFIG.freeDeliveryMinItems - itemCount
+  );
 
   const [showCheckout, setShowCheckout] = useState(false);
 
@@ -29,7 +37,7 @@ export default function CartPage() {
             Shop Jewelry
           </Link>
           <Link href="/slippers" className="btn-outline inline-block">
-            Shop Slippers
+            Shop Shoes
           </Link>
         </div>
       </div>
@@ -144,14 +152,44 @@ export default function CartPage() {
             <h3 className="font-serif text-2xl mb-6 pb-4 border-b border-stone/20">
               Order Summary
             </h3>
+
+            {itemsToFreeDelivery > 0 ? (
+              <div className="bg-bronze/15 border border-bronze/40 text-cream p-3 mb-5 text-[11px] tracking-[0.05em] flex items-start gap-2">
+                <Truck size={14} className="text-bronze mt-0.5 shrink-0" />
+                <span>
+                  Add{' '}
+                  <strong className="text-bronze">{itemsToFreeDelivery}</strong>{' '}
+                  more {itemsToFreeDelivery === 1 ? 'item' : 'items'} to unlock{' '}
+                  <strong>FREE delivery</strong>.
+                </span>
+              </div>
+            ) : (
+              <div className="bg-[#2d6a4f]/25 border border-[#2d6a4f]/60 text-cream p-3 mb-5 text-[11px] tracking-[0.05em] flex items-start gap-2">
+                <Truck size={14} className="text-[#7ac196] mt-0.5 shrink-0" />
+                <span>
+                  <strong className="text-[#7ac196]">FREE delivery</strong>{' '}
+                  unlocked on your order.
+                </span>
+              </div>
+            )}
+
             <div className="space-y-3 text-sm mb-6">
               <div className="flex justify-between">
                 <span className="text-stone">Subtotal</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-stone">Delivery</span>
-                <span>Calculated at checkout</span>
+                <span>
+                  {deliveryFee === 0 ? (
+                    <span className="text-[#7ac196]">FREE</span>
+                  ) : (
+                    formatPrice(deliveryFee)
+                  )}
+                </span>
+              </div>
+              <div className="text-[11px] text-stone/70 -mt-1">
+                Estimated arrival: {STORE_CONFIG.deliveryDays}
               </div>
             </div>
             <div className="flex justify-between font-serif text-xl pb-6 border-b border-stone/20 mb-6">

@@ -15,9 +15,10 @@ interface ProductCardProps {
   product: Product;
   onClick: () => void;
   delay?: number;
+  theme?: 'light' | 'dark';
 }
 
-export default function ProductCard({ product, onClick, delay = 0 }: ProductCardProps) {
+export default function ProductCard({ product, onClick, delay = 0, theme = 'light' }: ProductCardProps) {
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product.id));
@@ -40,7 +41,13 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
     product.images && product.images.length > 1 ? product.images[1] : null;
 
   const isTransparentProductShot =
-    /wearadora\.com/.test(primaryImage) || /\.png(\?|$)/i.test(primaryImage);
+    primaryImage.startsWith('/images/') ||
+    /wearadora\.com\/wp-content/.test(primaryImage);
+
+  const hasDiscount =
+    typeof product.originalPrice === 'number' &&
+    product.originalPrice > product.price;
+  const hasLowStock = product.stock > 0 && product.stock <= 3;
 
   const detailHref = `/product/${product.id}`;
 
@@ -78,14 +85,22 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       <Tilt3D max={10} scale={1.03} className="relative block rounded-sm">
       <Link
         href={detailHref}
-        className="relative block aspect-square bg-gradient-to-br from-sand/70 via-cream to-sand/40 overflow-hidden rounded-sm shadow-sm group-hover:shadow-xl group-hover:shadow-bronze/20 transition-shadow duration-500"
+        className={`relative block aspect-square overflow-hidden rounded-sm transition-shadow duration-500 ${
+          theme === 'dark'
+            ? 'product-surface-dark group-hover:shadow-2xl group-hover:shadow-black/50'
+            : 'product-surface-light group-hover:shadow-xl group-hover:shadow-bronze/25'
+        }`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={primaryImage}
           alt={product.name}
-          className={`absolute inset-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105 ${
-            isTransparentProductShot ? 'object-contain p-3' : 'object-cover'
+          className={`absolute inset-0 w-full h-full z-10 transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.06] ${
+            theme === 'dark'
+              ? 'object-contain'
+              : isTransparentProductShot
+                ? 'object-contain p-4 scale-105 soft-spin drop-shadow-[0_18px_24px_rgba(26,22,20,0.3)]'
+                : 'object-cover'
           } ${hoverImage ? 'group-hover:opacity-0' : ''}`}
         />
         {hoverImage && (
@@ -93,15 +108,20 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           <img
             src={hoverImage}
             alt={product.name}
-            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ${
-              isTransparentProductShot ? 'object-contain p-3' : 'object-cover'
+            className={`absolute inset-0 w-full h-full z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ${
+              theme === 'dark'
+                ? 'object-contain'
+                : isTransparentProductShot
+                  ? 'object-contain p-4 scale-105 drop-shadow-[0_18px_24px_rgba(26,22,20,0.3)]'
+                  : 'object-cover'
             }`}
           />
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 shine-overlay" />
 
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute top-3 left-3 z-30 flex flex-col gap-2">
           {outOfStock && (
             <span className="bg-charcoal text-cream text-[9px] tracking-[0.2em] uppercase px-2.5 py-1">
               Sold Out
@@ -112,14 +132,14 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
               New
             </span>
           )}
-          {product.originalPrice && product.originalPrice > product.price && !outOfStock && (
+          {hasDiscount && !outOfStock && (
             <span className="bg-[#c94b4b] text-white text-[9px] tracking-[0.2em] uppercase px-2.5 py-1">
-              -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+              -{Math.round((1 - product.price / product.originalPrice!) * 100)}%
             </span>
           )}
         </div>
 
-        <div className="absolute top-3 right-3 flex flex-col gap-2">
+        <div className="absolute top-3 right-3 z-30 flex flex-col gap-2">
           <button
             type="button"
             onClick={handleWishlist}
@@ -146,7 +166,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           type="button"
           onClick={handleAddToCart}
           disabled={outOfStock}
-          className="absolute bottom-0 left-0 right-0 bg-charcoal text-cream py-3.5 text-[10px] tracking-[0.3em] uppercase translate-y-full group-hover:translate-y-0 transition-transform duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="absolute bottom-0 left-0 right-0 z-30 bg-charcoal text-cream py-3.5 text-[10px] tracking-[0.3em] uppercase translate-y-full group-hover:translate-y-0 transition-transform duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <ShoppingBag size={12} />
           {hasVariants ? 'Select Options' : 'Add to Bag'}
@@ -159,7 +179,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
             {product.category}
           </div>
-          {product.stock > 0 && product.stock <= 3 && (
+          {hasLowStock && (
             <div className="text-[9px] tracking-[0.2em] uppercase text-[#c94b4b]">
               Only {product.stock} left
             </div>
@@ -174,9 +194,9 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="font-medium">{formatPrice(product.price)}</span>
-            {product.originalPrice && product.originalPrice > product.price && (
+            {hasDiscount && (
               <span className="text-xs text-mocha line-through">
-                {formatPrice(product.originalPrice)}
+                {formatPrice(product.originalPrice!)}
               </span>
             )}
           </div>

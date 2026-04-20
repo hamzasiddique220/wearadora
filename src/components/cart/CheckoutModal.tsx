@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Phone } from 'lucide-react';
+import { X, Phone, MapPin, Loader2, Truck } from 'lucide-react';
 import { CustomerInfo } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useUIStore } from '@/lib/stores/ui';
 import { orderService } from '@/lib/services/orders';
 import { buildOrderMessage, getWhatsAppUrl } from '@/lib/whatsapp';
 import { generateOrderId, formatDate, formatPrice } from '@/lib/utils';
+import { STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import Modal from '@/components/ui/Modal';
 
 interface CheckoutModalProps {
@@ -17,9 +18,13 @@ interface CheckoutModalProps {
 
 export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const items = useCartStore((state) => state.items);
-  const total = useCartStore((state) => state.getTotal());
+  const subtotal = useCartStore((state) => state.getTotal());
+  const itemCount = useCartStore((state) => state.getCount());
   const clearCart = useCartStore((state) => state.clearCart);
   const showToast = useUIStore((state) => state.showToast);
+
+  const deliveryFee = getDeliveryFee(itemCount);
+  const grandTotal = subtotal + deliveryFee;
 
   const [info, setInfo] = useState<CustomerInfo>({
     name: '',
@@ -27,21 +32,53 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     address: '',
     city: '',
     notes: '',
+    mapLink: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>(
     {}
   );
   const [submitting, setSubmitting] = useState(false);
+  const [locating, setLocating] = useState(false);
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
     if (!info.name.trim()) newErrors.name = 'Required';
     if (!info.phone.trim()) newErrors.phone = 'Required';
-    else if (info.phone.length < 10) newErrors.phone = 'Invalid phone number';
+    else if (info.phone.replace(/\D/g, '').length < 10)
+      newErrors.phone = 'Invalid phone number';
     if (!info.address.trim()) newErrors.address = 'Required';
     if (!info.city.trim()) newErrors.city = 'Required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const useCurrentLocation = () => {
+    if (!('geolocation' in navigator)) {
+      showToast('Location not supported on this device', 'error');
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const link = `https://maps.google.com/?q=${latitude.toFixed(
+          6
+        )},${longitude.toFixed(6)}`;
+        setInfo((prev) => ({ ...prev, mapLink: link }));
+        setLocating(false);
+        showToast('Location captured');
+      },
+      (err) => {
+        setLocating(false);
+        showToast(
+          err.code === err.PERMISSION_DENIED
+            ? 'Location permission denied'
+            : 'Could not get location',
+          'error'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const handleSubmit = async () => {
@@ -56,7 +93,9 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       date: dateDisplay,
       customer: info,
       items,
-      total,
+      subtotal,
+      deliveryFee,
+      total: grandTotal,
     });
 
     try {
@@ -64,7 +103,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         orderId,
         customer: info,
         items,
-        total,
+        total: grandTotal,
         status: 'pending',
         createdAt: new Date().toISOString(),
         dateDisplay,
@@ -99,6 +138,28 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           </button>
         </div>
 
+        <div className="bg-sand/60 border border-stone/70 p-3 mb-5 text-[12px] text-mocha flex items-start gap-2">
+          <Truck size={14} className="text-bronze mt-0.5 shrink-0" />
+          <span>
+            {deliveryFee === 0 ? (
+              <>
+                <strong className="text-[#2d6a4f]">FREE delivery</strong> applied —
+                arrives in <strong>{STORE_CONFIG.deliveryDays}</strong>.
+              </>
+            ) : (
+              <>
+                Delivery charge <strong>{formatPrice(deliveryFee)}</strong> — add{' '}
+                <strong>{STORE_CONFIG.freeDeliveryMinItems - itemCount}</strong> more{' '}
+                {STORE_CONFIG.freeDeliveryMinItems - itemCount === 1
+                  ? 'item'
+                  : 'items'}{' '}
+                for free delivery. Arrives in{' '}
+                <strong>{STORE_CONFIG.deliveryDays}</strong>.
+              </>
+            )}
+          </span>
+        </div>
+
         <div className="space-y-4">
           <FormField
             label="Full Name *"
@@ -130,6 +191,41 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             error={errors.city}
             placeholder="Karachi / Lahore / etc."
           />
+
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+              Pin Location (Optional)
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={useCurrentLocation}
+                disabled={locating}
+                className="btn-outline px-4 py-2 text-xs whitespace-nowrap flex items-center gap-2 disabled:opacity-50"
+              >
+                {locating ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <MapPin size={14} />
+                )}
+                {locating ? 'Locating...' : 'Use My Location'}
+              </button>
+              {info.mapLink && (
+                <a
+                  href={info.mapLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-bronze underline truncate flex-1 self-center"
+                >
+                  View on map
+                </a>
+              )}
+            </div>
+            <p className="text-[10px] text-mocha mt-1">
+              Helps our rider find you faster
+            </p>
+          </div>
+
           <FormField
             label="Order Notes (Optional)"
             value={info.notes || ''}
@@ -139,12 +235,25 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           />
         </div>
 
-        <div className="bg-sand p-4 my-6">
-          <div className="flex justify-between items-center">
-            <span className="text-xs tracking-[0.2em] uppercase">Order Total</span>
-            <span className="font-serif text-xl">{formatPrice(total)}</span>
+        <div className="bg-sand p-4 my-6 space-y-1.5">
+          <div className="flex justify-between text-sm">
+            <span className="text-mocha">Subtotal ({itemCount} items)</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
-          <div className="text-[11px] text-mocha mt-1">{items.length} items</div>
+          <div className="flex justify-between text-sm">
+            <span className="text-mocha">Delivery</span>
+            <span>
+              {deliveryFee === 0 ? (
+                <span className="text-[#2d6a4f]">FREE</span>
+              ) : (
+                formatPrice(deliveryFee)
+              )}
+            </span>
+          </div>
+          <div className="flex justify-between items-center pt-2 border-t border-stone">
+            <span className="text-xs tracking-[0.2em] uppercase">Order Total</span>
+            <span className="font-serif text-xl">{formatPrice(grandTotal)}</span>
+          </div>
         </div>
 
         <button

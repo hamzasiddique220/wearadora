@@ -47,6 +47,7 @@ export interface CustomerInfo {
   address: string;
   city: string;
   notes?: string;
+  mapLink?: string;
 }
 
 export interface Order {

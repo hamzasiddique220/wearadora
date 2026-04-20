@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import Magnetic from '@/components/ui/Magnetic';
 
 interface Slide {
   image: string;
@@ -15,12 +14,13 @@ interface Slide {
   description: string;
   primary: { label: string; href: string };
   secondary: { label: string; href: string };
+  kind: 'shoe' | 'jewel';
 }
 
 const slides: Slide[] = [
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2016/07/main-WA-1-black-card-img.png',
+      '/images/main-WA-1-black-card-img.png',
     bg: 'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)',
     eyebrow: '✦ New Arrivals',
     title: 'Step into',
@@ -30,10 +30,25 @@ const slides: Slide[] = [
       'Discover our signature embellished slides — where contemporary design meets timeless sparkle. Crafted for the woman who makes every moment her own.',
     primary: { label: 'Shop Now', href: '/slippers' },
     secondary: { label: 'View All', href: '/shop' },
+    kind: 'shoe',
   },
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-7.png',
+      'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=1200&q=85',
+    bg: 'linear-gradient(135deg, #1a1614 0%, #2a2320 100%)',
+    eyebrow: '✦ Heritage Jewelry',
+    title: 'Adorned in',
+    italic: 'artistry',
+    tail: 'everyday',
+    description:
+      'Handcrafted necklaces inspired by heirloom silhouettes — pieces that move with you from morning rituals to midnight moments.',
+    primary: { label: 'Shop Jewelry', href: '/jewelry' },
+    secondary: { label: 'Necklaces', href: '/jewelry?category=Necklace' },
+    kind: 'jewel',
+  },
+  {
+    image:
+      '/images/remove.photos-removed-background-7.png',
     bg: 'linear-gradient(135deg, #e8ddc7 0%, #d4c9b8 100%)',
     eyebrow: '✦ Luxury Collection',
     title: 'Golden',
@@ -43,10 +58,25 @@ const slides: Slide[] = [
       'Shimmering golden bow heels for unforgettable occasions. Every detail handcrafted to make you shine — perfect for weddings, festivities, and defining moments.',
     primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
     secondary: { label: 'Bestsellers', href: '/slippers' },
+    kind: 'shoe',
   },
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-12.png',
+      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85',
+    bg: 'linear-gradient(135deg, #efe6d5 0%, #c9b090 100%)',
+    eyebrow: '✦ Statement Earrings',
+    title: 'A pair that',
+    italic: 'lingers',
+    tail: 'in memory',
+    description:
+      'Sculpted earrings catching candlelight at every turn. Designed to frame your face with unmistakable softness.',
+    primary: { label: 'Shop Earrings', href: '/jewelry?category=Earring' },
+    secondary: { label: 'View Jewelry', href: '/jewelry' },
+    kind: 'jewel',
+  },
+  {
+    image:
+      '/images/remove.photos-removed-background-12.png',
     bg: 'linear-gradient(135deg, #f5f1ea 0%, #ede4d3 100%)',
     eyebrow: '✦ Signature Slides',
     title: 'Subtle',
@@ -56,10 +86,25 @@ const slides: Slide[] = [
       'Elegant nude bow slides — refined minimalism with a touch of glamour. Designed for comfort that never compromises on sophistication.',
     primary: { label: 'Shop Slides', href: '/slippers?category=Slides' },
     secondary: { label: 'View Jewelry', href: '/jewelry' },
+    kind: 'shoe',
   },
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2026/03/remove.photos-removed-background-4.png',
+      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85',
+    bg: 'linear-gradient(135deg, #2b1f17 0%, #4a3626 100%)',
+    eyebrow: '✦ Fine Rings',
+    title: 'Delicate',
+    italic: 'forever',
+    tail: 'moments',
+    description:
+      'Precision-set stones on warm-toned bands — jewelry that feels like a quiet promise to yourself.',
+    primary: { label: 'Shop Rings', href: '/jewelry?category=Ring' },
+    secondary: { label: 'All Jewelry', href: '/jewelry' },
+    kind: 'jewel',
+  },
+  {
+    image:
+      '/images/remove.photos-removed-background-4.png',
     bg: 'linear-gradient(135deg, #efe6d5 0%, #d6c7b0 100%)',
     eyebrow: '✦ Statement Pieces',
     title: 'Dark',
@@ -69,23 +114,25 @@ const slides: Slide[] = [
       'Boldly refined black heels with sculpted silhouettes — the kind of shoes that finish a look and start a conversation.',
     primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
     secondary: { label: 'View All', href: '/slippers' },
+    kind: 'shoe',
   },
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2026/03/remove.photos-removed-background-2.png',
-    bg: 'linear-gradient(135deg, #f1e6d3 0%, #d8c6aa 100%)',
-    eyebrow: '✦ Heritage Craft',
-    title: 'Crafted',
-    italic: 'in bronze',
-    tail: 'tones',
+      'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=1200&q=85',
+    bg: 'linear-gradient(135deg, #e8ddc7 0%, #b89a72 100%)',
+    eyebrow: '✦ Hand-finished',
+    title: 'Bracelets that',
+    italic: 'whisper',
+    tail: 'as you move',
     description:
-      'Warm bronze-toned heels — a nod to artisan heritage, reimagined for the modern wardrobe. Made for women who love detail.',
-    primary: { label: 'Shop Now', href: '/slippers' },
-    secondary: { label: 'Shop Jewelry', href: '/jewelry' },
+      'Layered bracelets with a goldsmith’s finish — subtle enough for every day, special enough for the night ahead.',
+    primary: { label: 'Shop Bracelets', href: '/jewelry?category=Bracelet' },
+    secondary: { label: 'Discover', href: '/jewelry' },
+    kind: 'jewel',
   },
   {
     image:
-      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-9.png',
+      '/images/remove.photos-removed-background-9.png',
     bg: 'linear-gradient(135deg, #f5ede0 0%, #e2d0b4 100%)',
     eyebrow: '✦ New Season',
     title: 'Walk in',
@@ -95,26 +142,18 @@ const slides: Slide[] = [
       'Shimmering sandals for the season ahead — weightless comfort, unmistakable polish, and a finish that catches every eye.',
     primary: { label: 'Shop Sandals', href: '/slippers?category=Sandal' },
     secondary: { label: 'View All', href: '/shop' },
-  },
-  {
-    image:
-      'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-8-3.png',
-    bg: 'linear-gradient(135deg, #ece2ce 0%, #d0bf9f 100%)',
-    eyebrow: '✦ Editor\u2019s Pick',
-    title: 'The perfect',
-    italic: 'pair',
-    tail: 'for every story',
-    description:
-      'Considered details, timeless silhouettes. Our editor-loved styles have a way of quietly finding their way into every outfit.',
-    primary: { label: 'Shop Now', href: '/slippers' },
-    secondary: { label: 'Discover', href: '/about' },
+    kind: 'shoe',
   },
 ];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const imgWrapRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const tiltRef = useRef({ rx: 0, ry: 0, tx: 0, ty: 0 });
+  const rafRef = useRef<number | null>(null);
+  const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % slides.length);
@@ -125,27 +164,66 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 4500);
+    if (isDragging) return;
+    const timer = setInterval(next, 5200);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, isDragging]);
+
+  const applyTransform = () => {
+    const img = imgRef.current;
+    if (!img) return;
+    const { rx, ry, tx, ty } = tiltRef.current;
+    img.style.transform = `perspective(1300px) rotateY(${ry}deg) rotateX(${rx}deg) translate3d(${tx}px, ${ty}px, 40px) scale(1.12)`;
+  };
 
   const handleHeroMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDragging) return;
     const wrap = imgWrapRef.current;
-    const img = imgRef.current;
-    if (!wrap || !img) return;
+    if (!wrap) return;
     const rect = wrap.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    img.style.transform = `perspective(1200px) rotateY(${px * 14}deg) rotateX(${-py * 10}deg) translateZ(30px) scale(1.12)`;
+    tiltRef.current.ry = px * 22;
+    tiltRef.current.rx = -py * 16;
+    tiltRef.current.tx = px * 14;
+    tiltRef.current.ty = py * 10;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(applyTransform);
   };
 
   const handleHeroLeave = () => {
     const img = imgRef.current;
     if (!img) return;
+    tiltRef.current = { rx: 0, ry: 0, tx: 0, ty: 0 };
     img.style.transform = '';
   };
 
+  // Drag to rotate (touch / mouse)
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    dragStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      rx: tiltRef.current.rx,
+      ry: tiltRef.current.ry,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    tiltRef.current.ry = Math.max(-45, Math.min(45, dragStart.current.ry + dx * 0.35));
+    tiltRef.current.rx = Math.max(-25, Math.min(25, dragStart.current.rx - dy * 0.25));
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(applyTransform);
+  };
+  const onPointerUp = () => {
+    setIsDragging(false);
+  };
+
   const slide = slides[current];
+  const isDarkSlide = slide.kind === 'jewel' && slide.bg.includes('#1a1614');
 
   return (
     <section className="relative min-h-[92vh] md:min-h-screen overflow-hidden grain">
@@ -160,7 +238,12 @@ export default function Hero() {
       ))}
 
       <div className="relative z-20 max-w-[1500px] mx-auto px-4 md:px-10 py-6 md:py-0 min-h-[92vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-4 md:gap-6 items-center">
-        <div key={`text-${current}`} className="animate-in order-2 md:order-1">
+        <div
+          key={`text-${current}`}
+          className={`animate-in order-2 md:order-1 ${
+            isDarkSlide ? 'text-cream' : ''
+          }`}
+        >
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-12 bg-bronze" />
             <span className="text-[10px] tracking-[0.4em] uppercase text-bronze font-medium">
@@ -175,28 +258,35 @@ export default function Hero() {
             {slide.tail}
           </h1>
 
-          <p className="text-base md:text-lg text-mocha leading-relaxed mb-10 max-w-lg">
+          <p
+            className={`text-base md:text-lg leading-relaxed mb-10 max-w-lg ${
+              isDarkSlide ? 'text-stone/90' : 'text-mocha'
+            }`}
+          >
             {slide.description}
           </p>
 
           <div className="flex gap-4 flex-wrap">
-            <Magnetic strength={0.3}>
-              <Link
-                href={slide.primary.href}
-                className="btn-primary group flex items-center gap-3"
-              >
-                {slide.primary.label}{' '}
-                <ArrowRight
-                  size={14}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </Link>
-            </Magnetic>
-            <Magnetic strength={0.25}>
-              <Link href={slide.secondary.href} className="btn-outline">
-                {slide.secondary.label}
-              </Link>
-            </Magnetic>
+            <Link
+              href={slide.primary.href}
+              className={`hero-cta group inline-flex items-center gap-3 ${
+                isDarkSlide ? 'hero-cta--on-dark' : ''
+              }`}
+            >
+              {slide.primary.label}
+              <ArrowRight
+                size={14}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </Link>
+            <Link
+              href={slide.secondary.href}
+              className={`hero-cta hero-cta--outline ${
+                isDarkSlide ? 'hero-cta--outline-on-dark' : ''
+              }`}
+            >
+              {slide.secondary.label}
+            </Link>
           </div>
         </div>
 
@@ -204,29 +294,53 @@ export default function Hero() {
           ref={imgWrapRef}
           onMouseMove={handleHeroMove}
           onMouseLeave={handleHeroLeave}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
           key={`img-${current}`}
-          className="relative order-1 md:order-2 animate-in min-h-[60vh] md:min-h-[92vh] flex items-center justify-center"
-          style={{ animationDelay: '0.15s', perspective: '1200px' }}
+          className="relative order-1 md:order-2 animate-in min-h-[60vh] md:min-h-[92vh] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
+          style={{ animationDelay: '0.15s', perspective: '1300px' }}
         >
           <div
-            className="absolute inset-0 rounded-full blur-3xl opacity-50 float-3d"
+            className="absolute inset-0 rounded-full blur-3xl opacity-60 float-3d"
             style={{
               background:
-                'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
+                slide.kind === 'jewel'
+                  ? 'radial-gradient(circle at center, rgba(212,175,55,0.45) 0%, transparent 65%)'
+                  : 'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
             }}
+          />
+          <div
+            className="absolute left-1/2 bottom-[8%] -translate-x-1/2 w-[55%] h-10 rounded-full blur-2xl opacity-40"
+            style={{ background: 'rgba(26,22,20,0.55)' }}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={imgRef}
             src={slide.image}
             alt={slide.title}
-            className="relative w-full h-full max-h-[75vh] md:max-h-[88vh] object-contain drop-shadow-2xl scale-110 md:scale-125 float-3d"
+            draggable={false}
+            className={`hero-img relative w-full h-full max-h-[75vh] md:max-h-[88vh] scale-110 md:scale-125 float-3d pointer-events-none ${
+              slide.kind === 'jewel'
+                ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[85%]'
+                : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'
+            }`}
             style={{
-              transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
+              transition: isDragging
+                ? 'none'
+                : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
               willChange: 'transform',
               transformStyle: 'preserve-3d',
             }}
           />
+          <span
+            className={`absolute bottom-4 right-4 text-[9px] tracking-[0.3em] uppercase px-2 py-1 rounded backdrop-blur hidden md:block ${
+              isDarkSlide ? 'bg-white/15 text-cream' : 'bg-charcoal/10 text-charcoal/70'
+            }`}
+          >
+            Drag to rotate
+          </span>
         </div>
       </div>
 
@@ -253,8 +367,12 @@ export default function Hero() {
             aria-label={`Go to slide ${i + 1}`}
             className={`transition-all h-[3px] ${
               i === current
-                ? 'w-10 bg-charcoal'
-                : 'w-6 bg-charcoal/30 hover:bg-charcoal/60'
+                ? `w-10 ${isDarkSlide ? 'bg-cream' : 'bg-charcoal'}`
+                : `w-6 ${
+                    isDarkSlide
+                      ? 'bg-cream/30 hover:bg-cream/60'
+                      : 'bg-charcoal/30 hover:bg-charcoal/60'
+                  }`
             }`}
           />
         ))}

@@ -9,7 +9,13 @@ import {
   onSnapshot,
   Unsubscribe,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 import { Product } from '@/types';
 
 const COLLECTION = 'products';
@@ -54,33 +60,29 @@ export const productService = {
   },
 
   /**
-   * Upload product image to Cloudinary (unsigned)
+   * Upload product image to Firebase Storage
    */
   uploadImage: async (file: File): Promise<string> => {
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-    if (!cloudName || !preset) {
-      throw new Error('Cloudinary env vars missing');
-    }
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', preset);
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: 'POST', body: formData }
-    );
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Cloudinary upload failed: ${err}`);
-    }
-    const data = await res.json();
-    return data.secure_url as string;
+    const ext = file.name.split('.').pop() || 'jpg';
+    const path = `products/${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}.${ext}`;
+    const ref = storageRef(storage, path);
+    await uploadBytes(ref, file, { contentType: file.type });
+    return getDownloadURL(ref);
   },
 
   /**
-   * Delete image (no-op — Cloudinary deletion needs signed server call)
+   * Delete an uploaded image by its download URL
    */
-  deleteImage: async (_imageUrl: string): Promise<void> => {
-    // Orphans can be cleaned from Cloudinary dashboard if needed.
+  deleteImage: async (imageUrl: string): Promise<void> => {
+    try {
+      const match = imageUrl.match(/\/o\/([^?]+)/);
+      if (!match) return;
+      const path = decodeURIComponent(match[1]);
+      await deleteObject(storageRef(storage, path));
+    } catch {
+      // Silent: orphaned files can be cleaned from the Firebase console.
+    }
   },
 };

@@ -20,6 +20,8 @@ interface CategoryPageProps {
   title: string;
   heroImage: string;
   description: string;
+  /** 'photo' = background-cover editorial image, 'product' = centered transparent PNG on cream */
+  heroKind?: 'photo' | 'product';
 }
 
 function CategoryContent({
@@ -28,6 +30,7 @@ function CategoryContent({
   title,
   heroImage,
   description,
+  heroKind = 'photo',
 }: CategoryPageProps) {
   const { products, loading } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -55,26 +58,76 @@ function CategoryContent({
 
   return (
     <>
-      <section className="relative h-[40vh] md:h-[50vh] overflow-hidden grain">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={heroImage}
-          alt={title}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
-        <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3">
-            {eyebrow}
-          </span>
-          <h1 className="font-serif text-5xl md:text-7xl font-light text-white drop-shadow">
-            {title}
-          </h1>
-          <p className="text-white/90 mt-4 max-w-xl text-sm md:text-base">
-            {description}
-          </p>
-        </div>
-      </section>
+      {heroKind === 'product' ? (
+        <section
+          className="relative overflow-hidden grain"
+          style={{
+            background:
+              'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 55%, #d4c9b8 100%)',
+          }}
+        >
+          <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12 md:py-16 grid md:grid-cols-[1fr_1fr] gap-8 items-center">
+            <div>
+              <span className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3 inline-block">
+                {eyebrow}
+              </span>
+              <h1 className="font-serif text-5xl md:text-7xl font-light leading-[1.05]">
+                {title}
+              </h1>
+              <p className="text-mocha mt-4 max-w-xl text-sm md:text-base leading-relaxed">
+                {description}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2 text-[10px] tracking-[0.3em] uppercase">
+                <span className="bg-charcoal text-cream px-3 py-1.5">
+                  40+ Yrs Craft
+                </span>
+                <span className="border border-bronze text-bronze px-3 py-1.5">
+                  Handmade
+                </span>
+                <span className="border border-charcoal/40 px-3 py-1.5">
+                  Comfort + Design
+                </span>
+              </div>
+            </div>
+            <div className="relative aspect-[4/3] flex items-center justify-center">
+              <div
+                className="absolute inset-0 rounded-full blur-3xl opacity-60 float-3d"
+                style={{
+                  background:
+                    'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
+                }}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={heroImage}
+                alt={title}
+                className="relative max-h-[55vh] w-full object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] float-3d scale-110"
+              />
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="relative h-[40vh] md:h-[50vh] overflow-hidden grain">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={heroImage}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
+          <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col items-center justify-center text-center">
+            <span className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3">
+              {eyebrow}
+            </span>
+            <h1 className="font-serif text-5xl md:text-7xl font-light text-white drop-shadow">
+              {title}
+            </h1>
+            <p className="text-white/90 mt-4 max-w-xl text-sm md:text-base">
+              {description}
+            </p>
+          </div>
+        </section>
+      )}
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12">
         <div className="mb-8 max-w-md mx-auto relative">
@@ -130,6 +183,7 @@ function CategoryContent({
                 product={p}
                 onClick={() => setSelected(p)}
                 delay={i * 0.03}
+                theme={productType === 'jewelry' ? 'dark' : 'light'}
               />
             ))}
           </div>

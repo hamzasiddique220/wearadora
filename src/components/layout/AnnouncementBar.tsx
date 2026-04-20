@@ -1,8 +1,9 @@
 export default function AnnouncementBar() {
   const messages = [
-    '✦ Handcrafted with love',
-    '✦ Free delivery above Rs. 5,000',
-    '✦ Order via WhatsApp',
+    '✦ Handcrafted with 40+ years of experience',
+    '✦ Free delivery on 2 or more items',
+    '✦ Mega Sale — limited time',
+    '✦ Order via WhatsApp · Delivery in 2–3 days',
     '✦ New collection arrived',
   ];
 

@@ -6,10 +6,11 @@ export default function SlippersPage() {
   return (
     <CategoryPage
       productType="slippers"
-      eyebrow="✦ Artisan Footwear"
-      title="Slides & Heels"
-      heroImage="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=1800&q=85"
-      description="Step into grace with our signature handcrafted footwear — elegant slides and statement heels designed for every occasion."
+      eyebrow="✦ 40+ Years of Craft"
+      title="Shoes Collection"
+      heroImage="/images/remove.photos-removed-background-7.png"
+      heroKind="product"
+      description="Slides, heels and sandals handcrafted in-house — four decades of cobbling experience bringing you comfort and design in a single pair."
     />
   );
 }

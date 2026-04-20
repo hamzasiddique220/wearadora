@@ -3,11 +3,17 @@ import type { ProductType } from '@/types';
 export const STORE_CONFIG = {
   name: process.env.NEXT_PUBLIC_STORE_NAME || 'WEARADORA',
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923112032415',
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923122624846',
+  phoneDisplay: '0312 2624846',
   email: 'hello@wearadora.com',
   location: 'Karachi, Pakistan',
-  freeDeliveryAbove: 5000,
+  deliveryFee: 300,
+  freeDeliveryMinItems: 2,
+  deliveryDays: '2–3 days',
 } as const;
+
+export const getDeliveryFee = (itemCount: number): number =>
+  itemCount >= STORE_CONFIG.freeDeliveryMinItems ? 0 : STORE_CONFIG.deliveryFee;
 
 export const JEWELRY_CATEGORIES = [
   'Necklace',
@@ -66,12 +72,9 @@ export const ORDER_STATUSES = [
 ] as const;
 
 export const CATEGORY_IMAGES: Record<string, string> = {
-  Slides:
-    'https://wearadora.com/wp-content/uploads/2016/07/main-WA-1-black-card-img.png',
-  Heels:
-    'https://wearadora.com/wp-content/uploads/2026/04/remove.photos-removed-background-7.png',
-  Sandal:
-    'https://wearadora.com/wp-content/uploads/2016/07/remove.photos-removed-background.png',
+  Slides: '/images/main-WA-1-black-card-img.png',
+  Heels: '/images/remove.photos-removed-background-7.png',
+  Sandal: '/images/remove.photos-removed-background-9.png',
   Necklace: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800',
   Ring: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
   Earring: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800',

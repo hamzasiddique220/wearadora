@@ -63,7 +63,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const currentImage = galleryImages[activeImage] || product.image;
   const isTransparent =
     currentImage &&
-    (/wearadora\.com/.test(currentImage) || /\.png(\?|$)/i.test(currentImage));
+    (currentImage.startsWith('/images/') ||
+      /wearadora\.com\/wp-content/.test(currentImage));
 
   const handleAddToCart = () => {
     if (hasSizes && !selectedSize) {
@@ -125,7 +126,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide bg-white/50">
               {galleryImages.map((img, i) => {
                 const thumbTransparent =
-                  /wearadora\.com/.test(img) || /\.png(\?|$)/i.test(img);
+                  img.startsWith('/images/') ||
+                  /wearadora\.com\/wp-content/.test(img);
                 return (
                   <button
                     key={i}

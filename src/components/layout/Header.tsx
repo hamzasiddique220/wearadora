@@ -68,7 +68,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/slippers', label: 'Slippers' },
+    { href: '/slippers', label: 'Shoes' },
     { href: '/jewelry', label: 'Jewelry' },
     { href: '/about', label: 'About' },
   ];
@@ -202,7 +202,7 @@ export default function Header() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search jewelry, slippers..."
+                placeholder="Search jewelry, shoes..."
                 className="flex-1 bg-transparent outline-none text-base md:text-lg font-serif"
               />
               <button

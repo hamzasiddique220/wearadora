@@ -12,6 +12,7 @@ export type ProductCategory =
 
 export interface Product {
   id: string;
+  sku?: string;
   name: string;
   category: ProductCategory | string;
   productType?: ProductType;
@@ -24,6 +25,7 @@ export interface Product {
   sizes?: number[];
   colors?: string[];
   isNew?: boolean;
+  tag?: string;
   createdAt: string;
 }
 

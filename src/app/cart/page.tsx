@@ -75,8 +75,15 @@ export default function CartPage() {
                   />
                 </div>
                 <div>
-                  <div className="text-[9px] tracking-[0.3em] uppercase text-bronze mb-1">
-                    {item.category}
+                  <div className="flex items-baseline gap-2 flex-wrap mb-1">
+                    <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
+                      {item.category}
+                    </div>
+                    {item.sku && (
+                      <code className="text-[9px] font-mono text-mocha/80">
+                        {item.sku}
+                      </code>
+                    )}
                   </div>
                   <h3 className="font-serif text-lg mb-1.5 leading-tight">
                     {item.name}

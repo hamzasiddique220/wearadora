@@ -33,6 +33,8 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
 
   const buildInitial = (p?: Product | null) => ({
     name: p?.name || '',
+    sku: p?.sku || '',
+    tag: p?.tag || '',
     category: p?.category || 'Necklace',
     price: p?.price !== undefined ? String(p.price) : '',
     originalPrice:
@@ -154,6 +156,8 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
       const [primary, ...rest] = images;
       const data = {
         name: form.name.trim(),
+        sku: form.sku.trim(),
+        tag: form.tag.trim(),
         category: form.category,
         productType,
         price: priceNum,
@@ -206,6 +210,36 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
               className="input-field"
               placeholder="e.g. Diamond Necklace"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                SKU (Identifier)
+              </label>
+              <input
+                type="text"
+                value={form.sku}
+                onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                className="input-field font-mono text-sm"
+                placeholder="e.g. WA-1-Black"
+              />
+              <div className="text-[10px] text-mocha mt-1">
+                Unique code for inventory tracking
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                Tag (Optional)
+              </label>
+              <input
+                type="text"
+                value={form.tag}
+                onChange={(e) => setForm({ ...form, tag: e.target.value })}
+                className="input-field text-sm"
+                placeholder="e.g. Training, Slider, Bestseller"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

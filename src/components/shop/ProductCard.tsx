@@ -176,8 +176,15 @@ export default function ProductCard({ product, onClick, delay = 0, theme = 'ligh
 
       <div className="pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-3 mb-1.5">
-          <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
-            {product.category}
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
+              {product.category}
+            </div>
+            {product.sku && (
+              <code className="text-[9px] font-mono text-mocha/70">
+                {product.sku}
+              </code>
+            )}
           </div>
           {hasLowStock && (
             <div className="text-[9px] tracking-[0.2em] uppercase text-[#c94b4b]">

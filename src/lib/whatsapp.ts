@@ -30,7 +30,7 @@ export const buildOrderMessage = (data: OrderMessageData): string => {
 
   items.forEach((item, i) => {
     msg += `${i + 1}. ${item.name}\n`;
-    msg += `   SKU: ${item.id}\n`;
+    msg += `   SKU: ${item.sku?.trim() || item.id}\n`;
     const variantParts: string[] = [];
     if (item.selectedSize) variantParts.push(`Size ${item.selectedSize}`);
     if (item.selectedColor) variantParts.push(item.selectedColor);

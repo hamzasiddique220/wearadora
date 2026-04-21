@@ -69,10 +69,22 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <div className="p-4">
-                  <div className="text-[9px] tracking-[0.3em] uppercase text-bronze mb-1">
-                    {p.category}
+                  <div className="flex justify-between items-start gap-2 mb-1">
+                    <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
+                      {p.category}
+                    </div>
+                    {p.sku && (
+                      <code className="text-[10px] font-mono bg-sand text-charcoal px-2 py-0.5 rounded-sm">
+                        {p.sku}
+                      </code>
+                    )}
                   </div>
-                  <h3 className="font-serif text-lg mb-2">{p.name}</h3>
+                  <h3 className="font-serif text-lg mb-1">{p.name}</h3>
+                  {p.tag && (
+                    <div className="text-[10px] tracking-[0.15em] uppercase text-mocha mb-2">
+                      #{p.tag}
+                    </div>
+                  )}
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-medium">{formatPrice(p.price)}</span>
                     <span className="text-xs text-mocha">Stock: {p.stock}</span>

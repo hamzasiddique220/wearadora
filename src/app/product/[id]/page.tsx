@@ -325,20 +325,29 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 <span>{product.category}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-stone">
-                <span className="text-mocha">SKU / Product ID</span>
+                <span className="text-mocha">SKU</span>
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard?.writeText(product.id);
-                    showToast('Product ID copied');
+                    const value = product.sku?.trim() || product.id;
+                    navigator.clipboard?.writeText(value);
+                    showToast('SKU copied');
                   }}
                   className="font-mono text-xs flex items-center gap-1.5 hover:text-bronze"
                   title="Click to copy"
                 >
-                  {product.id.slice(0, 10).toUpperCase()}
+                  {product.sku?.trim() || product.id.slice(0, 10).toUpperCase()}
                   <Copy size={12} />
                 </button>
               </div>
+              {product.tag && (
+                <div className="flex items-center justify-between pb-3 border-b border-stone">
+                  <span className="text-mocha">Tag</span>
+                  <span className="text-xs tracking-[0.15em] uppercase text-bronze">
+                    {product.tag}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 mb-4">

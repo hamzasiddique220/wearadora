@@ -262,6 +262,7 @@ const products = [
 ];
 
 console.log('→ Deleting existing products...');
+console.log('→ Deleting existing products...');
 const existing = await getDocs(collection(db, 'products'));
 let deleted = 0;
 for (const doc of existing.docs) {

@@ -3,13 +3,13 @@ import type { ProductType } from '@/types';
 export const STORE_CONFIG = {
   name: process.env.NEXT_PUBLIC_STORE_NAME || 'WEARADORA',
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923122624846',
-  phoneDisplay: '0312 2624846',
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '92313266431',
+  phoneDisplay: '0313 2166431',
   email: 'hello@wearadora.com',
   location: 'Karachi, Pakistan',
-  deliveryFee: 300,
+  deliveryFee: 200,
   freeDeliveryMinItems: 2,
-  deliveryDays: '2–3 days',
+  deliveryDays: '4–5 days',
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
     'https://wearadora.com',

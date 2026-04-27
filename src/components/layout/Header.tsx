@@ -68,7 +68,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/slippers', label: 'Shoes' },
+    { href: '/slippers', label: 'Women' },
     { href: '/jewelry', label: 'Jewelry' },
     { href: '/about', label: 'About' },
   ];
@@ -252,12 +252,12 @@ export default function Header() {
                       }}
                       className="w-full flex items-center gap-4 p-4 hover:bg-sand/50 border-b border-stone/50 text-left transition"
                     >
-                      <div className="w-14 h-14 bg-sand overflow-hidden shrink-0">
+                      <div className="w-14 h-14 bg-cream overflow-hidden shrink-0 [&_img]:[mix-blend-mode:darken]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.image}
                           alt={p.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-1"
                         />
                       </div>
                       <div className="flex-1 min-w-0">

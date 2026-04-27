@@ -37,7 +37,7 @@ export default function WishlistPage() {
           <h1 className="font-serif text-4xl md:text-5xl font-light mt-2">Wishlist</h1>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
           {items.map((p, i) => (
             <ProductCard
               key={p.id}

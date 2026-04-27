@@ -66,12 +66,12 @@ export default function CartPage() {
                 key={item.cartLineId}
                 className="bg-white p-4 md:p-6 grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr_auto] gap-4 md:gap-6 items-center shadow-sm"
               >
-                <div className="aspect-square bg-sand overflow-hidden">
+                <div className="aspect-square bg-cream overflow-hidden [&_img]:[mix-blend-mode:darken]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-1.5"
                   />
                 </div>
                 <div>

@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { Product } from '@/types';
+import { normalizeCategory } from '@/lib/constants';
 import ProductCard from '@/components/shop/ProductCard';
 import ProductModal from '@/components/shop/ProductModal';
 import EmptyState from '@/components/ui/EmptyState';
@@ -20,17 +21,28 @@ function ShopContent() {
   const [selected, setSelected] = useState<Product | null>(null);
 
   useEffect(() => {
-    if (urlCategory) setSelectedCategory(urlCategory);
+    if (urlCategory) setSelectedCategory(normalizeCategory(urlCategory));
   }, [urlCategory]);
 
   const categories = useMemo(
-    () => ['all', ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))],
+    () => [
+      'all',
+      ...Array.from(
+        new Set(
+          products
+            .map((p) => normalizeCategory(p.category as string))
+            .filter(Boolean)
+        )
+      ),
+    ],
     [products]
   );
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
+      const productCat = normalizeCategory(p.category as string);
+      const matchCat =
+        selectedCategory === 'all' || productCat === selectedCategory;
       const matchSearch =
         !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
@@ -93,7 +105,7 @@ function ShopContent() {
         ) : filteredProducts.length === 0 ? (
           <EmptyState message="No products found. Try a different search or category." />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {filteredProducts.map((p, i) => (
               <ProductCard
                 key={p.id}

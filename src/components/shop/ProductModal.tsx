@@ -61,10 +61,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
   const hasColors = isSlippers && product.colors && product.colors.length > 0;
   const currentImage = galleryImages[activeImage] || product.image;
-  const isTransparent =
-    currentImage &&
-    (currentImage.startsWith('/images/') ||
-      /wearadora\.com\/wp-content/.test(currentImage));
 
   const handleAddToCart = () => {
     if (hasSizes && !selectedSize) {
@@ -96,60 +92,51 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   };
 
   return (
-    <Modal isOpen={!!product} onClose={onClose} maxWidth="max-w-5xl">
-      <div className="grid md:grid-cols-2">
-        <div className="relative bg-gradient-to-br from-sand/70 via-cream to-sand/40 md:min-h-[600px] flex flex-col">
-          <div className="relative aspect-square md:aspect-auto md:flex-1 flex items-center justify-center">
+    <Modal isOpen={!!product} onClose={onClose} maxWidth="max-w-4xl">
+      <div className="grid md:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative bg-cream flex flex-col">
+          <div className="relative aspect-square flex items-center justify-center [&_img]:[mix-blend-mode:darken]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentImage}
               alt={product.name}
-              className={`w-full h-full ${
-                isTransparent ? 'object-contain p-8 md:p-12' : 'object-cover'
-              }`}
+              className="w-full h-full object-contain p-4 md:p-6"
             />
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 w-10 h-10 bg-white/95 flex items-center justify-center hover:bg-white shadow"
+              className="absolute top-3 right-3 w-9 h-9 bg-white/95 flex items-center justify-center hover:bg-white shadow z-10"
               aria-label="Close"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
             {product.isNew && (
-              <div className="absolute top-4 left-4 bg-bronze text-white text-[10px] tracking-[0.3em] uppercase px-3 py-1.5">
+              <div className="absolute top-3 left-3 bg-bronze text-white text-[9px] tracking-[0.3em] uppercase px-2.5 py-1 z-10">
                 New
               </div>
             )}
           </div>
 
           {galleryImages.length > 1 && (
-            <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide bg-white/50">
-              {galleryImages.map((img, i) => {
-                const thumbTransparent =
-                  img.startsWith('/images/') ||
-                  /wearadora\.com\/wp-content/.test(img);
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    aria-label={`View image ${i + 1}`}
-                    className={`relative shrink-0 w-16 h-16 overflow-hidden border-2 transition-all bg-gradient-to-br from-sand/60 via-cream to-sand/30 ${
-                      activeImage === i
-                        ? 'border-bronze'
-                        : 'border-transparent hover:border-stone'
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={img}
-                      alt=""
-                      className={`w-full h-full ${
-                        thumbTransparent ? 'object-contain p-0.5' : 'object-cover'
-                      }`}
-                    />
-                  </button>
-                );
-              })}
+            <div className="flex gap-2 p-3 overflow-x-auto scrollbar-hide bg-white/40">
+              {galleryImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  aria-label={`View image ${i + 1}`}
+                  className={`relative shrink-0 w-14 h-14 overflow-hidden border transition-all bg-cream [&_img]:[mix-blend-mode:darken] ${
+                    activeImage === i
+                      ? 'border-bronze'
+                      : 'border-stone/60 hover:border-stone'
+                  }`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img}
+                    alt=""
+                    className="w-full h-full object-contain p-1"
+                  />
+                </button>
+              ))}
             </div>
           )}
         </div>

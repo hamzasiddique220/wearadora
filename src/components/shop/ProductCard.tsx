@@ -8,17 +8,15 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
-import Tilt3D from '@/components/ui/Tilt3D';
 import { heartBurst } from '@/lib/heartBurst';
 
 interface ProductCardProps {
   product: Product;
   onClick: () => void;
   delay?: number;
-  theme?: 'light' | 'dark';
 }
 
-export default function ProductCard({ product, onClick, delay = 0, theme = 'light' }: ProductCardProps) {
+export default function ProductCard({ product, onClick, delay = 0 }: ProductCardProps) {
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product.id));
@@ -39,10 +37,6 @@ export default function ProductCard({ product, onClick, delay = 0, theme = 'ligh
     'https://via.placeholder.com/400x400?text=No+Image';
   const hoverImage =
     product.images && product.images.length > 1 ? product.images[1] : null;
-
-  const isTransparentProductShot =
-    primaryImage.startsWith('/images/') ||
-    /wearadora\.com\/wp-content/.test(primaryImage);
 
   const hasDiscount =
     typeof product.originalPrice === 'number' &&
@@ -82,44 +76,28 @@ export default function ProductCard({ product, onClick, delay = 0, theme = 'ligh
       className="group relative animate-in"
       style={{ animationDelay: `${delay}s` }}
     >
-      <Tilt3D max={10} scale={1.03} className="relative block rounded-sm">
       <Link
         href={detailHref}
-        className={`relative block aspect-square overflow-hidden rounded-sm transition-shadow duration-500 ${
-          theme === 'dark'
-            ? 'product-surface-dark group-hover:shadow-2xl group-hover:shadow-black/50'
-            : 'product-surface-light group-hover:shadow-xl group-hover:shadow-bronze/25'
-        }`}
+        className="product-card-frame relative block aspect-square overflow-hidden rounded-md transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_22px_40px_-18px_rgba(26,22,20,0.22)]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={primaryImage}
           alt={product.name}
-          className={`absolute inset-0 w-full h-full z-10 transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.06] ${
-            theme === 'dark'
-              ? 'object-contain'
-              : isTransparentProductShot
-                ? 'object-contain p-4 scale-105 soft-spin drop-shadow-[0_18px_24px_rgba(26,22,20,0.3)]'
-                : 'object-cover'
-          } ${hoverImage ? 'group-hover:opacity-0' : ''}`}
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
+            hoverImage ? 'group-hover:opacity-0 transition-opacity' : ''
+          }`}
         />
         {hoverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={hoverImage}
             alt={product.name}
-            className={`absolute inset-0 w-full h-full z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ${
-              theme === 'dark'
-                ? 'object-contain'
-                : isTransparentProductShot
-                  ? 'object-contain p-4 scale-105 drop-shadow-[0_18px_24px_rgba(26,22,20,0.3)]'
-                  : 'object-cover'
-            }`}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] opacity-0 group-hover:opacity-100 transition-opacity duration-[700ms]"
           />
         )}
-
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 shine-overlay" />
 
         <div className="absolute top-3 left-3 z-30 flex flex-col gap-2">
           {outOfStock && (
@@ -162,17 +140,18 @@ export default function ProductCard({ product, onClick, delay = 0, theme = 'ligh
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={outOfStock}
-          className="absolute bottom-0 left-0 right-0 z-30 bg-charcoal text-cream py-3.5 text-[10px] tracking-[0.3em] uppercase translate-y-full group-hover:translate-y-0 transition-transform duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          <ShoppingBag size={12} />
-          {hasVariants ? 'Select Options' : 'Add to Bag'}
-        </button>
+        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+            className="bg-charcoal/95 backdrop-blur text-cream px-4 py-1.5 text-[9px] tracking-[0.2em] uppercase rounded-full disabled:opacity-50 inline-flex items-center justify-center gap-1.5 shadow-md hover:bg-charcoal whitespace-nowrap"
+          >
+            <ShoppingBag size={10} />
+            {hasVariants ? 'Options' : 'Add to Bag'}
+          </button>
+        </div>
       </Link>
-      </Tilt3D>
 
       <div className="pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-3 mb-1.5">

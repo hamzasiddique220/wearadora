@@ -37,10 +37,9 @@ const categories = [
     href: '/jewelry?category=Earring',
   },
   {
-    name: 'Bracelet',
-    image:
-      'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=800',
-    href: '/jewelry?category=Bracelet',
+    name: 'Bangles',
+    image: '/images/bangles-cover.jpg',
+    href: '/jewelry?category=Bangles',
   },
 ];
 

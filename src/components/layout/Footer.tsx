@@ -12,7 +12,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-charcoal text-cream py-16 px-4 md:px-8 mt-20 relative overflow-hidden grain">
-      <div className="max-w-[1400px] mx-auto grid md:grid-cols-4 gap-10 relative">
+      <div className="max-w-[1400px] mx-auto grid md:grid-cols-5 gap-10 relative">
         <div>
           <div className="font-serif text-3xl tracking-[0.3em] mb-2">
             {STORE_CONFIG.name}
@@ -49,6 +49,29 @@ export default function Footer() {
             <li>
               <Link href="/shop?category=Sandal" className="hover:text-bronze">
                 Sandals
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze">
+            Help
+          </h4>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/about" className="hover:text-bronze">
+                About Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/shipping" className="hover:text-bronze">
+                Shipping & Returns
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="hover:text-bronze">
+                Privacy Policy
               </Link>
             </li>
           </ul>

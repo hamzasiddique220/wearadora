@@ -1,8 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useProducts } from '@/hooks/useProducts';
+import { getProductType } from '@/lib/constants';
+import { Product } from '@/types';
 
 interface Slide {
   image: string;
@@ -17,10 +20,9 @@ interface Slide {
   kind: 'shoe' | 'jewel';
 }
 
-const slides: Slide[] = [
+const fallbackSlides: Slide[] = [
   {
-    image:
-      '/images/main-WA-1-black-card-img.png',
+    image: '/images/main-WA-1-black-card-img.png',
     bg: 'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)',
     eyebrow: '✦ New Arrivals',
     title: 'Step into',
@@ -47,8 +49,7 @@ const slides: Slide[] = [
     kind: 'jewel',
   },
   {
-    image:
-      '/images/remove.photos-removed-background-7.png',
+    image: '/images/remove.photos-removed-background-7.png',
     bg: 'linear-gradient(135deg, #e8ddc7 0%, #d4c9b8 100%)',
     eyebrow: '✦ Luxury Collection',
     title: 'Golden',
@@ -75,8 +76,7 @@ const slides: Slide[] = [
     kind: 'jewel',
   },
   {
-    image:
-      '/images/remove.photos-removed-background-12.png',
+    image: '/images/remove.photos-removed-background-12.png',
     bg: 'linear-gradient(135deg, #f5f1ea 0%, #ede4d3 100%)',
     eyebrow: '✦ Signature Slides',
     title: 'Subtle',
@@ -89,50 +89,7 @@ const slides: Slide[] = [
     kind: 'shoe',
   },
   {
-    image:
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85',
-    bg: 'linear-gradient(135deg, #2b1f17 0%, #4a3626 100%)',
-    eyebrow: '✦ Fine Rings',
-    title: 'Delicate',
-    italic: 'forever',
-    tail: 'moments',
-    description:
-      'Precision-set stones on warm-toned bands — jewelry that feels like a quiet promise to yourself.',
-    primary: { label: 'Shop Rings', href: '/jewelry?category=Ring' },
-    secondary: { label: 'All Jewelry', href: '/jewelry' },
-    kind: 'jewel',
-  },
-  {
-    image:
-      '/images/remove.photos-removed-background-4.png',
-    bg: 'linear-gradient(135deg, #efe6d5 0%, #d6c7b0 100%)',
-    eyebrow: '✦ Statement Pieces',
-    title: 'Dark',
-    italic: 'romance',
-    tail: 'for evenings',
-    description:
-      'Boldly refined black heels with sculpted silhouettes — the kind of shoes that finish a look and start a conversation.',
-    primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
-    secondary: { label: 'View All', href: '/slippers' },
-    kind: 'shoe',
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=1200&q=85',
-    bg: 'linear-gradient(135deg, #e8ddc7 0%, #b89a72 100%)',
-    eyebrow: '✦ Hand-finished',
-    title: 'Bracelets that',
-    italic: 'whisper',
-    tail: 'as you move',
-    description:
-      'Layered bracelets with a goldsmith’s finish — subtle enough for every day, special enough for the night ahead.',
-    primary: { label: 'Shop Bracelets', href: '/jewelry?category=Bracelet' },
-    secondary: { label: 'Discover', href: '/jewelry' },
-    kind: 'jewel',
-  },
-  {
-    image:
-      '/images/remove.photos-removed-background-9.png',
+    image: '/images/remove.photos-removed-background-9.png',
     bg: 'linear-gradient(135deg, #f5ede0 0%, #e2d0b4 100%)',
     eyebrow: '✦ New Season',
     title: 'Walk in',
@@ -146,7 +103,47 @@ const slides: Slide[] = [
   },
 ];
 
+const JEWELRY_BG =
+  'linear-gradient(135deg, #1a1614 0%, #2a2320 100%)';
+const SHOE_BG_LIGHT =
+  'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)';
+const SHOE_BG_WARM =
+  'linear-gradient(135deg, #efe6d5 0%, #d6c7b0 100%)';
+
+function buildSlideFromProduct(p: Product, img: string): Slide {
+  const productType =
+    p.productType || getProductType(p.category as string);
+  const isJewel = productType === 'jewelry';
+  const isShoeIndex = !isJewel;
+  const href = `/product/${p.id}`;
+  const categoryHref = isJewel
+    ? `/jewelry?category=${encodeURIComponent(p.category)}`
+    : `/slippers?category=${encodeURIComponent(p.category)}`;
+
+  const words = p.name.split(' ');
+  const italic = words.length > 1 ? words[words.length - 1] : '';
+  const title = words.length > 1 ? words.slice(0, -1).join(' ') : p.name;
+
+  return {
+    image: img,
+    bg: isJewel
+      ? JEWELRY_BG
+      : isShoeIndex && p.category === 'Heels'
+        ? SHOE_BG_WARM
+        : SHOE_BG_LIGHT,
+    eyebrow: `✦ ${p.category}`,
+    title,
+    italic: italic || p.category,
+    tail: '',
+    description: p.description || `Explore our ${p.category.toString().toLowerCase()} collection — handcrafted for moments that matter.`,
+    primary: { label: 'Shop Now', href },
+    secondary: { label: 'View Category', href: categoryHref },
+    kind: isJewel ? 'jewel' : 'shoe',
+  };
+}
+
 export default function Hero() {
+  const { products } = useProducts();
   const [current, setCurrent] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const imgWrapRef = useRef<HTMLDivElement>(null);
@@ -155,25 +152,41 @@ export default function Hero() {
   const rafRef = useRef<number | null>(null);
   const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
 
+  const slides = useMemo<Slide[]>(() => {
+    const productSlides: Slide[] = [];
+    for (const p of products) {
+      const slideImgs = (p.slideImages || []).filter(Boolean);
+      for (const img of slideImgs) {
+        productSlides.push(buildSlideFromProduct(p, img));
+      }
+    }
+    return productSlides.length > 0 ? productSlides : fallbackSlides;
+  }, [products]);
+
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   const prev = useCallback(() => {
     setCurrent((c) => (c - 1 + slides.length) % slides.length);
-  }, []);
+  }, [slides.length]);
+
+  useEffect(() => {
+    if (current >= slides.length) setCurrent(0);
+  }, [slides.length, current]);
 
   useEffect(() => {
     if (isDragging) return;
+    if (slides.length <= 1) return;
     const timer = setInterval(next, 5200);
     return () => clearInterval(timer);
-  }, [next, isDragging]);
+  }, [next, isDragging, slides.length]);
 
   const applyTransform = () => {
     const img = imgRef.current;
     if (!img) return;
     const { rx, ry, tx, ty } = tiltRef.current;
-    img.style.transform = `perspective(1300px) rotateY(${ry}deg) rotateX(${rx}deg) translate3d(${tx}px, ${ty}px, 40px) scale(1.12)`;
+    img.style.transform = `perspective(1300px) rotateY(${ry}deg) rotateX(${rx}deg) translate3d(${tx}px, ${ty}px, 40px) scale(1.08)`;
   };
 
   const handleHeroMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -198,7 +211,6 @@ export default function Hero() {
     img.style.transform = '';
   };
 
-  // Drag to rotate (touch / mouse)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsDragging(true);
     dragStart.current = {
@@ -222,11 +234,11 @@ export default function Hero() {
     setIsDragging(false);
   };
 
-  const slide = slides[current];
+  const slide = slides[current] ?? slides[0];
   const isDarkSlide = slide.kind === 'jewel' && slide.bg.includes('#1a1614');
 
   return (
-    <section className="relative min-h-[92vh] md:min-h-screen overflow-hidden grain">
+    <section className="relative min-h-[88vh] md:min-h-screen overflow-hidden grain">
       {slides.map((s, i) => (
         <div
           key={i}
@@ -237,36 +249,40 @@ export default function Hero() {
         />
       ))}
 
-      <div className="relative z-20 max-w-[1500px] mx-auto px-4 md:px-10 py-6 md:py-0 min-h-[92vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-4 md:gap-6 items-center">
+      <div className="relative z-20 max-w-[1500px] mx-auto px-4 md:px-10 pt-4 pb-16 md:py-0 min-h-[88vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-2 md:gap-6 items-center">
         <div
           key={`text-${current}`}
           className={`animate-in order-2 md:order-1 ${
             isDarkSlide ? 'text-cream' : ''
           }`}
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-px w-12 bg-bronze" />
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
+            <div className="h-px w-10 md:w-12 bg-bronze" />
             <span className="text-[10px] tracking-[0.4em] uppercase text-bronze font-medium">
               {slide.eyebrow}
             </span>
           </div>
 
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-6">
+          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-4 md:mb-6">
             {slide.title}{' '}
             <span className="font-italic-serif text-bronze">{slide.italic}</span>
-            <br />
-            {slide.tail}
+            {slide.tail && (
+              <>
+                <br />
+                {slide.tail}
+              </>
+            )}
           </h1>
 
           <p
-            className={`text-base md:text-lg leading-relaxed mb-10 max-w-lg ${
+            className={`text-sm md:text-lg leading-relaxed mb-6 md:mb-10 max-w-lg ${
               isDarkSlide ? 'text-stone/90' : 'text-mocha'
             }`}
           >
             {slide.description}
           </p>
 
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-3 md:gap-4 flex-wrap">
             <Link
               href={slide.primary.href}
               className={`hero-cta group inline-flex items-center gap-3 ${
@@ -299,7 +315,7 @@ export default function Hero() {
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           key={`img-${current}`}
-          className="relative order-1 md:order-2 animate-in min-h-[60vh] md:min-h-[92vh] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
+          className="hero-stage relative order-1 md:order-2 animate-in min-h-[42vh] md:min-h-[92vh] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
           style={{ animationDelay: '0.15s', perspective: '1300px' }}
         >
           <div
@@ -315,68 +331,67 @@ export default function Hero() {
             className="absolute left-1/2 bottom-[8%] -translate-x-1/2 w-[55%] h-10 rounded-full blur-2xl opacity-40"
             style={{ background: 'rgba(26,22,20,0.55)' }}
           />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={imgRef}
-            src={slide.image}
-            alt={slide.title}
-            draggable={false}
-            className={`hero-img relative w-full h-full max-h-[75vh] md:max-h-[88vh] scale-110 md:scale-125 float-3d pointer-events-none ${
-              slide.kind === 'jewel'
-                ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[85%]'
-                : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'
-            }`}
-            style={{
-              transition: isDragging
-                ? 'none'
-                : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
-              willChange: 'transform',
-              transformStyle: 'preserve-3d',
-            }}
-          />
-          <span
-            className={`absolute bottom-4 right-4 text-[9px] tracking-[0.3em] uppercase px-2 py-1 rounded backdrop-blur hidden md:block ${
-              isDarkSlide ? 'bg-white/15 text-cream' : 'bg-charcoal/10 text-charcoal/70'
-            }`}
-          >
-            Drag to rotate
-          </span>
+          <div className="hero-auto-rotate w-full h-full flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={imgRef}
+              src={slide.image}
+              alt={slide.title}
+              draggable={false}
+              className={`hero-img relative w-full h-full max-h-[42vh] md:max-h-[88vh] scale-[0.95] md:scale-125 float-3d pointer-events-none ${
+                slide.kind === 'jewel'
+                  ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[90%] md:max-w-[85%]'
+                  : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'
+              }`}
+              style={{
+                transition: isDragging
+                  ? 'none'
+                  : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
+                willChange: 'transform',
+                transformStyle: 'preserve-3d',
+              }}
+            />
+          </div>
         </div>
       </div>
 
-      <button
-        onClick={prev}
-        aria-label="Previous slide"
-        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
-      >
-        <ChevronLeft size={20} />
-      </button>
-      <button
-        onClick={next}
-        aria-label="Next slide"
-        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
-      >
-        <ChevronRight size={20} />
-      </button>
-
-      <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
-        {slides.map((_, i) => (
+      {slides.length > 1 && (
+        <>
           <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className={`transition-all h-[3px] ${
-              i === current
-                ? `w-10 ${isDarkSlide ? 'bg-cream' : 'bg-charcoal'}`
-                : `w-6 ${
-                    isDarkSlide
-                      ? 'bg-cream/30 hover:bg-cream/60'
-                      : 'bg-charcoal/30 hover:bg-charcoal/60'
-                  }`
-            }`}
-          />
-        ))}
-      </div>
+            onClick={prev}
+            aria-label="Previous slide"
+            className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next slide"
+            className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          <div className="absolute bottom-5 md:bottom-12 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 md:gap-3">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`transition-all h-[3px] ${
+                  i === current
+                    ? `w-8 md:w-10 ${isDarkSlide ? 'bg-cream' : 'bg-charcoal'}`
+                    : `w-5 md:w-6 ${
+                        isDarkSlide
+                          ? 'bg-cream/30 hover:bg-cream/60'
+                          : 'bg-charcoal/30 hover:bg-charcoal/60'
+                      }`
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

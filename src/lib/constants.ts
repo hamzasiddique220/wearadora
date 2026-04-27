@@ -19,8 +19,7 @@ export const JEWELRY_CATEGORIES = [
   'Necklace',
   'Ring',
   'Earring',
-  'Bracelet',
-  'Bangle',
+  'Bangles',
   'Anklet',
 ] as const;
 
@@ -78,12 +77,23 @@ export const CATEGORY_IMAGES: Record<string, string> = {
   Necklace: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800',
   Ring: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
   Earring: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800',
-  Bracelet: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=800',
+  Bangles: '/images/bangles-cover.jpg',
 };
 
 export const getProductType = (category?: string): ProductType => {
   if (!category) return 'jewelry';
-  return (SLIPPERS_CATEGORIES as readonly string[]).includes(category)
+  const normalized = normalizeCategory(category);
+  return (SLIPPERS_CATEGORIES as readonly string[]).includes(normalized)
     ? 'slippers'
     : 'jewelry';
+};
+
+const CATEGORY_ALIASES: Record<string, string> = {
+  Bracelet: 'Bangles',
+  Bangle: 'Bangles',
+};
+
+export const normalizeCategory = (category?: string): string => {
+  if (!category) return '';
+  return CATEGORY_ALIASES[category] || category;
 };

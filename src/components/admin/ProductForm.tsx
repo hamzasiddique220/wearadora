@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useMemo, useEffect } from 'react';
-import { X, Upload, Check, Plus, Trash2, Star } from 'lucide-react';
+import { X, Upload, Check, Plus, Trash2, Star, Sparkles } from 'lucide-react';
 import { Product } from '@/types';
 import { productService } from '@/lib/services/products';
 import { useUIStore } from '@/lib/stores/ui';
@@ -50,6 +50,9 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
 
   const [form, setForm] = useState(() => buildInitial(product));
   const [images, setImages] = useState<string[]>(initialGallery);
+  const [slideImages, setSlideImages] = useState<string[]>(
+    () => product?.slideImages || []
+  );
   const [newImageUrl, setNewImageUrl] = useState('');
   const [customColor, setCustomColor] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -61,9 +64,16 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     if (!isOpen) return;
     setForm(buildInitial(product));
     setImages(initialGallery);
+    setSlideImages(product?.slideImages || []);
     setNewImageUrl('');
     setCustomColor('');
   }, [isOpen, product, initialGallery]);
+
+  const toggleSlide = (url: string) => {
+    setSlideImages((list) =>
+      list.includes(url) ? list.filter((u) => u !== url) : [...list, url]
+    );
+  };
 
   const productType = useMemo(() => getProductType(form.category), [form.category]);
   const isSlippers = productType === 'slippers';
@@ -102,6 +112,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
 
   const removeImage = (url: string) => {
     setImages((list) => list.filter((i) => i !== url));
+    setSlideImages((list) => list.filter((i) => i !== url));
   };
 
   const makePrimary = (url: string) => {
@@ -154,6 +165,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     try {
       const originalPriceNum = form.originalPrice ? parseFloat(form.originalPrice) : 0;
       const [primary, ...rest] = images;
+      const validSlides = slideImages.filter((u) => images.includes(u));
       const data = {
         name: form.name.trim(),
         sku: form.sku.trim(),
@@ -165,6 +177,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         stock: form.stock ? parseInt(form.stock) || 0 : 0,
         image: primary,
         images: rest.length > 0 ? [primary, ...rest] : [primary],
+        slideImages: validSlides,
         description: form.description,
         isNew: form.isNew,
         sizes: isSlippers ? form.sizes : [],
@@ -441,7 +454,8 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                 Product Gallery *
               </label>
               <span className="text-[10px] text-mocha">
-                {images.length} image{images.length === 1 ? '' : 's'} • first = cover
+                {images.length} image{images.length === 1 ? '' : 's'} • first = cover •{' '}
+                {slideImages.length} on home slider
               </span>
             </div>
 
@@ -487,44 +501,66 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
 
             {images.length > 0 ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                {images.map((url, i) => (
-                  <div
-                    key={url}
-                    className="relative aspect-square bg-sand overflow-hidden group border border-stone"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt={`Gallery ${i + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                {images.map((url, i) => {
+                  const isSlide = slideImages.includes(url);
+                  return (
+                    <div
+                      key={url}
+                      className="relative aspect-square bg-sand overflow-hidden group border border-stone"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={url}
+                        alt={`Gallery ${i + 1}`}
+                        className="w-full h-full object-cover"
+                      />
 
-                    {i === 0 && (
-                      <div className="absolute top-1 left-1 bg-bronze text-white text-[8px] tracking-[0.2em] uppercase px-1.5 py-0.5 flex items-center gap-1">
-                        <Star size={8} fill="white" /> Cover
+                      <div className="absolute top-1 left-1 flex flex-col gap-1">
+                        {i === 0 && (
+                          <div className="bg-bronze text-white text-[8px] tracking-[0.2em] uppercase px-1.5 py-0.5 flex items-center gap-1">
+                            <Star size={8} fill="white" /> Cover
+                          </div>
+                        )}
+                        {isSlide && (
+                          <div className="bg-charcoal text-cream text-[8px] tracking-[0.2em] uppercase px-1.5 py-0.5 flex items-center gap-1">
+                            <Sparkles size={8} /> Slide
+                          </div>
+                        )}
                       </div>
-                    )}
 
-                    <div className="absolute inset-0 bg-charcoal/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                      {i !== 0 && (
+                      <div className="absolute inset-0 bg-charcoal/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                        {i !== 0 && (
+                          <button
+                            type="button"
+                            onClick={() => makePrimary(url)}
+                            className="text-white text-[9px] tracking-[0.15em] uppercase px-2 py-1 bg-white/10 hover:bg-white/25"
+                          >
+                            Set as Cover
+                          </button>
+                        )}
                         <button
                           type="button"
-                          onClick={() => makePrimary(url)}
-                          className="text-white text-[9px] tracking-[0.15em] uppercase px-2 py-1 bg-white/10 hover:bg-white/25"
+                          onClick={() => toggleSlide(url)}
+                          className={`text-white text-[9px] tracking-[0.15em] uppercase px-2 py-1 flex items-center gap-1 ${
+                            isSlide
+                              ? 'bg-bronze/80 hover:bg-bronze'
+                              : 'bg-white/10 hover:bg-white/25'
+                          }`}
                         >
-                          Set as Cover
+                          <Sparkles size={10} />
+                          {isSlide ? 'Remove Slide' : 'Set as Slide'}
                         </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImage(url)}
-                        className="text-white text-[9px] tracking-[0.15em] uppercase px-2 py-1 bg-[#c94b4b]/80 hover:bg-[#c94b4b] flex items-center gap-1"
-                      >
-                        <Trash2 size={10} /> Remove
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(url)}
+                          className="text-white text-[9px] tracking-[0.15em] uppercase px-2 py-1 bg-[#c94b4b]/80 hover:bg-[#c94b4b] flex items-center gap-1"
+                        >
+                          <Trash2 size={10} /> Remove
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="aspect-video bg-sand/40 border border-dashed border-stone flex items-center justify-center text-sm text-mocha">

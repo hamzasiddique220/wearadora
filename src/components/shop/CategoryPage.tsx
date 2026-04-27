@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { Product, ProductType } from '@/types';
 import {
   getProductType,
+  normalizeCategory,
   JEWELRY_CATEGORIES,
   SLIPPERS_CATEGORIES,
 } from '@/lib/constants';
@@ -33,6 +35,7 @@ function CategoryContent({
   heroKind = 'photo',
 }: CategoryPageProps) {
   const { products, loading } = useProducts();
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState<Product | null>(null);
@@ -45,11 +48,24 @@ function CategoryContent({
     [productType]
   );
 
+  useEffect(() => {
+    const param = searchParams?.get('category');
+    if (!param) return;
+    const normalized = normalizeCategory(param);
+    if (subCategories.includes(normalized)) {
+      setSelectedCategory(normalized);
+    } else if (normalized.toLowerCase() === 'all') {
+      setSelectedCategory('all');
+    }
+  }, [searchParams, subCategories]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const type = p.productType || getProductType(p.category as string);
       if (type !== productType) return false;
-      const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
+      const productCat = normalizeCategory(p.category as string);
+      const matchCat =
+        selectedCategory === 'all' || productCat === selectedCategory;
       const matchSearch =
         !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
@@ -176,14 +192,13 @@ function CategoryContent({
             message={`No ${title.toLowerCase()} found. Try a different search or category.`}
           />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {filteredProducts.map((p, i) => (
               <ProductCard
                 key={p.id}
                 product={p}
                 onClick={() => setSelected(p)}
                 delay={i * 0.03}
-                theme={productType === 'jewelry' ? 'dark' : 'light'}
               />
             ))}
           </div>

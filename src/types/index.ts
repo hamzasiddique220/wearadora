@@ -4,8 +4,7 @@ export type ProductCategory =
   | 'Necklace'
   | 'Ring'
   | 'Earring'
-  | 'Bracelet'
-  | 'Bangle'
+  | 'Bangles'
   | 'Anklet'
   | 'Sandal'
   | 'Khussa';
@@ -21,6 +20,7 @@ export interface Product {
   stock: number;
   image: string;
   images?: string[];
+  slideImages?: string[];
   description: string;
   sizes?: number[];
   colors?: string[];

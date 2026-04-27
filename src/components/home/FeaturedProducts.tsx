@@ -95,14 +95,13 @@ export default function FeaturedProducts({
           ) : filtered.length === 0 ? (
             <EmptyState message="No products yet. Admin needs to add products first." />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
               {filtered.map((p, i) => (
                 <ProductCard
                   key={p.id}
                   product={p}
                   onClick={() => setSelected(p)}
                   delay={i * 0.05}
-                  theme={theme}
                 />
               ))}
             </div>

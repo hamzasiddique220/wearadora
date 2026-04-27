@@ -1,15 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn, X, Expand } from 'lucide-react';
 
 interface ProductGalleryProps {
   images: string[];
   alt: string;
 }
-
-const isTransparentShot = (url: string) =>
-  url.startsWith('/images/') || /wearadora\.com\/wp-content/.test(url);
 
 export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const [active, setActive] = useState(0);
@@ -19,9 +16,11 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
 
-  const safeImages = images.length > 0 ? images : ['/placeholder.png'];
+  const safeImages = useMemo(
+    () => (images.length > 0 ? images : ['/placeholder.png']),
+    [images]
+  );
   const current = safeImages[active] ?? safeImages[0];
-  const isTransparent = isTransparentShot(current);
 
   useEffect(() => {
     setActive(0);
@@ -81,30 +80,25 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
       <div className="flex gap-4 flex-col-reverse md:flex-row">
         {safeImages.length > 1 && (
           <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:max-h-[640px] scrollbar-hide md:w-[92px] shrink-0">
-            {safeImages.map((img, i) => {
-              const thumbTransparent = isTransparentShot(img);
-              return (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  aria-label={`View image ${i + 1}`}
-                  className={`relative shrink-0 w-[72px] h-[72px] md:w-[92px] md:h-[110px] overflow-hidden border transition-all bg-white ${
-                    active === i
-                      ? 'border-bronze shadow-md'
-                      : 'border-stone/60 hover:border-charcoal/60 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img}
-                    alt={`${alt} ${i + 1}`}
-                    className={`w-full h-full ${
-                      thumbTransparent ? 'object-contain p-1.5' : 'object-cover'
-                    }`}
-                  />
-                </button>
-              );
-            })}
+            {safeImages.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                aria-label={`View image ${i + 1}`}
+                className={`relative shrink-0 w-[72px] h-[72px] md:w-[92px] md:h-[110px] overflow-hidden border transition-all bg-cream [&_img]:[mix-blend-mode:darken] ${
+                  active === i
+                    ? 'border-bronze shadow-md'
+                    : 'border-stone/60 hover:border-charcoal/60 opacity-70 hover:opacity-100'
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img}
+                  alt={`${alt} ${i + 1}`}
+                  className="w-full h-full object-contain p-1.5"
+                />
+              </button>
+            ))}
           </div>
         )}
 
@@ -115,7 +109,7 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             onMouseLeave={handleStageLeave}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
-            className="relative aspect-square md:aspect-[4/5] overflow-hidden group bg-white border border-stone/60 cursor-zoom-in"
+            className="relative aspect-square md:aspect-[4/5] overflow-hidden group bg-cream border border-stone/60 cursor-zoom-in [&>img]:[mix-blend-mode:darken]"
             onClick={() => setZoomOpen(true)}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -123,9 +117,9 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
               key={current}
               src={current}
               alt={alt}
-              className={`w-full h-full transition-transform duration-500 ${
-                isTransparent ? 'object-contain p-6 md:p-10' : 'object-cover'
-              } ${lens ? 'opacity-0' : 'opacity-100'}`}
+              className={`w-full h-full object-contain p-6 md:p-10 transition-transform duration-500 ${
+                lens ? 'opacity-0' : 'opacity-100'
+              }`}
             />
 
             {/* Hover zoom panel (desktop only) */}
@@ -311,9 +305,7 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                   <img
                     src={img}
                     alt={`${alt} ${i + 1}`}
-                    className={`w-full h-full ${
-                      isTransparentShot(img) ? 'object-contain p-1' : 'object-cover'
-                    }`}
+                    className="w-full h-full object-contain p-1"
                   />
                 </button>
               ))}

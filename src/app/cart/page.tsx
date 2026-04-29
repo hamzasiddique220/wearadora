@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Plus, Minus, Trash2, Phone, Truck } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, Trash2, Truck, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/utils';
 import { COLOR_HEX, STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
@@ -205,12 +205,12 @@ export default function CartPage() {
             </div>
             <button
               onClick={() => setShowCheckout(true)}
-              className="w-full bg-[#25D366] text-white py-4 text-xs tracking-[0.2em] uppercase hover:bg-[#1fa855] transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-bronze text-white py-4 text-xs tracking-[0.2em] uppercase hover:bg-charcoal transition-colors flex items-center justify-center gap-2"
             >
-              <Phone size={14} /> Checkout via WhatsApp
+              <Package size={14} /> Place Order
             </button>
             <p className="text-xs text-stone/70 text-center mt-4">
-              Secure ordering • Quick confirmation
+              Secure ordering • We&apos;ll call to confirm
             </p>
           </div>
         </div>

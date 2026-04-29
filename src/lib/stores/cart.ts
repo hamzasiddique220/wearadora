@@ -51,11 +51,16 @@ export const useCartStore = create<CartState>()(
             ),
           });
         } else {
+          const colorImage =
+            options.selectedColor && product.colorImages
+              ? product.colorImages[options.selectedColor]
+              : undefined;
           set({
             items: [
               ...get().items,
               {
                 ...product,
+                image: colorImage || product.image,
                 quantity: 1,
                 selectedSize: options.selectedSize,
                 selectedColor: options.selectedColor,

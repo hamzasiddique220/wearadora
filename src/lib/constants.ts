@@ -89,11 +89,35 @@ export const getProductType = (category?: string): ProductType => {
 };
 
 const CATEGORY_ALIASES: Record<string, string> = {
-  Bracelet: 'Bangles',
-  Bangle: 'Bangles',
+  // Jewelry variations
+  bracelet: 'Bangles',
+  bracelets: 'Bangles',
+  bangle: 'Bangles',
+  bangles: 'Bangles',
+  necklace: 'Necklace',
+  necklaces: 'Necklace',
+  ring: 'Ring',
+  rings: 'Ring',
+  earring: 'Earring',
+  earrings: 'Earring',
+  anklet: 'Anklet',
+  anklets: 'Anklet',
+  // Slipper variations
+  slide: 'Slides',
+  slides: 'Slides',
+  slipper: 'Slides',
+  slippers: 'Slides',
+  khussa: 'Slides',
+  khussas: 'Slides',
+  heel: 'Heels',
+  heels: 'Heels',
+  sandal: 'Sandal',
+  sandals: 'Sandal',
 };
 
 export const normalizeCategory = (category?: string): string => {
   if (!category) return '';
-  return CATEGORY_ALIASES[category] || category;
+  const trimmed = category.trim();
+  if (!trimmed) return '';
+  return CATEGORY_ALIASES[trimmed.toLowerCase()] || trimmed;
 };

@@ -6,9 +6,11 @@ import { ChevronLeft, ChevronRight, ZoomIn, X, Expand } from 'lucide-react';
 interface ProductGalleryProps {
   images: string[];
   alt: string;
+  /** When set, the gallery jumps to this image (if it exists in `images`) */
+  activeUrl?: string;
 }
 
-export default function ProductGallery({ images, alt }: ProductGalleryProps) {
+export default function ProductGallery({ images, alt, activeUrl }: ProductGalleryProps) {
   const [active, setActive] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [lens, setLens] = useState<{ x: number; y: number } | null>(null);
@@ -25,6 +27,12 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   useEffect(() => {
     setActive(0);
   }, [images]);
+
+  useEffect(() => {
+    if (!activeUrl) return;
+    const idx = safeImages.indexOf(activeUrl);
+    if (idx >= 0) setActive(idx);
+  }, [activeUrl, safeImages]);
 
   useEffect(() => {
     if (!zoomOpen) return;

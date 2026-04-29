@@ -11,6 +11,7 @@ import {
   Shield,
   RotateCcw,
   ArrowRight,
+  Check,
 } from 'lucide-react';
 import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
@@ -53,6 +54,18 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     return Array.from(new Set(list.filter(Boolean)));
   }, [product]);
 
+  const colorImageUrl =
+    selectedColor && product?.colorImages
+      ? product.colorImages[selectedColor]
+      : undefined;
+
+  // When a color with a mapped image is selected, jump the gallery to that image
+  useEffect(() => {
+    if (!colorImageUrl) return;
+    const idx = galleryImages.indexOf(colorImageUrl);
+    if (idx >= 0) setActiveImage(idx);
+  }, [colorImageUrl, galleryImages]);
+
   if (!product) return null;
 
   const productType =
@@ -60,7 +73,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const isSlippers = productType === 'slippers';
   const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
   const hasColors = isSlippers && product.colors && product.colors.length > 0;
-  const currentImage = galleryImages[activeImage] || product.image;
+  const currentImage =
+    colorImageUrl || galleryImages[activeImage] || product.image;
 
   const handleAddToCart = () => {
     if (hasSizes && !selectedSize) {
@@ -212,7 +226,15 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   Select Color
                 </label>
                 {selectedColor && (
-                  <span className="text-xs text-charcoal">{selectedColor}</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-charcoal font-medium">
+                    <span
+                      className="w-3 h-3 rounded-full border border-stone"
+                      style={{
+                        backgroundColor: COLOR_HEX[selectedColor] || '#ccc',
+                      }}
+                    />
+                    {selectedColor}
+                  </span>
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -233,10 +255,25 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                         style={{ backgroundColor: COLOR_HEX[color] || '#ccc' }}
                       />
                       {color}
+                      {selected && <Check size={12} />}
                     </button>
                   );
                 })}
               </div>
+              {selectedColor && (
+                <div className="mt-3 inline-flex items-center gap-2 bg-sand/60 border border-stone px-3 py-1.5 text-xs">
+                  <span className="text-mocha">Selected:</span>
+                  <span
+                    className="w-4 h-4 rounded-full border border-stone"
+                    style={{
+                      backgroundColor: COLOR_HEX[selectedColor] || '#ccc',
+                    }}
+                  />
+                  <span className="font-medium text-charcoal">
+                    {selectedColor}
+                  </span>
+                </div>
+              )}
             </div>
           )}
 

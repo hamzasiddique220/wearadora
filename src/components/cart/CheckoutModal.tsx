@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Phone, MapPin, Loader2, Truck } from 'lucide-react';
+import { X, MapPin, Loader2, Truck, CheckCircle2, Package } from 'lucide-react';
 import { CustomerInfo } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useUIStore } from '@/lib/stores/ui';
 import { orderService } from '@/lib/services/orders';
-import { buildOrderMessage, getWhatsAppUrl } from '@/lib/whatsapp';
 import { generateOrderId, formatDate, formatPrice } from '@/lib/utils';
 import { STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import Modal from '@/components/ui/Modal';
@@ -39,6 +38,28 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   );
   const [submitting, setSubmitting] = useState(false);
   const [locating, setLocating] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<{
+    orderId: string;
+    phone: string;
+    total: number;
+  } | null>(null);
+
+  const handleClose = () => {
+    if (placedOrder) {
+      // Reset everything after success
+      setPlacedOrder(null);
+      setInfo({
+        name: '',
+        phone: '',
+        address: '',
+        city: '',
+        notes: '',
+        mapLink: '',
+      });
+      setErrors({});
+    }
+    onClose();
+  };
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
@@ -88,16 +109,6 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     const orderId = generateOrderId();
     const dateDisplay = formatDate(new Date());
 
-    const message = buildOrderMessage({
-      orderId,
-      date: dateDisplay,
-      customer: info,
-      items,
-      subtotal,
-      deliveryFee,
-      total: grandTotal,
-    });
-
     try {
       await orderService.create({
         orderId,
@@ -109,12 +120,13 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         dateDisplay,
       });
 
-      const url = getWhatsAppUrl(message);
-      window.open(url, '_blank');
-
+      setPlacedOrder({
+        orderId,
+        phone: info.phone,
+        total: grandTotal,
+      });
       clearCart();
-      onClose();
-      showToast('Order placed! Redirecting to WhatsApp...');
+      showToast('Order placed successfully!');
     } catch (error) {
       console.error('Order error:', error);
       showToast('Something went wrong. Please try again.', 'error');
@@ -123,8 +135,65 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     }
   };
 
+  if (placedOrder) {
+    return (
+      <Modal isOpen={isOpen} onClose={handleClose}>
+        <div className="p-8 md:p-10 text-center">
+          <button
+            onClick={handleClose}
+            aria-label="Close"
+            className="absolute top-4 right-4"
+          >
+            <X size={22} />
+          </button>
+          <div className="w-20 h-20 bg-[#2d6a4f]/15 rounded-full flex items-center justify-center mx-auto mb-5">
+            <CheckCircle2 size={42} className="text-[#2d6a4f]" />
+          </div>
+          <div className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-2">
+            ✦ Order Placed
+          </div>
+          <h2 className="font-serif text-3xl md:text-4xl font-light mb-3">
+            Thank you!
+          </h2>
+          <p className="text-mocha mb-6 max-w-sm mx-auto">
+            Aap ka order successfully place ho gaya hai. Hum jald hi aap ko{' '}
+            <strong className="text-charcoal">{placedOrder.phone}</strong> par
+            call/WhatsApp kar ke confirm karenge.
+          </p>
+
+          <div className="bg-sand/60 border border-stone p-4 mb-6 inline-flex flex-col gap-2 text-sm text-left min-w-[220px]">
+            <div className="flex items-center gap-2 text-bronze">
+              <Package size={14} />
+              <span className="text-[10px] tracking-[0.3em] uppercase">
+                Order ID
+              </span>
+            </div>
+            <div className="font-mono text-base text-charcoal">
+              {placedOrder.orderId}
+            </div>
+            <div className="border-t border-stone/70 pt-2 flex justify-between">
+              <span className="text-mocha text-xs">Total</span>
+              <span className="font-medium">{formatPrice(placedOrder.total)}</span>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-mocha mb-6">
+            Estimated delivery: <strong>{STORE_CONFIG.deliveryDays}</strong> nationwide
+          </p>
+
+          <button
+            onClick={handleClose}
+            className="btn-primary w-full max-w-xs mx-auto"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </Modal>
+    );
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="p-6 md:p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -133,7 +202,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             </div>
             <h2 className="font-serif text-2xl md:text-3xl mt-1">Delivery Details</h2>
           </div>
-          <button onClick={onClose} aria-label="Close">
+          <button onClick={handleClose} aria-label="Close">
             <X size={22} />
           </button>
         </div>
@@ -259,13 +328,13 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-[#25D366] text-white py-4 text-xs tracking-[0.2em] uppercase hover:bg-[#1fa855] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+          className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
         >
-          <Phone size={14} />
-          {submitting ? 'Processing...' : 'Send Order on WhatsApp'}
+          <Package size={14} />
+          {submitting ? 'Placing Order...' : 'Place Order'}
         </button>
         <p className="text-[11px] text-mocha text-center mt-3">
-          You&apos;ll be redirected to WhatsApp to confirm your order
+          We&apos;ll contact you on your phone shortly to confirm
         </p>
       </div>
     </Modal>

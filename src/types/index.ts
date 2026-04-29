@@ -21,6 +21,8 @@ export interface Product {
   image: string;
   images?: string[];
   slideImages?: string[];
+  /** Map of color name → image URL. Lets each color show its own image. */
+  colorImages?: Record<string, string>;
   description: string;
   sizes?: number[];
   colors?: string[];

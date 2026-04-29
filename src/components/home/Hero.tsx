@@ -160,7 +160,12 @@ export default function Hero() {
         productSlides.push(buildSlideFromProduct(p, img));
       }
     }
-    return productSlides.length > 0 ? productSlides : fallbackSlides;
+    if (productSlides.length === 0) return fallbackSlides;
+    if (productSlides.length < 2) {
+      // Pad with fallback slides so navigation arrows and auto-advance still work
+      return [...productSlides, ...fallbackSlides];
+    }
+    return productSlides;
   }, [products]);
 
   const next = useCallback(() => {

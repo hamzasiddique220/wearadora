@@ -53,6 +53,9 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
   const [slideImages, setSlideImages] = useState<string[]>(
     () => product?.slideImages || []
   );
+  const [colorImages, setColorImages] = useState<Record<string, string>>(
+    () => product?.colorImages || {}
+  );
   const [newImageUrl, setNewImageUrl] = useState('');
   const [customColor, setCustomColor] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -65,9 +68,22 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     setForm(buildInitial(product));
     setImages(initialGallery);
     setSlideImages(product?.slideImages || []);
+    setColorImages(product?.colorImages || {});
     setNewImageUrl('');
     setCustomColor('');
   }, [isOpen, product, initialGallery]);
+
+  const setImageForColor = (color: string, url: string) => {
+    setColorImages((map) => {
+      const next = { ...map };
+      if (!url) {
+        delete next[color];
+      } else {
+        next[color] = url;
+      }
+      return next;
+    });
+  };
 
   const toggleSlide = (url: string) => {
     setSlideImages((list) =>
@@ -88,12 +104,23 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
   };
 
   const toggleColor = (color: string) => {
-    setForm((f) => ({
-      ...f,
-      colors: f.colors.includes(color)
-        ? f.colors.filter((c) => c !== color)
-        : [...f.colors, color],
-    }));
+    setForm((f) => {
+      const isRemoving = f.colors.includes(color);
+      if (isRemoving) {
+        setColorImages((map) => {
+          if (!map[color]) return map;
+          const next = { ...map };
+          delete next[color];
+          return next;
+        });
+      }
+      return {
+        ...f,
+        colors: isRemoving
+          ? f.colors.filter((c) => c !== color)
+          : [...f.colors, color],
+      };
+    });
   };
 
   const addCustomColor = () => {
@@ -113,6 +140,13 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
   const removeImage = (url: string) => {
     setImages((list) => list.filter((i) => i !== url));
     setSlideImages((list) => list.filter((i) => i !== url));
+    setColorImages((map) => {
+      const next: Record<string, string> = {};
+      for (const [c, u] of Object.entries(map)) {
+        if (u !== url) next[c] = u;
+      }
+      return next;
+    });
   };
 
   const makePrimary = (url: string) => {
@@ -166,6 +200,15 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
       const originalPriceNum = form.originalPrice ? parseFloat(form.originalPrice) : 0;
       const [primary, ...rest] = images;
       const validSlides = slideImages.filter((u) => images.includes(u));
+      const validColorImages: Record<string, string> = {};
+      if (isSlippers) {
+        for (const c of form.colors) {
+          const url = colorImages[c];
+          if (url && images.includes(url)) {
+            validColorImages[c] = url;
+          }
+        }
+      }
       const data = {
         name: form.name.trim(),
         sku: form.sku.trim(),
@@ -178,6 +221,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         image: primary,
         images: rest.length > 0 ? [primary, ...rest] : [primary],
         slideImages: validSlides,
+        colorImages: validColorImages,
         description: form.description,
         isNew: form.isNew,
         sizes: isSlippers ? form.sizes : [],
@@ -445,6 +489,88 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                   </button>
                 </div>
               </div>
+
+              {form.colors.length > 0 && (
+                <div>
+                  <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                    Image per color (optional)
+                  </label>
+                  <div className="text-[11px] text-mocha mb-3">
+                    Pick one gallery image for each color. Customer dekh kar jab
+                    color select karega to wahi image show hogi (cart mein bhi).
+                  </div>
+                  {images.length === 0 ? (
+                    <div className="text-[11px] text-mocha italic bg-white border border-stone p-3">
+                      Gallery mein pehle images add karein, phir yahan assign hongi.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {form.colors.map((color) => {
+                        const assigned = colorImages[color];
+                        return (
+                          <div
+                            key={color}
+                            className="bg-white border border-stone p-3"
+                          >
+                            <div className="flex items-center justify-between mb-2 gap-2">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="w-4 h-4 rounded-full border border-stone"
+                                  style={{
+                                    backgroundColor: COLOR_HEX[color] || '#ccc',
+                                  }}
+                                />
+                                <span className="text-xs font-medium text-charcoal">
+                                  {color}
+                                </span>
+                              </div>
+                              {assigned && (
+                                <button
+                                  type="button"
+                                  onClick={() => setImageForColor(color, '')}
+                                  className="text-[10px] tracking-[0.15em] uppercase text-[#c94b4b] hover:underline"
+                                >
+                                  Clear
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                              {images.map((url, i) => {
+                                const isAssigned = assigned === url;
+                                return (
+                                  <button
+                                    key={url}
+                                    type="button"
+                                    onClick={() => setImageForColor(color, url)}
+                                    className={`relative shrink-0 w-14 h-14 overflow-hidden border transition-all ${
+                                      isAssigned
+                                        ? 'border-bronze ring-2 ring-bronze'
+                                        : 'border-stone hover:border-charcoal'
+                                    }`}
+                                    aria-label={`Assign image ${i + 1} to ${color}`}
+                                  >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={url}
+                                      alt=""
+                                      className="w-full h-full object-cover"
+                                    />
+                                    {isAssigned && (
+                                      <span className="absolute inset-0 bg-bronze/30 flex items-center justify-center">
+                                        <Check size={14} className="text-white" />
+                                      </span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

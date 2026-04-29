@@ -13,6 +13,7 @@ import {
   Award,
   ArrowLeft,
   Copy,
+  Check,
 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useCartStore } from '@/lib/stores/cart';
@@ -164,7 +165,15 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
         </nav>
 
         <div className="grid md:grid-cols-[1.1fr_1fr] gap-8 md:gap-14">
-          <ProductGallery images={galleryImages} alt={product.name} />
+          <ProductGallery
+            images={galleryImages}
+            alt={product.name}
+            activeUrl={
+              selectedColor && product.colorImages
+                ? product.colorImages[selectedColor]
+                : undefined
+            }
+          />
 
           <div className="md:sticky md:top-28 md:self-start md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-1">
             <div className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3">
@@ -242,7 +251,15 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     Select Color
                   </label>
                   {selectedColor && (
-                    <span className="text-xs text-charcoal">{selectedColor}</span>
+                    <span className="inline-flex items-center gap-1.5 text-xs text-charcoal font-medium">
+                      <span
+                        className="w-3 h-3 rounded-full border border-stone"
+                        style={{
+                          backgroundColor: COLOR_HEX[selectedColor] || '#ccc',
+                        }}
+                      />
+                      {selectedColor}
+                    </span>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -263,10 +280,25 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                           style={{ backgroundColor: COLOR_HEX[color] || '#ccc' }}
                         />
                         {color}
+                        {selected && <Check size={12} />}
                       </button>
                     );
                   })}
                 </div>
+                {selectedColor && (
+                  <div className="mt-3 inline-flex items-center gap-2 bg-sand/60 border border-stone px-3 py-1.5 text-xs">
+                    <span className="text-mocha">Selected:</span>
+                    <span
+                      className="w-4 h-4 rounded-full border border-stone"
+                      style={{
+                        backgroundColor: COLOR_HEX[selectedColor] || '#ccc',
+                      }}
+                    />
+                    <span className="font-medium text-charcoal">
+                      {selectedColor}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 

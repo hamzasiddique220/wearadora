@@ -1,15 +1,17 @@
 'use client';
 
 import CategoryPage from '@/components/shop/CategoryPage';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function SlippersPage() {
+  const { settings } = useSiteSettings();
   return (
     <CategoryPage
       productType="slippers"
       eyebrow="✦ 40+ Years of Craft"
       title="Shoes Collection"
-      heroImage="/images/remove.photos-removed-background-7.png"
-      heroKind="product"
+      heroImage={settings.slippersHero.image}
+      heroKind={settings.slippersHero.kind}
       description="Slides, heels and sandals handcrafted in-house — four decades of cobbling experience bringing you comfort and design in a single pair."
     />
   );

@@ -26,13 +26,13 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-20 text-center">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 py-16 md:py-20 text-center">
         <div className="w-20 h-20 bg-sand flex items-center justify-center mx-auto mb-6 rounded-full">
           <ShoppingBag size={32} className="text-bronze" />
         </div>
-        <h2 className="font-serif text-3xl mb-3">Your bag is empty</h2>
-        <p className="text-mocha mb-8">Start adding treasures to your collection</p>
-        <div className="flex gap-3 justify-center">
+        <h2 className="font-serif text-2xl sm:text-3xl mb-3">Your bag is empty</h2>
+        <p className="text-mocha mb-8 text-sm md:text-base">Start adding treasures to your collection</p>
+        <div className="flex gap-3 justify-center flex-wrap">
           <Link href="/jewelry" className="btn-primary inline-block">
             Shop Jewelry
           </Link>
@@ -46,25 +46,25 @@ export default function CartPage() {
 
   return (
     <>
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12">
-        <div className="text-center mb-10">
-          <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
+        <div className="text-center mb-8 md:mb-10">
+          <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
             ✦ Your Selection
           </span>
-          <h1 className="font-serif text-4xl md:text-5xl font-light mt-2">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2">
             Shopping Bag
           </h1>
-          <p className="text-sm text-mocha mt-2">
+          <p className="text-xs md:text-sm text-mocha mt-2">
             {items.length} {items.length === 1 ? 'item' : 'items'} in your bag
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-4">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          <div className="md:col-span-2 space-y-3 md:space-y-4">
             {items.map((item) => (
               <div
                 key={item.cartLineId}
-                className="bg-white p-4 md:p-6 grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr_auto] gap-4 md:gap-6 items-center shadow-sm"
+                className="bg-white p-3 sm:p-4 md:p-6 grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr_auto] gap-3 sm:gap-4 md:gap-6 items-start md:items-center shadow-sm"
               >
                 <div className="aspect-square bg-cream overflow-hidden [&_img]:[mix-blend-mode:darken]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,23 +74,23 @@ export default function CartPage() {
                     className="w-full h-full object-contain p-1.5"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-baseline gap-2 flex-wrap mb-1">
-                    <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
+                    <div className="text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-bronze">
                       {item.category}
                     </div>
                     {item.sku && (
-                      <code className="text-[9px] font-mono text-mocha/80">
+                      <code className="text-[9px] font-mono text-mocha/80 hidden sm:inline">
                         {item.sku}
                       </code>
                     )}
                   </div>
-                  <h3 className="font-serif text-lg mb-1.5 leading-tight">
+                  <h3 className="font-serif text-base sm:text-lg mb-1.5 leading-tight line-clamp-2">
                     {item.name}
                   </h3>
 
                   {(item.selectedSize || item.selectedColor) && (
-                    <div className="flex flex-wrap gap-2 mb-2 text-[11px] text-mocha">
+                    <div className="flex flex-wrap gap-1.5 md:gap-2 mb-2 text-[11px] text-mocha">
                       {item.selectedSize && (
                         <span className="px-2 py-0.5 bg-sand">
                           Size: {item.selectedSize}
@@ -111,19 +111,19 @@ export default function CartPage() {
                     </div>
                   )}
 
-                  <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-sm">{formatPrice(item.price)}</span>
+                  <div className="flex items-baseline gap-2 mb-2 md:mb-3 flex-wrap">
+                    <span className="text-sm font-medium">{formatPrice(item.price)}</span>
                     {item.originalPrice && item.originalPrice > item.price && (
                       <span className="text-xs text-mocha line-through">
                         {formatPrice(item.originalPrice)}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                     <div className="inline-flex items-center border border-stone">
                       <button
                         onClick={() => updateQuantity(item.cartLineId, -1)}
-                        className="w-8 h-8 hover:bg-sand"
+                        className="w-9 h-9 md:w-8 md:h-8 hover:bg-sand"
                         aria-label="Decrease"
                       >
                         <Minus size={14} className="mx-auto" />
@@ -133,7 +133,7 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() => updateQuantity(item.cartLineId, 1)}
-                        className="w-8 h-8 hover:bg-sand"
+                        className="w-9 h-9 md:w-8 md:h-8 hover:bg-sand"
                         aria-label="Increase"
                       >
                         <Plus size={14} className="mx-auto" />
@@ -141,22 +141,22 @@ export default function CartPage() {
                     </div>
                     <button
                       onClick={() => removeItem(item.cartLineId)}
-                      className="text-[#c94b4b] hover:bg-[#fee] p-2"
+                      className="text-[#c94b4b] hover:bg-[#fee] p-2 ml-auto md:ml-0"
                       aria-label="Remove"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
-                <div className="text-right col-span-2 md:col-span-1 font-medium">
+                <div className="text-right col-span-2 md:col-span-1 font-medium pt-2 md:pt-0 border-t md:border-t-0 border-stone/40">
                   {formatPrice(item.price * item.quantity)}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-charcoal text-cream p-8 h-fit sticky top-24">
-            <h3 className="font-serif text-2xl mb-6 pb-4 border-b border-stone/20">
+          <div className="bg-charcoal text-cream p-6 sm:p-7 md:p-8 h-fit md:sticky md:top-24">
+            <h3 className="font-serif text-xl sm:text-2xl mb-5 md:mb-6 pb-3 md:pb-4 border-b border-stone/20">
               Order Summary
             </h3>
 

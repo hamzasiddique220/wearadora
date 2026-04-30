@@ -44,18 +44,18 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 md:px-12 py-20">
-      <div className="text-center mb-14">
-        <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+    <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20">
+      <div className="text-center mb-10 md:mb-14">
+        <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
           ✦ About WEARADORA
         </span>
-        <h1 className="font-serif text-4xl md:text-6xl font-light mt-4 mb-6">
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl font-light mt-3 md:mt-4 mb-4 md:mb-6">
           Four decades of{' '}
           <span className="font-italic-serif text-bronze">handcrafted</span>
           <br />
           ladies footwear
         </h1>
-        <p className="text-lg text-mocha leading-relaxed max-w-2xl mx-auto">
+        <p className="text-[14px] sm:text-base md:text-lg text-mocha leading-relaxed max-w-2xl mx-auto">
           WEARADORA is a family-run workshop with{' '}
           <strong className="text-charcoal">40+ years of experience</strong> in
           crafting ladies shoes — slides, heels, sandals and more. What started as
@@ -65,37 +65,37 @@ export default function AboutPage() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-16">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-12 md:mb-16">
         {values.map((v, i) => (
           <div
             key={i}
-            className="bg-white border border-stone/70 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            className="bg-white border border-stone/70 p-5 md:p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
-            <div className="w-11 h-11 bg-bronze/10 text-bronze rounded-full flex items-center justify-center mb-4">
+            <div className="w-11 h-11 bg-bronze/10 text-bronze rounded-full flex items-center justify-center mb-3 md:mb-4">
               {v.icon}
             </div>
-            <h3 className="font-serif text-xl mb-2">{v.title}</h3>
-            <p className="text-sm text-mocha leading-relaxed">{v.desc}</p>
+            <h3 className="font-serif text-lg md:text-xl mb-2">{v.title}</h3>
+            <p className="text-[13px] md:text-sm text-mocha leading-relaxed">{v.desc}</p>
           </div>
         ))}
       </div>
 
       <div
-        className="relative overflow-hidden p-8 md:p-12 text-center grain"
+        className="relative overflow-hidden p-6 sm:p-8 md:p-12 text-center grain"
         style={{
           background: 'linear-gradient(135deg, #1a1614 0%, #2a2320 100%)',
           color: '#f5f1ea',
         }}
       >
-        <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+        <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
           ✦ Why women pick WEARADORA
         </span>
-        <h2 className="font-serif text-3xl md:text-5xl font-light mt-3 mb-5 leading-tight">
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl font-light mt-3 mb-4 md:mb-5 leading-tight">
           Comfort of a pair you&rsquo;ve owned for years —
           <br />
           <span className="font-italic-serif text-bronze">on day one.</span>
         </h2>
-        <p className="max-w-2xl mx-auto text-stone/90 text-sm md:text-base leading-relaxed mb-8">
+        <p className="max-w-2xl mx-auto text-stone/90 text-[13px] sm:text-sm md:text-base leading-relaxed mb-6 md:mb-8">
           When you&rsquo;ve been making women&rsquo;s shoes for 40+ years, you
           learn which straps dig in, which heels wobble, which soles crack. Every
           WEARADORA pair is built with those lessons baked in — then finished with

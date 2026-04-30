@@ -1,14 +1,17 @@
 'use client';
 
 import CategoryPage from '@/components/shop/CategoryPage';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function JewelryPage() {
+  const { settings } = useSiteSettings();
   return (
     <CategoryPage
       productType="jewelry"
       eyebrow="✦ The Jewelry Collection"
       title="Handcrafted Jewelry"
-      heroImage="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1800&q=85"
+      heroImage={settings.jewelryHero.image}
+      heroKind={settings.jewelryHero.kind}
       description="Timeless pieces that tell a story — from delicate necklaces to statement rings, each crafted for those who cherish refined elegance."
     />
   );

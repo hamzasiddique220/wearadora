@@ -69,3 +69,32 @@ export interface ToastMessage {
   message: string;
   type?: 'success' | 'error';
 }
+
+export interface HeroSlideOverride {
+  image: string;
+  bg?: string;
+  eyebrow: string;
+  title: string;
+  italic: string;
+  tail?: string;
+  description: string;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+  kind: 'shoe' | 'jewel';
+}
+
+export interface CategoryHeroOverride {
+  image: string;
+  kind?: 'photo' | 'product';
+}
+
+export interface SiteSettings {
+  heroSlides?: HeroSlideOverride[];
+  categoryImages?: Record<string, string>;
+  storyImage?: string;
+  jewelryHero?: CategoryHeroOverride;
+  slippersHero?: CategoryHeroOverride;
+  updatedAt?: string;
+}

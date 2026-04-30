@@ -109,7 +109,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     <Modal isOpen={!!product} onClose={onClose} maxWidth="max-w-4xl">
       <div className="grid md:grid-cols-[0.9fr_1.1fr]">
         <div className="relative bg-cream flex flex-col">
-          <div className="relative aspect-square flex items-center justify-center [&_img]:[mix-blend-mode:darken]">
+          <div className="relative aspect-[4/3] sm:aspect-square flex items-center justify-center [&_img]:[mix-blend-mode:darken]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentImage}
@@ -155,11 +155,11 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           )}
         </div>
 
-        <div className="p-6 md:p-10 overflow-y-auto max-h-[90vh]">
-          <div className="text-[9px] tracking-[0.4em] uppercase text-bronze mb-3">
+        <div className="p-5 sm:p-6 md:p-10 overflow-y-auto md:max-h-[90vh]">
+          <div className="text-[9px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-2 md:mb-3">
             ✦ {product.category}
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light mb-3 leading-tight">
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mb-3 leading-tight">
             {product.name}
           </h2>
 
@@ -172,8 +172,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             <span className="text-xs text-mocha">Premium Quality</span>
           </div>
 
-          <div className="flex items-baseline gap-3 mb-6 flex-wrap">
-            <span className="text-3xl font-medium">{formatPrice(product.price)}</span>
+          <div className="flex items-baseline gap-2 md:gap-3 mb-5 md:mb-6 flex-wrap">
+            <span className="text-2xl sm:text-3xl font-medium">{formatPrice(product.price)}</span>
             {product.originalPrice && product.originalPrice > product.price && (
               <>
                 <span className="text-lg text-mocha line-through">

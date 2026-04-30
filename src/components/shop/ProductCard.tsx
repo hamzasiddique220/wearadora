@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Eye, ShoppingBag } from 'lucide-react';
+import { Heart, Eye, ShoppingBag, ImageOff } from 'lucide-react';
 import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
@@ -21,6 +22,8 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product.id));
   const showToast = useUIStore((state) => state.showToast);
+  const [primaryError, setPrimaryError] = useState(false);
+  const [hoverError, setHoverError] = useState(false);
 
   const productType =
     product.productType || getProductType(product.category as string);
@@ -32,11 +35,10 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
   const outOfStock = product.stock === 0;
 
   const primaryImage =
-    (product.images && product.images[0]) ||
-    product.image ||
-    'https://via.placeholder.com/400x400?text=No+Image';
+    (product.images && product.images[0]) || product.image || '';
   const hoverImage =
     product.images && product.images.length > 1 ? product.images[1] : null;
+  const showPlaceholder = primaryError || !primaryImage;
 
   const hasDiscount =
     typeof product.originalPrice === 'number' &&
@@ -80,23 +82,34 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
         href={detailHref}
         className="product-card-frame relative block aspect-square overflow-hidden rounded-md transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_22px_40px_-18px_rgba(26,22,20,0.22)]"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={primaryImage}
-          alt={product.name}
-          loading="lazy"
-          className={`absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
-            hoverImage ? 'group-hover:opacity-0 transition-opacity' : ''
-          }`}
-        />
-        {hoverImage && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={hoverImage}
-            alt={product.name}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] opacity-0 group-hover:opacity-100 transition-opacity duration-[700ms]"
-          />
+        {showPlaceholder ? (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-mocha/60 bg-sand/40">
+            <ImageOff size={28} strokeWidth={1.2} />
+            <span className="text-[9px] tracking-[0.25em] uppercase">Image unavailable</span>
+          </div>
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={primaryImage}
+              alt=""
+              loading="lazy"
+              onError={() => setPrimaryError(true)}
+              className={`absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
+                hoverImage && !hoverError ? 'group-hover:opacity-0 transition-opacity' : ''
+              }`}
+            />
+            {hoverImage && !hoverError && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={hoverImage}
+                alt=""
+                loading="lazy"
+                onError={() => setHoverError(true)}
+                className="absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] opacity-0 group-hover:opacity-100 transition-opacity duration-[700ms]"
+              />
+            )}
+          </>
         )}
 
         <div className="absolute top-3 left-3 z-30 flex flex-col gap-2">
@@ -153,35 +166,35 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
         </div>
       </Link>
 
-      <div className="pt-4 pb-2 px-0.5">
-        <div className="flex items-start justify-between gap-3 mb-1.5">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <div className="text-[9px] tracking-[0.3em] uppercase text-bronze">
+      <div className="pt-3 md:pt-4 pb-2 px-0.5">
+        <div className="flex items-start justify-between gap-2 md:gap-3 mb-1.5">
+          <div className="flex items-baseline gap-2 flex-wrap min-w-0">
+            <div className="text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-bronze truncate">
               {product.category}
             </div>
             {product.sku && (
-              <code className="text-[9px] font-mono text-mocha/70">
+              <code className="text-[9px] font-mono text-mocha/70 hidden sm:inline">
                 {product.sku}
               </code>
             )}
           </div>
           {hasLowStock && (
-            <div className="text-[9px] tracking-[0.2em] uppercase text-[#c94b4b]">
+            <div className="text-[9px] tracking-[0.18em] md:tracking-[0.2em] uppercase text-[#c94b4b] shrink-0">
               Only {product.stock} left
             </div>
           )}
         </div>
         <Link
           href={detailHref}
-          className="block font-serif text-lg leading-tight mb-2 hover:text-bronze transition-colors line-clamp-2"
+          className="block font-serif text-base md:text-lg leading-tight mb-1.5 md:mb-2 hover:text-bronze transition-colors line-clamp-2"
         >
           {product.name}
         </Link>
-        <div className="flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="font-medium">{formatPrice(product.price)}</span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-baseline gap-1.5 md:gap-2 flex-wrap">
+            <span className="font-medium text-sm md:text-base">{formatPrice(product.price)}</span>
             {hasDiscount && (
-              <span className="text-xs text-mocha line-through">
+              <span className="text-[11px] md:text-xs text-mocha line-through">
                 {formatPrice(product.originalPrice!)}
               </span>
             )}

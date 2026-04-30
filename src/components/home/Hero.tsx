@@ -4,8 +4,14 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { getProductType } from '@/lib/constants';
-import { Product } from '@/types';
+import {
+  JEWELRY_BG,
+  SHOE_BG_LIGHT,
+  SHOE_BG_WARM,
+} from '@/lib/defaults/siteSettings';
+import { Product, HeroSlideOverride } from '@/types';
 
 interface Slide {
   image: string;
@@ -20,95 +26,22 @@ interface Slide {
   kind: 'shoe' | 'jewel';
 }
 
-const fallbackSlides: Slide[] = [
-  {
-    image: '/images/main-WA-1-black-card-img.png',
-    bg: 'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)',
-    eyebrow: '✦ New Arrivals',
-    title: 'Step into',
-    italic: 'elegance',
-    tail: 'redefined',
-    description:
-      'Discover our signature embellished slides — where contemporary design meets timeless sparkle. Crafted for the woman who makes every moment her own.',
-    primary: { label: 'Shop Now', href: '/slippers' },
-    secondary: { label: 'View All', href: '/shop' },
-    kind: 'shoe',
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=1200&q=85',
-    bg: 'linear-gradient(135deg, #1a1614 0%, #2a2320 100%)',
-    eyebrow: '✦ Heritage Jewelry',
-    title: 'Adorned in',
-    italic: 'artistry',
-    tail: 'everyday',
-    description:
-      'Handcrafted necklaces inspired by heirloom silhouettes — pieces that move with you from morning rituals to midnight moments.',
-    primary: { label: 'Shop Jewelry', href: '/jewelry' },
-    secondary: { label: 'Necklaces', href: '/jewelry?category=Necklace' },
-    kind: 'jewel',
-  },
-  {
-    image: '/images/remove.photos-removed-background-7.png',
-    bg: 'linear-gradient(135deg, #e8ddc7 0%, #d4c9b8 100%)',
-    eyebrow: '✦ Luxury Collection',
-    title: 'Golden',
-    italic: 'luxury',
-    tail: 'for every stride',
-    description:
-      'Shimmering golden bow heels for unforgettable occasions. Every detail handcrafted to make you shine — perfect for weddings, festivities, and defining moments.',
-    primary: { label: 'Shop Heels', href: '/slippers?category=Heels' },
-    secondary: { label: 'Bestsellers', href: '/slippers' },
-    kind: 'shoe',
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85',
-    bg: 'linear-gradient(135deg, #efe6d5 0%, #c9b090 100%)',
-    eyebrow: '✦ Statement Earrings',
-    title: 'A pair that',
-    italic: 'lingers',
-    tail: 'in memory',
-    description:
-      'Sculpted earrings catching candlelight at every turn. Designed to frame your face with unmistakable softness.',
-    primary: { label: 'Shop Earrings', href: '/jewelry?category=Earring' },
-    secondary: { label: 'View Jewelry', href: '/jewelry' },
-    kind: 'jewel',
-  },
-  {
-    image: '/images/remove.photos-removed-background-12.png',
-    bg: 'linear-gradient(135deg, #f5f1ea 0%, #ede4d3 100%)',
-    eyebrow: '✦ Signature Slides',
-    title: 'Subtle',
-    italic: 'grace',
-    tail: 'in every detail',
-    description:
-      'Elegant nude bow slides — refined minimalism with a touch of glamour. Designed for comfort that never compromises on sophistication.',
-    primary: { label: 'Shop Slides', href: '/slippers?category=Slides' },
-    secondary: { label: 'View Jewelry', href: '/jewelry' },
-    kind: 'shoe',
-  },
-  {
-    image: '/images/remove.photos-removed-background-9.png',
-    bg: 'linear-gradient(135deg, #f5ede0 0%, #e2d0b4 100%)',
-    eyebrow: '✦ New Season',
-    title: 'Walk in',
-    italic: 'light',
-    tail: 'and lustre',
-    description:
-      'Shimmering sandals for the season ahead — weightless comfort, unmistakable polish, and a finish that catches every eye.',
-    primary: { label: 'Shop Sandals', href: '/slippers?category=Sandal' },
-    secondary: { label: 'View All', href: '/shop' },
-    kind: 'shoe',
-  },
-];
-
-const JEWELRY_BG =
-  'linear-gradient(135deg, #1a1614 0%, #2a2320 100%)';
-const SHOE_BG_LIGHT =
-  'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 100%)';
-const SHOE_BG_WARM =
-  'linear-gradient(135deg, #efe6d5 0%, #d6c7b0 100%)';
+function overrideToSlide(o: HeroSlideOverride): Slide {
+  return {
+    image: o.image,
+    bg:
+      o.bg ||
+      (o.kind === 'jewel' ? JEWELRY_BG : SHOE_BG_LIGHT),
+    eyebrow: o.eyebrow,
+    title: o.title,
+    italic: o.italic,
+    tail: o.tail || '',
+    description: o.description,
+    primary: { label: o.primaryLabel, href: o.primaryHref },
+    secondary: { label: o.secondaryLabel, href: o.secondaryHref },
+    kind: o.kind,
+  };
+}
 
 function buildSlideFromProduct(p: Product, img: string): Slide {
   const productType =
@@ -144,6 +77,7 @@ function buildSlideFromProduct(p: Product, img: string): Slide {
 
 export default function Hero() {
   const { products } = useProducts();
+  const { settings } = useSiteSettings();
   const [current, setCurrent] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const imgWrapRef = useRef<HTMLDivElement>(null);
@@ -151,6 +85,11 @@ export default function Hero() {
   const tiltRef = useRef({ rx: 0, ry: 0, tx: 0, ty: 0 });
   const rafRef = useRef<number | null>(null);
   const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
+
+  const fallbackSlides = useMemo<Slide[]>(
+    () => settings.heroSlides.map(overrideToSlide),
+    [settings.heroSlides]
+  );
 
   const slides = useMemo<Slide[]>(() => {
     const productSlides: Slide[] = [];
@@ -162,11 +101,10 @@ export default function Hero() {
     }
     if (productSlides.length === 0) return fallbackSlides;
     if (productSlides.length < 2) {
-      // Pad with fallback slides so navigation arrows and auto-advance still work
       return [...productSlides, ...fallbackSlides];
     }
     return productSlides;
-  }, [products]);
+  }, [products, fallbackSlides]);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % slides.length);
@@ -243,7 +181,7 @@ export default function Hero() {
   const isDarkSlide = slide.kind === 'jewel' && slide.bg.includes('#1a1614');
 
   return (
-    <section className="relative min-h-[88vh] md:min-h-screen overflow-hidden grain">
+    <section className="relative min-h-[78vh] sm:min-h-[85vh] md:min-h-screen overflow-hidden grain">
       {slides.map((s, i) => (
         <div
           key={i}
@@ -254,21 +192,21 @@ export default function Hero() {
         />
       ))}
 
-      <div className="relative z-20 max-w-[1500px] mx-auto px-4 md:px-10 pt-4 pb-16 md:py-0 min-h-[88vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-2 md:gap-6 items-center">
+      <div className="relative z-20 max-w-[1500px] mx-auto px-4 sm:px-6 md:px-10 pt-4 pb-12 md:py-0 min-h-[78vh] sm:min-h-[85vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-3 md:gap-6 items-center">
         <div
           key={`text-${current}`}
           className={`animate-in order-2 md:order-1 ${
             isDarkSlide ? 'text-cream' : ''
           }`}
         >
-          <div className="flex items-center gap-3 mb-4 md:mb-6">
-            <div className="h-px w-10 md:w-12 bg-bronze" />
-            <span className="text-[10px] tracking-[0.4em] uppercase text-bronze font-medium">
+          <div className="flex items-center gap-3 mb-3 md:mb-6">
+            <div className="h-px w-8 md:w-12 bg-bronze" />
+            <span className="text-[9px] sm:text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze font-medium">
               {slide.eyebrow}
             </span>
           </div>
 
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-4 md:mb-6">
+          <h1 className="font-serif text-[32px] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-3 md:mb-6">
             {slide.title}{' '}
             <span className="font-italic-serif text-bronze">{slide.italic}</span>
             {slide.tail && (
@@ -280,14 +218,14 @@ export default function Hero() {
           </h1>
 
           <p
-            className={`text-sm md:text-lg leading-relaxed mb-6 md:mb-10 max-w-lg ${
+            className={`text-[13px] sm:text-base md:text-lg leading-relaxed mb-5 md:mb-10 max-w-lg ${
               isDarkSlide ? 'text-stone/90' : 'text-mocha'
             }`}
           >
             {slide.description}
           </p>
 
-          <div className="flex gap-3 md:gap-4 flex-wrap">
+          <div className="flex gap-2.5 md:gap-4 flex-wrap">
             <Link
               href={slide.primary.href}
               className={`hero-cta group inline-flex items-center gap-3 ${
@@ -320,7 +258,7 @@ export default function Hero() {
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           key={`img-${current}`}
-          className="hero-stage relative order-1 md:order-2 animate-in min-h-[42vh] md:min-h-[92vh] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
+          className="hero-stage relative order-1 md:order-2 animate-in min-h-[38vh] sm:min-h-[48vh] md:min-h-[92vh] flex items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
           style={{ animationDelay: '0.15s', perspective: '1300px' }}
         >
           <div
@@ -343,7 +281,7 @@ export default function Hero() {
               src={slide.image}
               alt={slide.title}
               draggable={false}
-              className={`hero-img relative w-full h-full max-h-[42vh] md:max-h-[88vh] scale-[0.95] md:scale-125 float-3d pointer-events-none ${
+              className={`hero-img relative w-full h-full max-h-[38vh] sm:max-h-[48vh] md:max-h-[88vh] scale-[1] md:scale-125 float-3d pointer-events-none ${
                 slide.kind === 'jewel'
                   ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[90%] md:max-w-[85%]'
                   : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'

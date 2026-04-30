@@ -11,9 +11,9 @@ export default function AnnouncementBar() {
 
   return (
     <div className="bg-charcoal text-cream py-2 overflow-hidden">
-      <div className="marquee text-xs tracking-[0.3em] uppercase">
+      <div className="marquee text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase">
         {allMessages.map((msg, i) => (
-          <span key={i} className="px-8">
+          <span key={i} className="px-6 sm:px-8">
             {msg}
           </span>
         ))}

@@ -138,7 +138,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   if (placedOrder) {
     return (
       <Modal isOpen={isOpen} onClose={handleClose}>
-        <div className="p-8 md:p-10 text-center">
+        <div className="p-6 sm:p-8 md:p-10 text-center">
           <button
             onClick={handleClose}
             aria-label="Close"
@@ -194,15 +194,15 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
-      <div className="p-6 md:p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="text-[9px] tracking-[0.4em] uppercase text-bronze">
+      <div className="p-4 sm:p-6 md:p-8">
+        <div className="flex items-start justify-between gap-3 mb-5 md:mb-6">
+          <div className="min-w-0">
+            <div className="text-[9px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
               ✦ Final Step
             </div>
-            <h2 className="font-serif text-2xl md:text-3xl mt-1">Delivery Details</h2>
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl mt-1">Delivery Details</h2>
           </div>
-          <button onClick={handleClose} aria-label="Close">
+          <button onClick={handleClose} aria-label="Close" className="shrink-0 p-1 -mr-1">
             <X size={22} />
           </button>
         </div>

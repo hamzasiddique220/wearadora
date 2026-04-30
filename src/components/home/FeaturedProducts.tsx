@@ -51,26 +51,26 @@ export default function FeaturedProducts({
   return (
     <>
       <section
-        className={`py-20 px-6 md:px-12 ${
+        className={`py-14 md:py-20 px-4 sm:px-6 md:px-12 ${
           isDark ? 'bg-charcoal text-cream' : ''
         }`}
       >
         <div className="max-w-[1400px] mx-auto">
           <Reveal>
-            <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+            <div className="flex items-end justify-between mb-8 md:mb-12 flex-wrap gap-3 md:gap-4">
               <div>
-                <span className="text-[10px] tracking-[0.4em] uppercase text-bronze">
+                <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
                   {eyebrow}
                 </span>
                 <h2
-                  className={`font-serif text-4xl md:text-5xl font-light mt-2 leading-tight ${
+                  className={`font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 leading-tight ${
                     isDark ? '' : ''
                   }`}
                 >
                   {title}
                 </h2>
                 <p
-                  className={`text-sm mt-3 max-w-xl ${
+                  className={`text-[13px] sm:text-sm mt-3 max-w-xl ${
                     isDark ? 'text-stone' : 'text-mocha'
                   }`}
                 >
@@ -79,7 +79,7 @@ export default function FeaturedProducts({
               </div>
               <Link
                 href={viewAllHref}
-                className={`text-xs tracking-[0.2em] uppercase flex items-center gap-2 border-b pb-1 hover:gap-3 transition-all ${
+                className={`text-[11px] md:text-xs tracking-[0.18em] md:tracking-[0.2em] uppercase flex items-center gap-2 border-b pb-1 hover:gap-3 transition-all ${
                   isDark
                     ? 'border-stone/40 hover:border-bronze text-cream'
                     : 'border-charcoal hover:text-bronze hover:border-bronze'
@@ -95,7 +95,7 @@ export default function FeaturedProducts({
           ) : filtered.length === 0 ? (
             <EmptyState message="No products yet. Admin needs to add products first." />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4">
               {filtered.map((p, i) => (
                 <ProductCard
                   key={p.id}

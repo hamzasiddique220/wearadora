@@ -10,6 +10,15 @@ export const STORE_CONFIG = {
   deliveryFee: 300,
   freeDeliveryMinItems: 2,
   deliveryDays: '2–3 days',
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
+    'https://wearadora.com',
+} as const;
+
+export const SOCIAL_LINKS = {
+  instagram: 'https://www.instagram.com/wearadora.pk',
+  facebook: 'https://www.facebook.com/share/18hu2xPWS8/',
+  tiktok: 'https://www.tiktok.com/@wearadora',
 } as const;
 
 export const getDeliveryFee = (itemCount: number): number =>
@@ -69,16 +78,6 @@ export const ORDER_STATUSES = [
   'completed',
   'cancelled',
 ] as const;
-
-export const CATEGORY_IMAGES: Record<string, string> = {
-  Slides: '/images/main-WA-1-black-card-img.png',
-  Heels: '/images/remove.photos-removed-background-7.png',
-  Sandal: '/images/remove.photos-removed-background-9.png',
-  Necklace: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800',
-  Ring: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
-  Earring: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800',
-  Bangles: '/images/bangles-cover.jpg',
-};
 
 export const getProductType = (category?: string): ProductType => {
   if (!category) return 'jewelry';

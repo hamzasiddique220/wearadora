@@ -82,9 +82,9 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-stone">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 flex items-center justify-between gap-2 sm:gap-4">
           <button
-            className="md:hidden"
+            className="md:hidden p-1 -ml-1"
             onClick={() => setMobileMenu(!mobileMenu)}
             aria-label="Toggle menu"
           >
@@ -107,8 +107,8 @@ export default function Header() {
             ))}
           </nav>
 
-          <Link href="/" className="flex flex-col items-center">
-            <div className="font-serif text-2xl md:text-3xl tracking-[0.3em] font-light">
+          <Link href="/" className="flex flex-col items-center min-w-0">
+            <div className="font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.3em] font-light truncate">
               {STORE_CONFIG.name}
             </div>
             <div className="text-[9px] tracking-[0.4em] text-bronze uppercase mt-0.5 hide-mobile">
@@ -116,7 +116,7 @@ export default function Header() {
             </div>
           </Link>
 
-          <div className="flex items-center gap-4 md:gap-5">
+          <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
             <button
               onClick={() => setSearchOpen(true)}
               className="hover:text-bronze transition-colors"

@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BarChart3, Package, ShoppingBag, LogOut, Home } from 'lucide-react';
+import { BarChart3, Package, ShoppingBag, LogOut, Home, Settings } from 'lucide-react';
 import { useAuthStore } from '@/lib/stores/auth';
 import { STORE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -38,6 +38,7 @@ export default function AdminLayout({
     { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart3 },
     { href: '/admin/products', label: 'Products', icon: Package },
     { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
   return (

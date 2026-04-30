@@ -82,25 +82,25 @@ function CategoryContent({
               'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 55%, #d4c9b8 100%)',
           }}
         >
-          <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12 md:py-16 grid md:grid-cols-[1fr_1fr] gap-8 items-center">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-16 grid md:grid-cols-[1fr_1fr] gap-6 md:gap-8 items-center">
             <div>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3 inline-block">
+              <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-3 inline-block">
                 {eyebrow}
               </span>
-              <h1 className="font-serif text-5xl md:text-7xl font-light leading-[1.05]">
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-light leading-[1.05]">
                 {title}
               </h1>
-              <p className="text-mocha mt-4 max-w-xl text-sm md:text-base leading-relaxed">
+              <p className="text-mocha mt-3 md:mt-4 max-w-xl text-[13px] sm:text-sm md:text-base leading-relaxed">
                 {description}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2 text-[10px] tracking-[0.3em] uppercase">
-                <span className="bg-charcoal text-cream px-3 py-1.5">
+              <div className="mt-4 md:mt-5 flex flex-wrap gap-2 text-[9px] sm:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">
+                <span className="bg-charcoal text-cream px-2.5 md:px-3 py-1.5">
                   40+ Yrs Craft
                 </span>
-                <span className="border border-bronze text-bronze px-3 py-1.5">
+                <span className="border border-bronze text-bronze px-2.5 md:px-3 py-1.5">
                   Handmade
                 </span>
-                <span className="border border-charcoal/40 px-3 py-1.5">
+                <span className="border border-charcoal/40 px-2.5 md:px-3 py-1.5">
                   Comfort + Design
                 </span>
               </div>
@@ -117,13 +117,13 @@ function CategoryContent({
               <img
                 src={heroImage}
                 alt={title}
-                className="relative max-h-[55vh] w-full object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] float-3d scale-110"
+                className="relative max-h-[40vh] md:max-h-[55vh] w-full object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] float-3d scale-110"
               />
             </div>
           </div>
         </section>
       ) : (
-        <section className="relative h-[40vh] md:h-[50vh] overflow-hidden grain">
+        <section className="relative h-[36vh] sm:h-[42vh] md:h-[50vh] overflow-hidden grain">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={heroImage}
@@ -131,22 +131,22 @@ function CategoryContent({
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
-          <div className="relative h-full max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col items-center justify-center text-center">
-            <span className="text-[10px] tracking-[0.4em] uppercase text-bronze mb-3">
+          <div className="relative h-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 flex flex-col items-center justify-center text-center">
+            <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-2 md:mb-3">
               {eyebrow}
             </span>
-            <h1 className="font-serif text-5xl md:text-7xl font-light text-white drop-shadow">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-light text-white drop-shadow">
               {title}
             </h1>
-            <p className="text-white/90 mt-4 max-w-xl text-sm md:text-base">
+            <p className="text-white/90 mt-3 md:mt-4 max-w-xl text-[13px] sm:text-sm md:text-base px-2">
               {description}
             </p>
           </div>
         </section>
       )}
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12">
-        <div className="mb-8 max-w-md mx-auto relative">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
+        <div className="mb-6 md:mb-8 max-w-md mx-auto relative">
           <Search
             size={18}
             className="absolute left-5 top-1/2 -translate-y-1/2 text-bronze pointer-events-none"
@@ -169,12 +169,12 @@ function CategoryContent({
           )}
         </div>
 
-        <div className="flex gap-2 mb-10 overflow-x-auto scrollbar-hide pb-2 justify-start md:justify-center">
+        <div className="flex gap-2 mb-8 md:mb-10 overflow-x-auto scrollbar-hide pb-2 -mx-3 sm:mx-0 px-3 sm:px-0 justify-start md:justify-center">
           {subCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`whitespace-nowrap px-5 py-2 text-[10px] tracking-[0.2em] uppercase border transition-all ${
+              className={`whitespace-nowrap px-4 md:px-5 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
                 selectedCategory === cat
                   ? 'bg-charcoal text-cream border-charcoal'
                   : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
@@ -192,7 +192,7 @@ function CategoryContent({
             message={`No ${title.toLowerCase()} found. Try a different search or category.`}
           />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4">
             {filteredProducts.map((p, i) => (
               <ProductCard
                 key={p.id}

@@ -15,7 +15,7 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
@@ -35,7 +35,7 @@ interface ProductDetailProps {
 
 export default function ProductDetail({ id }: ProductDetailProps) {
   const router = useRouter();
-  const { products, loading } = useProducts();
+  const { products, loading } = useVisibleProducts();
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const showToast = useUIStore((state) => state.showToast);
@@ -146,7 +146,7 @@ export default function ProductDetail({ id }: ProductDetailProps) {
 
   return (
     <>
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-5 md:px-10 py-4 md:py-6 pb-28 md:pb-6">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-5 md:px-10 py-4 md:py-6 pb-[calc(env(safe-area-inset-bottom)+7rem)] md:pb-6 overflow-x-hidden">
         <nav className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase text-mocha mb-4 md:mb-6 flex-wrap">
           <Link href="/" className="hover:text-bronze">
             Home
@@ -163,18 +163,20 @@ export default function ProductDetail({ id }: ProductDetailProps) {
           </span>
         </nav>
 
-        <div className="grid md:grid-cols-[1.1fr_1fr] gap-6 md:gap-14">
-          <ProductGallery
-            images={galleryImages}
-            alt={product.name}
-            activeUrl={
-              selectedColor && product.colorImages
-                ? product.colorImages[selectedColor]
-                : undefined
-            }
-          />
+        <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 md:gap-14">
+          <div className="min-w-0">
+            <ProductGallery
+              images={galleryImages}
+              alt={product.name}
+              activeUrl={
+                selectedColor && product.colorImages
+                  ? product.colorImages[selectedColor]
+                  : undefined
+              }
+            />
+          </div>
 
-          <div className="md:sticky md:top-28 md:self-start md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-1">
+          <div className="min-w-0 md:sticky md:top-28 md:self-start md:max-h-[calc(100vh-8rem)] md:overflow-y-auto md:pr-1">
             <div className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-2 md:mb-3">
               ✦ {product.category}
             </div>
@@ -471,7 +473,7 @@ export default function ProductDetail({ id }: ProductDetailProps) {
       </div>
 
       {/* Mobile sticky add-to-bag bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-cream/98 backdrop-blur border-t border-stone px-3 py-2.5 flex items-center gap-2 shadow-[0_-6px_20px_rgba(26,22,20,0.08)]">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-cream/98 backdrop-blur border-t border-stone px-3 pt-2.5 pb-[calc(env(safe-area-inset-bottom)+0.625rem)] flex items-center gap-2 shadow-[0_-6px_20px_rgba(26,22,20,0.08)]">
         <button
           type="button"
           onClick={handleWishlist}

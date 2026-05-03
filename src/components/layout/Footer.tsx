@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return (
@@ -22,6 +23,8 @@ function TikTokIcon({ size = 16 }: { size?: number }) {
 
 export default function Footer() {
   const pathname = usePathname();
+  const { settings } = useSiteSettings();
+  const jewelryEnabled = settings.jewelryEnabled === true;
 
   if (pathname?.startsWith('/admin')) return null;
 
@@ -36,8 +39,9 @@ export default function Footer() {
             ✦ {STORE_CONFIG.tagline} ✦
           </div>
           <p className="text-[13px] sm:text-sm text-stone leading-relaxed max-w-md">
-            Curated jewelry and artisan footwear for those who appreciate timeless
-            elegance.
+            {jewelryEnabled
+              ? 'Curated jewelry and artisan footwear for those who appreciate timeless elegance.'
+              : 'Artisan handcrafted footwear for those who appreciate timeless elegance.'}
           </p>
         </div>
 
@@ -52,13 +56,13 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/shop?category=Necklace" className="hover:text-bronze">
-                Necklaces
+              <Link href="/shop?category=Slides" className="hover:text-bronze">
+                Slides
               </Link>
             </li>
             <li>
-              <Link href="/shop?category=Ring" className="hover:text-bronze">
-                Rings
+              <Link href="/shop?category=Heels" className="hover:text-bronze">
+                Heels
               </Link>
             </li>
             <li>
@@ -66,6 +70,20 @@ export default function Footer() {
                 Sandals
               </Link>
             </li>
+            {jewelryEnabled && (
+              <>
+                <li>
+                  <Link href="/shop?category=Necklace" className="hover:text-bronze">
+                    Necklaces
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=Ring" className="hover:text-bronze">
+                    Rings
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
 

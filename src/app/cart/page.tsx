@@ -6,6 +6,7 @@ import { ShoppingBag, Plus, Minus, Trash2, Truck, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/utils';
 import { COLOR_HEX, STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import CheckoutModal from '@/components/cart/CheckoutModal';
 
 export default function CartPage() {
@@ -14,6 +15,8 @@ export default function CartPage() {
   const itemCount = useCartStore((state) => state.getCount());
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const { settings } = useSiteSettings();
+  const jewelryEnabled = settings.jewelryEnabled === true;
 
   const deliveryFee = getDeliveryFee(itemCount);
   const total = subtotal + deliveryFee;
@@ -33,12 +36,14 @@ export default function CartPage() {
         <h2 className="font-serif text-2xl sm:text-3xl mb-3">Your bag is empty</h2>
         <p className="text-mocha mb-8 text-sm md:text-base">Start adding treasures to your collection</p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Link href="/jewelry" className="btn-primary inline-block">
-            Shop Jewelry
-          </Link>
-          <Link href="/slippers" className="btn-outline inline-block">
+          <Link href="/slippers" className="btn-primary inline-block">
             Shop Shoes
           </Link>
+          {jewelryEnabled && (
+            <Link href="/jewelry" className="btn-outline inline-block">
+              Shop Jewelry
+            </Link>
+          )}
         </div>
       </div>
     );

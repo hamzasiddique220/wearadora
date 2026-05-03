@@ -8,20 +8,24 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 interface CategoryTile {
   name: string;
   href: string;
+  kind: 'shoe' | 'jewel';
 }
 
 const CATEGORY_TILES: CategoryTile[] = [
-  { name: 'Slides', href: '/slippers?category=Slides' },
-  { name: 'Heels', href: '/slippers?category=Heels' },
-  { name: 'Sandal', href: '/slippers?category=Sandal' },
-  { name: 'Necklace', href: '/jewelry?category=Necklace' },
-  { name: 'Ring', href: '/jewelry?category=Ring' },
-  { name: 'Earring', href: '/jewelry?category=Earring' },
-  { name: 'Bangles', href: '/jewelry?category=Bangles' },
+  { name: 'Slides', href: '/slippers?category=Slides', kind: 'shoe' },
+  { name: 'Heels', href: '/slippers?category=Heels', kind: 'shoe' },
+  { name: 'Sandal', href: '/slippers?category=Sandal', kind: 'shoe' },
+  { name: 'Necklace', href: '/jewelry?category=Necklace', kind: 'jewel' },
+  { name: 'Ring', href: '/jewelry?category=Ring', kind: 'jewel' },
+  { name: 'Earring', href: '/jewelry?category=Earring', kind: 'jewel' },
+  { name: 'Bangles', href: '/jewelry?category=Bangles', kind: 'jewel' },
 ];
 
 export default function CategoriesGrid() {
   const { settings } = useSiteSettings();
+  const tiles = settings.jewelryEnabled
+    ? CATEGORY_TILES
+    : CATEGORY_TILES.filter((t) => t.kind !== 'jewel');
 
   return (
     <section className="py-14 md:py-20 px-4 sm:px-6 md:px-12 max-w-[1400px] mx-auto">
@@ -45,7 +49,7 @@ export default function CategoriesGrid() {
       </Reveal>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 md:gap-4 perspective-1000">
-        {CATEGORY_TILES.map((cat, i) => {
+        {tiles.map((cat, i) => {
           const image = settings.categoryImages[cat.name] || '';
           const isProductImage =
             image.startsWith('/images/') || image.includes('cloudinary');

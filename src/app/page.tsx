@@ -1,6 +1,6 @@
 'use client';
 
-import { useProducts } from '@/hooks/useProducts';
+import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import Hero from '@/components/home/Hero';
 import StatsBar from '@/components/home/StatsBar';
 import CategoriesGrid from '@/components/home/CategoriesGrid';
@@ -8,7 +8,7 @@ import FeaturedProducts from '@/components/home/FeaturedProducts';
 import StorySection from '@/components/home/StorySection';
 
 export default function HomePage() {
-  const { products, loading } = useProducts();
+  const { products, loading, jewelryEnabled } = useVisibleProducts();
 
   return (
     <>
@@ -27,17 +27,19 @@ export default function HomePage() {
         limit={8}
       />
 
-      <FeaturedProducts
-        products={products}
-        loading={loading}
-        productType="jewelry"
-        eyebrow="✦ Jewelry Collection"
-        title="Handcrafted Jewelry"
-        description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
-        viewAllHref="/jewelry"
-        limit={8}
-        theme="dark"
-      />
+      {jewelryEnabled && (
+        <FeaturedProducts
+          products={products}
+          loading={loading}
+          productType="jewelry"
+          eyebrow="✦ Jewelry Collection"
+          title="Handcrafted Jewelry"
+          description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
+          viewAllHref="/jewelry"
+          limit={8}
+          theme="dark"
+        />
+      )}
 
       <StorySection />
     </>

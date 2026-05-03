@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Award, Hammer, Heart, Tag, MapPin, Sparkles } from 'lucide-react';
 import { STORE_CONFIG } from '@/lib/constants';
+import { fetchSiteSettings } from '@/lib/server/firestoreRest';
 
 export const metadata: Metadata = {
   title: 'About Us | WEARADORA',
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
     'Four decades of handcrafted ladies footwear — comfort, design, and unbeatable value. Meet the family behind WEARADORA.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await fetchSiteSettings();
+  const jewelryEnabled = settings?.jewelryEnabled === true;
+
   const values = [
     {
       icon: <Award size={22} />,
@@ -107,9 +111,11 @@ export default function AboutPage() {
           <Link href="/slippers" className="hero-cta hero-cta--on-dark">
             Shop Shoes
           </Link>
-          <Link href="/jewelry" className="hero-cta hero-cta--outline-on-dark">
-            Shop Jewelry
-          </Link>
+          {jewelryEnabled && (
+            <Link href="/jewelry" className="hero-cta hero-cta--outline-on-dark">
+              Shop Jewelry
+            </Link>
+          )}
         </div>
       </div>
 

@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import { Product } from '@/types';
 import { normalizeCategory } from '@/lib/constants';
 import ProductCard from '@/components/shop/ProductCard';
@@ -12,7 +12,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
 
 function ShopContent() {
-  const { products, loading } = useProducts();
+  const { products, loading } = useVisibleProducts();
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get('category');
 

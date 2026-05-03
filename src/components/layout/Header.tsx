@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
-import { useProducts } from '@/hooks/useProducts';
+import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import { STORE_CONFIG } from '@/lib/constants';
 import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export default function Header() {
 
   const cartCount = useCartStore((state) => state.getCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
-  const { products } = useProducts();
+  const { products, jewelryEnabled } = useVisibleProducts();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -69,9 +69,13 @@ export default function Header() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/slippers', label: 'Women' },
-    { href: '/jewelry', label: 'Jewelry' },
+    ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
     { href: '/about', label: 'About' },
   ];
+
+  const quickLinks = jewelryEnabled
+    ? ['Slides', 'Heels', 'Sandal', 'Necklace', 'Ring', 'Earring']
+    : ['Slides', 'Heels', 'Sandal'];
 
   const closeAll = () => {
     setSearchOpen(false);
@@ -202,7 +206,7 @@ export default function Header() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search jewelry, shoes..."
+                placeholder={jewelryEnabled ? 'Search jewelry, shoes...' : 'Search shoes...'}
                 className="flex-1 bg-transparent outline-none text-base md:text-lg font-serif"
               />
               <button
@@ -221,7 +225,7 @@ export default function Header() {
                     ✦ Quick Links
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {['Slides', 'Heels', 'Sandal', 'Necklace', 'Ring', 'Earring'].map((cat) => (
+                    {quickLinks.map((cat) => (
                       <button
                         key={cat}
                         onClick={() => {

@@ -96,5 +96,7 @@ export interface SiteSettings {
   storyImage?: string;
   jewelryHero?: CategoryHeroOverride;
   slippersHero?: CategoryHeroOverride;
+  /** Master switch — when false, all jewelry pages, links, and products are hidden from the public site. */
+  jewelryEnabled?: boolean;
   updatedAt?: string;
 }

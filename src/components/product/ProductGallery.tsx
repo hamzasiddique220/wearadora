@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ZoomIn, X, Expand } from 'lucide-react';
 
 interface ProductGalleryProps {
@@ -35,7 +36,7 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
   }, [activeUrl, safeImages]);
 
   // Always clear hover-lens when image changes or lightbox toggles, so the
-  // main <img> never gets stuck at opacity-0 after a tap-to-open / close.
+  // main image never gets stuck at opacity-0 after a tap-to-open / close.
   useEffect(() => {
     setLens(null);
   }, [active, zoomOpen]);
@@ -94,23 +95,52 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
 
   return (
     <>
-      <div className="flex gap-2.5 md:gap-4 flex-col md:flex-row">
-        <div className="relative flex-1 order-1 md:order-2">
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full min-w-0">
+        {/* Desktop-only vertical thumbnail rail */}
+        {safeImages.length > 1 && (
+          <div className="hidden md:flex md:flex-col gap-3 overflow-y-auto md:max-h-[640px] scrollbar-hide w-[88px] shrink-0 order-1">
+            {safeImages.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                aria-label={`View image ${i + 1}`}
+                className={`relative shrink-0 w-[88px] h-[110px] overflow-hidden border transition-all bg-cream ${
+                  active === i
+                    ? 'border-bronze shadow-md'
+                    : 'border-stone/60 hover:border-charcoal/60 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <Image
+                  src={img}
+                  alt={`${alt} ${i + 1}`}
+                  fill
+                  sizes="88px"
+                  className="object-contain p-1.5 mix-blend-darken"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Main stage column */}
+        <div className="relative w-full min-w-0 md:flex-1 order-2">
           <div
             ref={stageRef}
             onPointerMove={handleStageMove}
             onPointerLeave={handleStageLeave}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
-            className="relative aspect-square md:aspect-[4/5] overflow-hidden group bg-cream border border-stone/60 cursor-zoom-in [&>img]:[mix-blend-mode:darken]"
+            className="relative w-full aspect-[4/5] max-h-[70svh] md:max-h-none overflow-hidden group bg-cream border border-stone/60 cursor-zoom-in"
             onClick={() => setZoomOpen(true)}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               key={current}
               src={current}
               alt={alt}
-              className={`w-full h-full object-contain p-3 sm:p-6 md:p-10 transition-transform duration-500 ${
+              fill
+              priority
+              sizes="(min-width: 768px) 55vw, 100vw"
+              className={`object-contain p-4 sm:p-6 md:p-10 mix-blend-darken transition-opacity duration-300 ${
                 lens ? 'md:opacity-0 opacity-100' : 'opacity-100'
               }`}
             />
@@ -151,7 +181,7 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
                 setZoomOpen(true);
               }}
               aria-label="Open fullscreen"
-              className="absolute top-3 right-3 md:top-4 md:right-4 w-9 h-9 md:w-10 md:h-10 bg-white/95 flex items-center justify-center shadow-sm hover:bg-bronze hover:text-white transition z-10"
+              className="absolute top-3 right-3 md:top-4 md:right-4 w-10 h-10 bg-white/95 flex items-center justify-center shadow-sm hover:bg-bronze hover:text-white transition z-10"
             >
               <Expand size={15} />
             </button>
@@ -169,7 +199,7 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
                     prev();
                   }}
                   aria-label="Previous image"
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-white/90 hover:bg-white flex items-center justify-center shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white flex items-center justify-center shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -180,7 +210,7 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
                     next();
                   }}
                   aria-label="Next image"
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-white/90 hover:bg-white flex items-center justify-center shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white flex items-center justify-center shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -192,6 +222,7 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
             )}
           </div>
 
+          {/* Slide indicator dots */}
           {safeImages.length > 1 && (
             <div className="mt-2.5 md:mt-3 flex items-center justify-center gap-1.5">
               {safeImages.map((_, i) => (
@@ -208,33 +239,38 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
               ))}
             </div>
           )}
-        </div>
 
-        {safeImages.length > 1 && (
-          <div className="flex md:flex-col gap-2 md:gap-3 overflow-x-auto md:overflow-y-auto md:max-h-[640px] scrollbar-hide md:w-[92px] shrink-0 order-2 md:order-1 -mx-3 sm:-mx-5 md:mx-0 px-3 sm:px-5 md:px-0">
-            {safeImages.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                aria-label={`View image ${i + 1}`}
-                className={`relative shrink-0 w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] md:w-[92px] md:h-[110px] overflow-hidden border transition-all bg-cream [&_img]:[mix-blend-mode:darken] ${
-                  active === i
-                    ? 'border-bronze shadow-md'
-                    : 'border-stone/60 hover:border-charcoal/60 opacity-70 hover:opacity-100'
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img}
-                  alt={`${alt} ${i + 1}`}
-                  className="w-full h-full object-contain p-1.5"
-                />
-              </button>
-            ))}
-          </div>
-        )}
+          {/* Mobile-only horizontal thumbnail strip */}
+          {safeImages.length > 1 && (
+            <div className="md:hidden mt-3 -mx-3 sm:-mx-5 px-3 sm:px-5 overflow-x-auto scrollbar-hide">
+              <div className="flex gap-2 w-max">
+                {safeImages.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    aria-label={`View image ${i + 1}`}
+                    className={`relative shrink-0 w-[68px] h-[68px] sm:w-[76px] sm:h-[76px] overflow-hidden border transition-all bg-cream ${
+                      active === i
+                        ? 'border-bronze shadow-md'
+                        : 'border-stone/60 opacity-70'
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${alt} ${i + 1}`}
+                      fill
+                      sizes="76px"
+                      className="object-contain p-1.5 mix-blend-darken"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Lightbox */}
       {zoomOpen && (
         <div className="fixed inset-0 z-[60] bg-charcoal/95 flex items-center justify-center p-4 md:p-8 animate-in">
           <button

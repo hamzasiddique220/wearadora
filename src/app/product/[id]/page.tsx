@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { fetchProduct } from '@/lib/server/firestoreRest';
-import { STORE_CONFIG } from '@/lib/constants';
+import { notFound } from 'next/navigation';
+import { fetchProduct, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import { STORE_CONFIG, getProductType } from '@/lib/constants';
 import ProductDetail from './ProductDetail';
 import ProductJsonLd from '@/components/seo/ProductJsonLd';
 
@@ -11,9 +12,23 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const product = await fetchProduct(params.id);
+  const [product, settings] = await Promise.all([
+    fetchProduct(params.id),
+    fetchSiteSettings(),
+  ]);
 
   if (!product) {
+    return {
+      title: 'Product Not Found',
+      description: 'This item may have been removed or is no longer available.',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const isJewelry =
+    (product.productType || getProductType(product.category as string)) ===
+    'jewelry';
+  if (isJewelry && settings?.jewelryEnabled !== true) {
     return {
       title: 'Product Not Found',
       description: 'This item may have been removed or is no longer available.',
@@ -58,7 +73,19 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const product = await fetchProduct(params.id);
+  const [product, settings] = await Promise.all([
+    fetchProduct(params.id),
+    fetchSiteSettings(),
+  ]);
+
+  if (product) {
+    const isJewelry =
+      (product.productType || getProductType(product.category as string)) ===
+      'jewelry';
+    if (isJewelry && settings?.jewelryEnabled !== true) {
+      notFound();
+    }
+  }
 
   return (
     <>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { getProductType } from '@/lib/constants';
 import {
@@ -76,8 +76,9 @@ function buildSlideFromProduct(p: Product, img: string): Slide {
 }
 
 export default function Hero() {
-  const { products } = useProducts();
+  const { products } = useVisibleProducts();
   const { settings } = useSiteSettings();
+  const jewelryEnabled = settings.jewelryEnabled === true;
   const [current, setCurrent] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const imgWrapRef = useRef<HTMLDivElement>(null);
@@ -87,8 +88,11 @@ export default function Hero() {
   const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
 
   const fallbackSlides = useMemo<Slide[]>(
-    () => settings.heroSlides.map(overrideToSlide),
-    [settings.heroSlides]
+    () =>
+      settings.heroSlides
+        .filter((s) => jewelryEnabled || s.kind !== 'jewel')
+        .map(overrideToSlide),
+    [settings.heroSlides, jewelryEnabled]
   );
 
   const slides = useMemo<Slide[]>(() => {

@@ -1,5 +1,5 @@
 import 'server-only';
-import type { Product } from '@/types';
+import type { Product, SiteSettings } from '@/types';
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 const BASE = PROJECT_ID
@@ -65,6 +65,23 @@ export async function fetchProduct(id: string): Promise<Product | null> {
     return fromDocument<Product>(doc);
   } catch (err) {
     console.error('fetchProduct error:', err);
+    return null;
+  }
+}
+
+/** Fetch the singleton site settings doc (used in server components / sitemap / metadata). */
+export async function fetchSiteSettings(): Promise<SiteSettings | null> {
+  if (!BASE) return null;
+  try {
+    const res = await fetch(`${BASE}/siteSettings/main`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const doc = (await res.json()) as FirestoreDocument;
+    if (!doc.fields) return null;
+    return fromDocument<SiteSettings>(doc);
+  } catch (err) {
+    console.error('fetchSiteSettings error:', err);
     return null;
   }
 }

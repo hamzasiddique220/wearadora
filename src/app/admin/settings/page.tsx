@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Save, Plus, Trash2, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
+import { Save, Plus, Trash2, ChevronUp, ChevronDown, Sparkles, Gem } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { siteSettingsService } from '@/lib/services/siteSettings';
 import { useUIStore } from '@/lib/stores/ui';
@@ -25,6 +25,7 @@ export default function AdminSettingsPage() {
   const [storyImage, setStoryImage] = useState('');
   const [jewelryHero, setJewelryHero] = useState({ image: '', kind: 'photo' as 'photo' | 'product' });
   const [slippersHero, setSlippersHero] = useState({ image: '', kind: 'product' as 'photo' | 'product' });
+  const [jewelryEnabled, setJewelryEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
@@ -35,6 +36,7 @@ export default function AdminSettingsPage() {
     setStoryImage(settings.storyImage);
     setJewelryHero({ image: settings.jewelryHero.image, kind: settings.jewelryHero.kind || 'photo' });
     setSlippersHero({ image: settings.slippersHero.image, kind: settings.slippersHero.kind || 'product' });
+    setJewelryEnabled(settings.jewelryEnabled === true);
     setHydrated(true);
   }, [loading, hydrated, settings]);
 
@@ -90,6 +92,7 @@ export default function AdminSettingsPage() {
         storyImage,
         jewelryHero,
         slippersHero,
+        jewelryEnabled,
       };
       await siteSettingsService.save(payload);
       showToast('Site settings saved');
@@ -128,6 +131,56 @@ export default function AdminSettingsPage() {
           <Save size={14} /> {saving ? 'Saving…' : 'Save All Changes'}
         </button>
       </div>
+
+      {/* Storefront sections — master switches */}
+      <section className="bg-white border border-stone p-5 md:p-6 mb-6">
+        <h2 className="font-serif text-2xl mb-1 flex items-center gap-2">
+          <Gem size={18} className="text-bronze" /> Storefront Sections
+        </h2>
+        <p className="text-[11px] text-mocha mb-4">
+          Toggle entire collections on or off. Disabled collections are hidden
+          from navigation, homepage, search, and direct page access.
+        </p>
+
+        <label
+          className={`flex items-start gap-4 p-4 border cursor-pointer transition-colors ${
+            jewelryEnabled
+              ? 'border-bronze bg-bronze/5'
+              : 'border-stone bg-sand/30'
+          }`}
+        >
+          <input
+            type="checkbox"
+            checked={jewelryEnabled}
+            onChange={(e) => setJewelryEnabled(e.target.checked)}
+            className="mt-1 w-5 h-5 accent-bronze cursor-pointer"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium text-charcoal">
+                Jewelry collection
+              </span>
+              <span
+                className={`text-[9px] tracking-[0.25em] uppercase px-2 py-0.5 ${
+                  jewelryEnabled
+                    ? 'bg-[#2d6a4f] text-cream'
+                    : 'bg-stone text-charcoal'
+                }`}
+              >
+                {jewelryEnabled ? 'Live' : 'Hidden'}
+              </span>
+            </div>
+            <p className="text-[12px] text-mocha mt-1 leading-relaxed">
+              {jewelryEnabled
+                ? 'Jewelry pages, navigation links, hero slides, and product cards are visible on the storefront.'
+                : 'All jewelry surfaces are hidden from customers. Existing products remain in the admin panel and can be re-enabled anytime.'}
+            </p>
+            <p className="text-[11px] text-mocha/80 mt-2">
+              Save changes for the toggle to take effect on the live site.
+            </p>
+          </div>
+        </label>
+      </section>
 
       {/* Hero slides */}
       <section className="bg-white border border-stone p-5 md:p-6 mb-6">

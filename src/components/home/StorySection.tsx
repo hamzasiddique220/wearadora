@@ -5,6 +5,12 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function StorySection() {
   const { settings } = useSiteSettings();
+  const jewelryEnabled = settings.jewelryEnabled === true;
+
+  const image = jewelryEnabled
+    ? settings.storyImage
+    : settings.slippersHero.image || settings.storyImage;
+
   return (
     <section className="bg-charcoal text-cream py-14 md:py-20 px-4 sm:px-6 md:px-12 relative overflow-hidden grain">
       <div className="max-w-[1400px] mx-auto grid md:grid-cols-2 gap-8 md:gap-12 items-center relative">
@@ -18,10 +24,9 @@ export default function StorySection() {
             pride
           </h2>
           <p className="text-stone leading-relaxed mb-5 md:mb-6 text-[13px] sm:text-sm md:text-base">
-            Every piece at WEARADORA is born from the hands of skilled artisans who
-            pour their soul into every detail. From delicate jewelry that whispers
-            stories of heritage to handcrafted footwear that embraces every step, we
-            celebrate the beauty of artistry.
+            {jewelryEnabled
+              ? 'Every piece at WEARADORA is born from the hands of skilled artisans who pour their soul into every detail. From delicate jewelry that whispers stories of heritage to handcrafted footwear that embraces every step, we celebrate the beauty of artistry.'
+              : 'Every pair at WEARADORA is born from the hands of skilled artisans who pour their soul into every stitch and last. From the cushioned footbed to the final embellishment, each step is shaped by four decades of cobbler craft — built to look effortless and feel like home.'}
           </p>
           <Link
             href="/about"
@@ -31,15 +36,23 @@ export default function StorySection() {
           </Link>
         </div>
 
-        <div className="relative aspect-[4/3] sm:aspect-square">
+        <div
+          className={`relative aspect-[4/3] sm:aspect-square ${
+            jewelryEnabled ? '' : 'bg-cream/5 flex items-center justify-center'
+          }`}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={settings.storyImage}
+            src={image}
             alt="Artisan craftsmanship"
-            className="w-full h-full object-cover"
+            className={
+              jewelryEnabled
+                ? 'w-full h-full object-cover'
+                : 'max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)]'
+            }
           />
           <div className="absolute -bottom-6 -right-6 bg-bronze p-6 text-center hidden md:block">
-            <div className="font-serif text-5xl">10+</div>
+            <div className="font-serif text-5xl">40+</div>
             <div className="text-xs tracking-[0.2em] uppercase mt-1">
               Years of craft
             </div>

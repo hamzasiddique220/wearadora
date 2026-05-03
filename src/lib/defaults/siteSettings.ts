@@ -132,6 +132,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   storyImage: DEFAULT_STORY_IMAGE,
   jewelryHero: DEFAULT_JEWELRY_HERO,
   slippersHero: DEFAULT_SLIPPERS_HERO,
+  jewelryEnabled: false,
 };
 
 /**
@@ -161,6 +162,7 @@ export function mergeSettings(
     slippersHero: stored?.slippersHero?.image
       ? { ...DEFAULT_SLIPPERS_HERO, ...stored.slippersHero }
       : DEFAULT_SLIPPERS_HERO,
+    jewelryEnabled: stored?.jewelryEnabled === true,
     updatedAt: stored?.updatedAt,
   };
 }

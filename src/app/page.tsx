@@ -1,47 +1,23 @@
-'use client';
+import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import DataInitializer from '@/components/DataInitializer';
+import HomeShell from './HomeShell';
 
-import { useVisibleProducts } from '@/hooks/useVisibleProducts';
-import Hero from '@/components/home/Hero';
-import StatsBar from '@/components/home/StatsBar';
-import CategoriesGrid from '@/components/home/CategoriesGrid';
-import FeaturedProducts from '@/components/home/FeaturedProducts';
-import StorySection from '@/components/home/StorySection';
+export const revalidate = 60;
 
-export default function HomePage() {
-  const { products, loading, jewelryEnabled } = useVisibleProducts();
+export default async function HomePage() {
+  const [products, settings] = await Promise.all([
+    fetchAllProducts(),
+    fetchSiteSettings(),
+  ]);
 
   return (
     <>
-      <Hero />
-      <StatsBar />
-      <CategoriesGrid />
-
-      <FeaturedProducts
-        products={products}
-        loading={loading}
-        productType="slippers"
-        eyebrow="✦ Signature Footwear"
-        title="Slides & Heels"
-        description="Handcrafted footwear with embellished detailing — where contemporary design meets lasting comfort."
-        viewAllHref="/slippers"
-        limit={8}
+      <DataInitializer
+        initialProducts={products}
+        initialSettings={settings}
+        realtime={false}
       />
-
-      {jewelryEnabled && (
-        <FeaturedProducts
-          products={products}
-          loading={loading}
-          productType="jewelry"
-          eyebrow="✦ Jewelry Collection"
-          title="Handcrafted Jewelry"
-          description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
-          viewAllHref="/jewelry"
-          limit={8}
-          theme="dark"
-        />
-      )}
-
-      <StorySection />
+      <HomeShell />
     </>
   );
 }

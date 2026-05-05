@@ -1,18 +1,23 @@
-'use client';
+import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import DataInitializer from '@/components/DataInitializer';
+import SlippersClient from './SlippersClient';
 
-import CategoryPage from '@/components/shop/CategoryPage';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+export const revalidate = 60;
 
-export default function SlippersPage() {
-  const { settings } = useSiteSettings();
+export default async function SlippersPage() {
+  const [products, settings] = await Promise.all([
+    fetchAllProducts(),
+    fetchSiteSettings(),
+  ]);
+
   return (
-    <CategoryPage
-      productType="slippers"
-      eyebrow="✦ 40+ Years of Craft"
-      title="Shoes Collection"
-      heroImage={settings.slippersHero.image}
-      heroKind={settings.slippersHero.kind}
-      description="Slides, heels and sandals handcrafted in-house — four decades of cobbling experience bringing you comfort and design in a single pair."
-    />
+    <>
+      <DataInitializer
+        initialProducts={products}
+        initialSettings={settings}
+        realtime={false}
+      />
+      <SlippersClient />
+    </>
   );
 }

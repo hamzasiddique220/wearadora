@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -11,11 +12,8 @@ import {
   Truck,
   Shield,
   Award,
-  ArrowLeft,
   Copy,
-  Check,
 } from 'lucide-react';
-import { useVisibleProducts } from '@/hooks/useVisibleProducts';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
@@ -23,29 +21,28 @@ import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX, STORE_CONFIG } from '@/lib/constants';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
-import ProductModal from '@/components/shop/ProductModal';
-import Loading from '@/components/ui/Loading';
 import { heartBurst } from '@/lib/heartBurst';
-import EmptyState from '@/components/ui/EmptyState';
 import type { Product } from '@/types';
 
+const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
+  ssr: false,
+});
+
 interface ProductDetailProps {
-  id: string;
+  product: Product;
+  relatedProducts: Product[];
 }
 
-export default function ProductDetail({ id }: ProductDetailProps) {
+export default function ProductDetail({
+  product,
+  relatedProducts,
+}: ProductDetailProps) {
   const router = useRouter();
-  const { products, loading } = useVisibleProducts();
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const showToast = useUIStore((state) => state.showToast);
-
-  const product = useMemo(
-    () => products.find((p) => p.id === id),
-    [products, id]
-  );
   const isWishlisted = useWishlistStore((state) =>
-    product ? state.isWishlisted(product.id) : false
+    state.isWishlisted(product.id)
   );
 
   const [selectedSize, setSelectedSize] = useState<number | undefined>(undefined);
@@ -58,20 +55,7 @@ export default function ProductDetail({ id }: ProductDetailProps) {
     setSelectedColor(undefined);
     setQty(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
-
-  if (loading) return <Loading message="Loading product..." />;
-
-  if (!product) {
-    return (
-      <div className="max-w-3xl mx-auto px-6 py-24 text-center">
-        <EmptyState message="We couldn't find this product. It may have been removed." />
-        <Link href="/shop" className="btn-primary mt-6 inline-flex items-center gap-2">
-          <ArrowLeft size={14} /> Back to Shop
-        </Link>
-      </div>
-    );
-  }
+  }, [product.id]);
 
   const productType =
     product.productType || getProductType(product.category as string);
@@ -86,14 +70,6 @@ export default function ProductDetail({ id }: ProductDetailProps) {
     ];
     return Array.from(new Set(list.filter(Boolean)));
   })();
-
-  const related = products
-    .filter(
-      (p) =>
-        p.id !== product.id &&
-        (p.productType || getProductType(p.category as string)) === productType
-    )
-    .slice(0, 4);
 
   const discount =
     product.originalPrice && product.originalPrice > product.price
@@ -281,7 +257,6 @@ export default function ProductDetail({ id }: ProductDetailProps) {
                           style={{ backgroundColor: COLOR_HEX[color] || '#ccc' }}
                         />
                         {color}
-                        {selected && <Check size={12} />}
                       </button>
                     );
                   })}
@@ -440,7 +415,7 @@ export default function ProductDetail({ id }: ProductDetailProps) {
           </div>
         </div>
 
-        {related.length > 0 && (
+        {relatedProducts.length > 0 && (
           <section className="mt-16 md:mt-24">
             <div className="flex items-end justify-between mb-6 md:mb-8 flex-wrap gap-3 md:gap-4">
               <div>
@@ -459,7 +434,7 @@ export default function ProductDetail({ id }: ProductDetailProps) {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-              {related.map((p, i) => (
+              {relatedProducts.map((p, i) => (
                 <ProductCard
                   key={p.id}
                   product={p}

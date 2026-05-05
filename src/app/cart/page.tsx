@@ -1,13 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag, Plus, Minus, Trash2, Truck, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/utils';
 import { COLOR_HEX, STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import CheckoutModal from '@/components/cart/CheckoutModal';
+
+const CheckoutModal = dynamic(
+  () => import('@/components/cart/CheckoutModal'),
+  { ssr: false }
+);
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
@@ -71,12 +77,13 @@ export default function CartPage() {
                 key={item.cartLineId}
                 className="bg-white p-3 sm:p-4 md:p-6 grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr_auto] gap-3 sm:gap-4 md:gap-6 items-start md:items-center shadow-sm"
               >
-                <div className="aspect-square bg-cream overflow-hidden [&_img]:[mix-blend-mode:darken]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div className="relative aspect-square bg-cream overflow-hidden">
+                  <Image
                     src={item.image}
                     alt={item.name}
-                    className="w-full h-full object-contain p-1.5"
+                    fill
+                    sizes="(min-width: 768px) 120px, 88px"
+                    className="object-contain p-1.5 mix-blend-darken"
                   />
                 </div>
                 <div className="min-w-0">

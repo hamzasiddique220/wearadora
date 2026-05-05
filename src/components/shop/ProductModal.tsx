@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   X,
@@ -109,12 +110,13 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     <Modal isOpen={!!product} onClose={onClose} maxWidth="max-w-4xl">
       <div className="grid md:grid-cols-[0.9fr_1.1fr]">
         <div className="relative bg-cream flex flex-col">
-          <div className="relative aspect-[4/3] sm:aspect-square flex items-center justify-center [&_img]:[mix-blend-mode:darken]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+          <div className="relative aspect-[4/3] sm:aspect-square flex items-center justify-center">
+            <Image
               src={currentImage}
               alt={product.name}
-              className="w-full h-full object-contain p-4 md:p-6"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-contain p-4 md:p-6 mix-blend-darken"
             />
             <button
               onClick={onClose}
@@ -137,17 +139,18 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   key={i}
                   onClick={() => setActiveImage(i)}
                   aria-label={`View image ${i + 1}`}
-                  className={`relative shrink-0 w-14 h-14 overflow-hidden border transition-all bg-cream [&_img]:[mix-blend-mode:darken] ${
+                  className={`relative shrink-0 w-14 h-14 overflow-hidden border transition-all bg-cream ${
                     activeImage === i
                       ? 'border-bronze'
                       : 'border-stone/60 hover:border-stone'
                   }`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={img}
                     alt=""
-                    className="w-full h-full object-contain p-1"
+                    fill
+                    sizes="56px"
+                    className="object-contain p-1 mix-blend-darken"
                   />
                 </button>
               ))}

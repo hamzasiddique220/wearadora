@@ -1,10 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useSiteSettingsData } from '@/lib/stores/data';
 
 export default function StorySection() {
-  const { settings } = useSiteSettings();
+  const { settings } = useSiteSettingsData();
   const jewelryEnabled = settings.jewelryEnabled === true;
 
   const image = jewelryEnabled
@@ -41,14 +42,16 @@ export default function StorySection() {
             jewelryEnabled ? '' : 'bg-cream/5 flex items-center justify-center'
           }`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={image}
             alt="Artisan craftsmanship"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="lazy"
             className={
               jewelryEnabled
-                ? 'w-full h-full object-cover'
-                : 'max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)]'
+                ? 'object-cover'
+                : 'object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)] p-[7.5%]'
             }
           />
           <div className="absolute -bottom-6 -right-6 bg-bronze p-6 text-center hidden md:block">

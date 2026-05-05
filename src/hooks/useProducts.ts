@@ -1,22 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { productService } from '@/lib/services/products';
-import { Product } from '@/types';
+import { useEffect } from 'react';
+import { useDataStore, useProductsData } from '@/lib/stores/data';
 
+/**
+ * Backwards-compatible wrapper. Returns products from the shared store and
+ * ensures a real-time subscription exists for the lifetime of the consumer.
+ */
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
-    const unsubscribe = productService.subscribe((items) => {
-      setProducts(items);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    useDataStore.getState().acquire();
+    return () => {
+      useDataStore.getState().release();
+    };
   }, []);
 
-  return { products, loading, error };
+  const { products, loading } = useProductsData();
+  return { products, loading, error: null as string | null };
 };

@@ -10,6 +10,31 @@ interface RevealProps {
   as?: keyof JSX.IntrinsicElements;
 }
 
+const callbacks =
+  typeof WeakMap !== 'undefined'
+    ? new WeakMap<Element, () => void>()
+    : null;
+
+let sharedObserver: IntersectionObserver | null = null;
+
+function getObserver(): IntersectionObserver | null {
+  if (typeof window === 'undefined') return null;
+  if (sharedObserver) return sharedObserver;
+  sharedObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          callbacks?.get(entry.target)?.();
+          sharedObserver!.unobserve(entry.target);
+          callbacks?.delete(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+  return sharedObserver;
+}
+
 export default function Reveal({
   children,
   className = '',
@@ -29,19 +54,17 @@ export default function Reveal({
       el.classList.add('revealed');
       return;
     }
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            el.classList.add('revealed');
-            io.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    const observer = getObserver();
+    if (!observer || !callbacks) {
+      el.classList.add('revealed');
+      return;
+    }
+    callbacks.set(el, () => el.classList.add('revealed'));
+    observer.observe(el);
+    return () => {
+      callbacks.delete(el);
+      observer.unobserve(el);
+    };
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

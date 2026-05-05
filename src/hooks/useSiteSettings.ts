@@ -1,21 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { siteSettingsService } from '@/lib/services/siteSettings';
-import { mergeSettings } from '@/lib/defaults/siteSettings';
-import type { SiteSettings } from '@/types';
+import { useEffect } from 'react';
+import { useDataStore, useSiteSettingsData } from '@/lib/stores/data';
 
+/**
+ * Backwards-compatible wrapper. Returns settings from the shared store and
+ * keeps the realtime subscription alive while consumers are mounted.
+ */
 export const useSiteSettings = () => {
-  const [raw, setRaw] = useState<SiteSettings | null>(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const unsub = siteSettingsService.subscribe((data) => {
-      setRaw(data);
-      setLoading(false);
-    });
-    return () => unsub();
+    useDataStore.getState().acquire();
+    return () => {
+      useDataStore.getState().release();
+    };
   }, []);
 
-  return { settings: mergeSettings(raw), raw, loading };
+  const { settings, raw, loading } = useSiteSettingsData();
+  return { settings, raw, loading };
 };

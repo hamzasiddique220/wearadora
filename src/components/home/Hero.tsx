@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useVisibleProducts } from '@/hooks/useVisibleProducts';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { getProductType } from '@/lib/constants';
 import {
   JEWELRY_BG,
@@ -76,13 +76,13 @@ function buildSlideFromProduct(p: Product, img: string): Slide {
 }
 
 export default function Hero() {
-  const { products } = useVisibleProducts();
-  const { settings } = useSiteSettings();
+  const { products } = useVisibleProductsData();
+  const { settings } = useSiteSettingsData();
   const jewelryEnabled = settings.jewelryEnabled === true;
   const [current, setCurrent] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const imgWrapRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef({ rx: 0, ry: 0, tx: 0, ty: 0 });
   const rafRef = useRef<number | null>(null);
   const dragStart = useRef({ x: 0, y: 0, rx: 0, ry: 0 });
@@ -130,10 +130,10 @@ export default function Hero() {
   }, [next, isDragging, slides.length]);
 
   const applyTransform = () => {
-    const img = imgRef.current;
-    if (!img) return;
+    const el = imgRef.current;
+    if (!el) return;
     const { rx, ry, tx, ty } = tiltRef.current;
-    img.style.transform = `perspective(1300px) rotateY(${ry}deg) rotateX(${rx}deg) translate3d(${tx}px, ${ty}px, 40px) scale(1.08)`;
+    el.style.transform = `perspective(1300px) rotateY(${ry}deg) rotateX(${rx}deg) translate3d(${tx}px, ${ty}px, 40px) scale(1.08)`;
   };
 
   const handleHeroMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -152,10 +152,10 @@ export default function Hero() {
   };
 
   const handleHeroLeave = () => {
-    const img = imgRef.current;
-    if (!img) return;
+    const el = imgRef.current;
+    if (!el) return;
     tiltRef.current = { rx: 0, ry: 0, tx: 0, ty: 0 };
-    img.style.transform = '';
+    el.style.transform = '';
   };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -186,15 +186,20 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-[78vh] sm:min-h-[85vh] md:min-h-screen overflow-hidden grain">
-      {slides.map((s, i) => (
-        <div
-          key={i}
-          className={`absolute inset-0 transition-opacity duration-[1000ms] ease-in-out ${
-            i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
-          }`}
-          style={{ background: s.bg }}
-        />
-      ))}
+      {slides.map((s, i) => {
+        const isActive = i === current;
+        const isNext = slides.length > 1 && i === (current + 1) % slides.length;
+        if (!isActive && !isNext) return null;
+        return (
+          <div
+            key={i}
+            className={`absolute inset-0 transition-opacity duration-[1000ms] ease-in-out ${
+              isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+            style={{ background: s.bg }}
+          />
+        );
+      })}
 
       <div className="relative z-20 max-w-[1500px] mx-auto px-4 sm:px-6 md:px-10 pt-4 pb-12 md:py-0 min-h-[78vh] sm:min-h-[85vh] md:min-h-screen grid md:grid-cols-[1fr_1.35fr] gap-3 md:gap-6 items-center">
         <div
@@ -279,17 +284,9 @@ export default function Hero() {
             style={{ background: 'rgba(26,22,20,0.55)' }}
           />
           <div className="hero-auto-rotate w-full h-full flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <div
               ref={imgRef}
-              src={slide.image}
-              alt={slide.title}
-              draggable={false}
-              className={`hero-img relative w-full h-full max-h-[38vh] sm:max-h-[48vh] md:max-h-[88vh] scale-[1] md:scale-125 float-3d pointer-events-none ${
-                slide.kind === 'jewel'
-                  ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[90%] md:max-w-[85%]'
-                  : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'
-              }`}
+              className="relative w-full h-full flex items-center justify-center pointer-events-none"
               style={{
                 transition: isDragging
                   ? 'none'
@@ -297,7 +294,23 @@ export default function Hero() {
                 willChange: 'transform',
                 transformStyle: 'preserve-3d',
               }}
-            />
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                width={1200}
+                height={1200}
+                priority
+                fetchPriority="high"
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                draggable={false}
+                className={`hero-img w-auto h-auto max-h-[38vh] sm:max-h-[48vh] md:max-h-[88vh] scale-[1] md:scale-125 float-3d ${
+                  slide.kind === 'jewel'
+                    ? 'object-cover rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.45)] max-w-[90%] md:max-w-[85%]'
+                    : 'object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]'
+                }`}
+              />
+            </div>
           </div>
         </div>
       </div>

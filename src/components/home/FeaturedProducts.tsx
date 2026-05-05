@@ -1,15 +1,19 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Product, ProductType } from '@/types';
 import { getProductType } from '@/lib/constants';
 import ProductCard from '@/components/shop/ProductCard';
-import ProductModal from '@/components/shop/ProductModal';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
 import Reveal from '@/components/ui/Reveal';
+
+const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
+  ssr: false,
+});
 
 interface FeaturedProductsProps {
   products: Product[];

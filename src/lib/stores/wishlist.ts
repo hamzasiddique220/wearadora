@@ -33,6 +33,7 @@ export const useWishlistStore = create<WishlistState>()(
     {
       name: 'wearadora-wishlist',
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
     }
   )
 );

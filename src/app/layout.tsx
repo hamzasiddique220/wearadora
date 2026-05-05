@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Cormorant_Garamond, Cormorant } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -6,8 +7,34 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Toast from '@/components/ui/Toast';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
+import StorageHydrator from '@/components/StorageHydrator';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
 import { fetchSiteSettings } from '@/lib/server/firestoreRest';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+  preload: true,
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-cormorant',
+  display: 'swap',
+  preload: true,
+});
+
+const cormorantItalic = Cormorant({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['italic'],
+  variable: '--font-cormorant-italic',
+  display: 'swap',
+  preload: false,
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSiteSettings();
@@ -124,9 +151,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${inter.variable} ${cormorant.variable} ${cormorantItalic.variable}`}
+    >
       <body>
         <OrganizationJsonLd />
+        <StorageHydrator />
         <ScrollProgress />
         <AnnouncementBar />
         <Header />

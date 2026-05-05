@@ -100,6 +100,7 @@ export const useCartStore = create<CartState>()(
     {
       name: 'wearadora-cart-v2',
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
     }
   )
 );

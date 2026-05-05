@@ -30,6 +30,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'wearadora-auth',
       storage: createJSONStorage(() => sessionStorage),
+      skipHydration: true,
     }
   )
 );

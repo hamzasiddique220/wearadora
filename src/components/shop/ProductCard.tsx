@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, Eye, ShoppingBag, ImageOff } from 'lucide-react';
 import { Product } from '@/types';
@@ -89,24 +90,26 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           </div>
         ) : (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={primaryImage}
-              alt=""
+              alt={product.name}
+              fill
+              sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               loading="lazy"
               onError={() => setPrimaryError(true)}
-              className={`absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
+              className={`z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
                 hoverImage && !hoverError ? 'group-hover:opacity-0 transition-opacity' : ''
               }`}
             />
             {hoverImage && !hoverError && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={hoverImage}
                 alt=""
+                fill
+                sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                 loading="lazy"
                 onError={() => setHoverError(true)}
-                className="absolute inset-0 w-full h-full z-10 object-contain object-center [mix-blend-mode:darken] opacity-0 group-hover:opacity-100 transition-opacity duration-[700ms]"
+                className="z-10 object-contain object-center [mix-blend-mode:darken] opacity-0 group-hover:opacity-100 transition-opacity duration-[700ms]"
               />
             )}
           </>

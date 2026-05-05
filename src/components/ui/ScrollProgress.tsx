@@ -1,12 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function ScrollProgress() {
+  const pathname = usePathname();
   const barRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const isAdmin = pathname?.startsWith('/admin') ?? false;
 
   useEffect(() => {
+    if (isAdmin) return;
     const update = () => {
       const el = barRef.current;
       if (!el) return;
@@ -32,7 +36,9 @@ export default function ScrollProgress() {
       window.removeEventListener('resize', onScroll);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isAdmin]);
+
+  if (isAdmin) return null;
 
   return (
     <div

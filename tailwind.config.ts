@@ -19,6 +19,7 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-cormorant)', 'Cormorant Garamond', 'serif'],
         sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        'italic-serif': ['var(--font-cormorant-italic)', 'Cormorant', 'serif'],
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s ease-out backwards',

@@ -59,7 +59,12 @@ export const productService = {
       throw new Error(`Cloudinary upload failed: ${err}`);
     }
     const data = await res.json();
-    return data.secure_url as string;
+    const url = data.secure_url as string;
+    // Inject f_auto,q_auto so Cloudinary serves AVIF/WebP at the right quality
+    // even when the URL is rendered through a raw <img> (e.g. admin previews).
+    return url.includes('/upload/')
+      ? url.replace('/upload/', '/upload/f_auto,q_auto/')
+      : url;
   },
 
   deleteImage: async (_imageUrl: string): Promise<void> => {

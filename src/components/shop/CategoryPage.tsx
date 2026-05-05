@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useState, useMemo, useEffect, useDeferredValue, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
-import { useProducts } from '@/hooks/useProducts';
+import { useProductsData } from '@/lib/stores/data';
 import { Product, ProductType } from '@/types';
 import {
   getProductType,
@@ -12,9 +14,12 @@ import {
   SLIPPERS_CATEGORIES,
 } from '@/lib/constants';
 import ProductCard from '@/components/shop/ProductCard';
-import ProductModal from '@/components/shop/ProductModal';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
+
+const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
+  ssr: false,
+});
 
 interface CategoryPageProps {
   productType: ProductType;
@@ -34,10 +39,11 @@ function CategoryContent({
   description,
   heroKind = 'photo',
 }: CategoryPageProps) {
-  const { products, loading } = useProducts();
+  const { products, loading } = useProductsData();
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredQuery = useDeferredValue(searchQuery);
   const [selected, setSelected] = useState<Product | null>(null);
 
   const subCategories = useMemo(
@@ -60,17 +66,17 @@ function CategoryContent({
   }, [searchParams, subCategories]);
 
   const filteredProducts = useMemo(() => {
+    const q = deferredQuery.trim().toLowerCase();
     return products.filter((p) => {
       const type = p.productType || getProductType(p.category as string);
       if (type !== productType) return false;
       const productCat = normalizeCategory(p.category as string);
       const matchCat =
         selectedCategory === 'all' || productCat === selectedCategory;
-      const matchSearch =
-        !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchSearch = !q || p.name.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
-  }, [products, selectedCategory, searchQuery, productType]);
+  }, [products, selectedCategory, deferredQuery, productType]);
 
   return (
     <>
@@ -113,22 +119,30 @@ function CategoryContent({
                     'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
                 }}
               />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={heroImage}
-                alt={title}
-                className="relative max-h-[40vh] md:max-h-[55vh] w-full object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] float-3d scale-110"
-              />
+              <div className="relative w-full h-full max-h-[40vh] md:max-h-[55vh] float-3d scale-110">
+                <Image
+                  src={heroImage}
+                  alt={title}
+                  fill
+                  priority
+                  fetchPriority="high"
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]"
+                />
+              </div>
             </div>
           </div>
         </section>
       ) : (
         <section className="relative h-[36vh] sm:h-[42vh] md:h-[50vh] overflow-hidden grain">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={heroImage}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
           <div className="relative h-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 flex flex-col items-center justify-center text-center">

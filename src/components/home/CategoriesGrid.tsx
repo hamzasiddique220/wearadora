@@ -1,9 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Reveal from '@/components/ui/Reveal';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useSiteSettingsData } from '@/lib/stores/data';
 
 interface CategoryTile {
   name: string;
@@ -22,7 +23,7 @@ const CATEGORY_TILES: CategoryTile[] = [
 ];
 
 export default function CategoriesGrid() {
-  const { settings } = useSiteSettings();
+  const { settings } = useSiteSettingsData();
   const tiles = settings.jewelryEnabled
     ? CATEGORY_TILES
     : CATEGORY_TILES.filter((t) => t.kind !== 'jewel');
@@ -65,14 +66,15 @@ export default function CategoriesGrid() {
                 }`}
               >
                 {image && (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <Image
                     src={image}
                     alt={displayName}
+                    fill
+                    sizes="(min-width: 1024px) 14vw, (min-width: 640px) 25vw, 50vw"
                     className={
                       isProductImage
-                        ? 'cat-product-img relative z-10 w-full h-full drop-shadow-[0_18px_24px_rgba(26,22,20,0.25)]'
-                        : 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
+                        ? 'cat-product-img z-10 object-contain drop-shadow-[0_18px_24px_rgba(26,22,20,0.25)]'
+                        : 'object-cover transition-transform duration-700 group-hover:scale-110'
                     }
                   />
                 )}

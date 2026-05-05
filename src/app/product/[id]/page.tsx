@@ -1,13 +1,20 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchProduct, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import {
+  fetchAllProducts,
+  fetchProduct,
+  fetchSiteSettings,
+} from '@/lib/server/firestoreRest';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
+import DataInitializer from '@/components/DataInitializer';
 import ProductDetail from './ProductDetail';
 import ProductJsonLd from '@/components/seo/ProductJsonLd';
 
 interface PageProps {
   params: { id: string };
 }
+
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -73,24 +80,49 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const [product, settings] = await Promise.all([
+  const [product, allProducts, settings] = await Promise.all([
     fetchProduct(params.id),
+    fetchAllProducts(),
     fetchSiteSettings(),
   ]);
 
-  if (product) {
-    const isJewelry =
-      (product.productType || getProductType(product.category as string)) ===
-      'jewelry';
-    if (isJewelry && settings?.jewelryEnabled !== true) {
-      notFound();
-    }
+  if (!product) {
+    notFound();
   }
+
+  const isJewelry =
+    (product.productType || getProductType(product.category as string)) ===
+    'jewelry';
+  if (isJewelry && settings?.jewelryEnabled !== true) {
+    notFound();
+  }
+
+  // Pre-compute "you may also like" on the server so the client doesn't have
+  // to wait for the catalog to land before rendering related cards.
+  const productType = product.productType || getProductType(product.category as string);
+  const visibleAll = settings?.jewelryEnabled
+    ? allProducts
+    : allProducts.filter(
+        (p) =>
+          (p.productType || getProductType(p.category as string)) !== 'jewelry'
+      );
+  const related = visibleAll
+    .filter(
+      (p) =>
+        p.id !== product.id &&
+        (p.productType || getProductType(p.category as string)) === productType
+    )
+    .slice(0, 4);
 
   return (
     <>
-      {product && <ProductJsonLd product={product} />}
-      <ProductDetail id={params.id} />
+      <ProductJsonLd product={product} />
+      <DataInitializer
+        initialProducts={visibleAll}
+        initialSettings={settings}
+        realtime={false}
+      />
+      <ProductDetail product={product} relatedProducts={related} />
     </>
   );
 }

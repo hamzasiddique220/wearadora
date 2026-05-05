@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useDeferredValue } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -13,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
-import { useVisibleProducts } from '@/hooks/useVisibleProducts';
+import { useVisibleProductsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
 import { formatPrice } from '@/lib/utils';
 import { cn } from '@/lib/utils';
@@ -28,9 +29,8 @@ export default function Header() {
 
   const cartCount = useCartStore((state) => state.getCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
-  const { products, jewelryEnabled } = useVisibleProducts();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const { products, jewelryEnabled } = useVisibleProductsData();
+  const deferredQuery = useDeferredValue(searchQuery);
 
   useEffect(() => {
     if (searchOpen) {
@@ -53,7 +53,7 @@ export default function Header() {
   }, [searchOpen]);
 
   const searchResults = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
     if (!q) return [];
     return products
       .filter(
@@ -62,7 +62,7 @@ export default function Header() {
           (p.category && String(p.category).toLowerCase().includes(q))
       )
       .slice(0, 6);
-  }, [searchQuery, products]);
+  }, [deferredQuery, products]);
 
   if (pathname?.startsWith('/admin')) return null;
 
@@ -134,7 +134,7 @@ export default function Header() {
               className="relative hover:text-bronze hide-mobile transition-colors"
             >
               <Heart size={20} />
-              {mounted && wishlistCount > 0 && (
+              {wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                   {wishlistCount}
                 </span>
@@ -146,7 +146,7 @@ export default function Header() {
               className="relative hover:text-bronze transition-colors"
             >
               <ShoppingBag size={20} />
-              {mounted && cartCount > 0 && (
+              {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
@@ -183,7 +183,7 @@ export default function Header() {
               onClick={() => setMobileMenu(false)}
               className="block text-xs tracking-[0.2em] uppercase py-2 border-b border-stone"
             >
-              Wishlist {mounted && wishlistCount > 0 && `(${wishlistCount})`}
+              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
             </Link>
             <Link
               href="/admin/login"
@@ -256,12 +256,13 @@ export default function Header() {
                       }}
                       className="w-full flex items-center gap-4 p-4 hover:bg-sand/50 border-b border-stone/50 text-left transition"
                     >
-                      <div className="w-14 h-14 bg-cream overflow-hidden shrink-0 [&_img]:[mix-blend-mode:darken]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                      <div className="relative w-14 h-14 bg-cream overflow-hidden shrink-0">
+                        <Image
                           src={p.image}
                           alt={p.name}
-                          className="w-full h-full object-contain p-1"
+                          fill
+                          sizes="56px"
+                          className="object-contain p-1 mix-blend-darken"
                         />
                       </div>
                       <div className="flex-1 min-w-0">

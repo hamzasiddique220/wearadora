@@ -1,9 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useProducts } from './useProducts';
-import { useSiteSettings } from './useSiteSettings';
-import { getProductType } from '@/lib/constants';
+import { useEffect } from 'react';
+import { useDataStore, useVisibleProductsData } from '@/lib/stores/data';
 
 /**
  * Same as useProducts, but filters out jewelry items when the admin has the
@@ -11,21 +9,18 @@ import { getProductType } from '@/lib/constants';
  * (Admin views and the cart should keep using useProducts directly.)
  */
 export const useVisibleProducts = () => {
-  const { products, loading, error } = useProducts();
-  const { settings, loading: settingsLoading } = useSiteSettings();
+  useEffect(() => {
+    useDataStore.getState().acquire();
+    return () => {
+      useDataStore.getState().release();
+    };
+  }, []);
 
-  const visible = useMemo(() => {
-    if (settings.jewelryEnabled) return products;
-    return products.filter(
-      (p) =>
-        (p.productType || getProductType(p.category as string)) !== 'jewelry'
-    );
-  }, [products, settings.jewelryEnabled]);
-
+  const { products, loading, jewelryEnabled } = useVisibleProductsData();
   return {
-    products: visible,
-    loading: loading || settingsLoading,
-    error,
-    jewelryEnabled: settings.jewelryEnabled,
+    products,
+    loading,
+    error: null as string | null,
+    jewelryEnabled,
   };
 };

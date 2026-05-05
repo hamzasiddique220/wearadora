@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Plus, Edit3, Trash2 } from 'lucide-react';
 import { Product } from '@/types';
 import { useProducts } from '@/hooks/useProducts';
@@ -60,12 +61,13 @@ export default function AdminProductsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {products.map((p) => (
               <div key={p.id} className="bg-white overflow-hidden">
-                <div className="aspect-[4/3] bg-sand">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div className="relative aspect-[4/3] bg-sand">
+                  <Image
                     src={p.image}
                     alt={p.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
                   />
                 </div>
                 <div className="p-4">

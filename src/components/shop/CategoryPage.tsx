@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useDeferredValue, Suspense } from 'react'
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProductsData } from '@/lib/stores/data';
 import { Product, ProductType } from '@/types';
 import {
@@ -29,6 +29,8 @@ interface CategoryPageProps {
   description: string;
   /** 'photo' = background-cover editorial image, 'product' = centered transparent PNG on cream */
   heroKind?: 'photo' | 'product';
+  /** Optional list of additional images to cycle through as a slideshow. */
+  heroImages?: string[];
 }
 
 function CategoryContent({
@@ -38,6 +40,7 @@ function CategoryContent({
   heroImage,
   description,
   heroKind = 'photo',
+  heroImages,
 }: CategoryPageProps) {
   const { products, loading } = useProductsData();
   const searchParams = useSearchParams();
@@ -45,6 +48,33 @@ function CategoryContent({
   const [searchQuery, setSearchQuery] = useState('');
   const deferredQuery = useDeferredValue(searchQuery);
   const [selected, setSelected] = useState<Product | null>(null);
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  const slideshow = useMemo(() => {
+    const seen = new Set<string>();
+    const out: string[] = [];
+    const push = (url?: string) => {
+      if (!url) return;
+      if (seen.has(url)) return;
+      seen.add(url);
+      out.push(url);
+    };
+    push(heroImage);
+    if (heroImages) heroImages.forEach(push);
+    return out;
+  }, [heroImage, heroImages]);
+
+  useEffect(() => {
+    if (heroIndex >= slideshow.length) setHeroIndex(0);
+  }, [slideshow.length, heroIndex]);
+
+  useEffect(() => {
+    if (slideshow.length <= 1) return;
+    const t = setInterval(() => {
+      setHeroIndex((c) => (c + 1) % slideshow.length);
+    }, 4500);
+    return () => clearInterval(t);
+  }, [slideshow.length]);
 
   const subCategories = useMemo(
     () =>
@@ -120,30 +150,74 @@ function CategoryContent({
                 }}
               />
               <div className="relative w-full h-full max-h-[40vh] md:max-h-[55vh] float-3d scale-110">
-                <Image
-                  src={heroImage}
-                  alt={title}
-                  fill
-                  priority
-                  fetchPriority="high"
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)]"
-                />
+                {slideshow.map((src, i) => (
+                  <Image
+                    key={src}
+                    src={src}
+                    alt={title}
+                    fill
+                    priority={i === 0}
+                    fetchPriority={i === 0 ? 'high' : 'auto'}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className={`object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] transition-opacity duration-[900ms] ease-in-out ${
+                      i === heroIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>
+          {slideshow.length > 1 && (
+            <>
+              <button
+                onClick={() =>
+                  setHeroIndex((c) => (c - 1 + slideshow.length) % slideshow.length)
+                }
+                aria-label="Previous slide"
+                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => setHeroIndex((c) => (c + 1) % slideshow.length)}
+                aria-label="Next slide"
+                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
+              >
+                <ChevronRight size={18} />
+              </button>
+              <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+                {slideshow.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setHeroIndex(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`transition-all h-[3px] ${
+                      i === heroIndex
+                        ? 'w-8 bg-charcoal'
+                        : 'w-5 bg-charcoal/30 hover:bg-charcoal/60'
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </section>
       ) : (
         <section className="relative h-[36vh] sm:h-[42vh] md:h-[50vh] overflow-hidden grain">
-          <Image
-            src={heroImage}
-            alt={title}
-            fill
-            priority
-            fetchPriority="high"
-            sizes="100vw"
-            className="object-cover"
-          />
+          {slideshow.map((src, i) => (
+            <Image
+              key={src}
+              src={src}
+              alt={title}
+              fill
+              priority={i === 0}
+              fetchPriority={i === 0 ? 'high' : 'auto'}
+              sizes="100vw"
+              className={`object-cover transition-opacity duration-[900ms] ease-in-out ${
+                i === heroIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
           <div className="relative h-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 flex flex-col items-center justify-center text-center">
             <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-2 md:mb-3">
@@ -156,6 +230,22 @@ function CategoryContent({
               {description}
             </p>
           </div>
+          {slideshow.length > 1 && (
+            <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+              {slideshow.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setHeroIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`transition-all h-[3px] ${
+                    i === heroIndex
+                      ? 'w-8 bg-cream'
+                      : 'w-5 bg-cream/40 hover:bg-cream/70'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 

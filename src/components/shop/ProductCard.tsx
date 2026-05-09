@@ -11,6 +11,7 @@ import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import { heartBurst } from '@/lib/heartBurst';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   product: Product;
@@ -19,6 +20,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onClick, delay = 0 }: ProductCardProps) {
+  const router = useRouter();
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product.id));
@@ -53,7 +55,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
     e.stopPropagation();
     if (outOfStock) return;
     if (hasVariants) {
-      onClick();
+      router.push(detailHref);
       return;
     }
     addToCart(product);

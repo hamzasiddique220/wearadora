@@ -227,7 +227,7 @@ export default function Hero() {
           </h1>
 
           <p
-            className={`text-[13px] sm:text-base md:text-lg leading-relaxed mb-5 md:mb-10 max-w-lg ${
+            className={`text-[13px] sm:text-base md:text-lg leading-relaxed mb-5 md:mb-10 max-w-lg line-clamp-3 md:line-clamp-4 ${
               isDarkSlide ? 'text-stone/90' : 'text-mocha'
             }`}
           >

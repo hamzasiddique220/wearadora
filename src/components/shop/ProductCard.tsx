@@ -88,7 +88,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
         {showPlaceholder ? (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-mocha/60 bg-sand/40">
             <ImageOff size={28} strokeWidth={1.2} />
-            <span className="text-[9px] tracking-[0.25em] uppercase">Image unavailable</span>
+            <span className="text-[9px] tracking-[0.25em] uppercase">Image unavalb</span>
           </div>
         ) : (
           <>

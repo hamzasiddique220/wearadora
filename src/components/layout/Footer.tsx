@@ -32,10 +32,10 @@ export default function Footer() {
     <footer className="bg-charcoal text-cream py-12 md:py-16 px-4 sm:px-6 md:px-8 mt-16 md:mt-20 relative overflow-hidden grain">
       <div className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 relative">
         <div className="col-span-2 md:col-span-1">
-          <div className="font-serif text-2xl sm:text-3xl tracking-[0.25em] sm:tracking-[0.3em] mb-2">
+          <div className="font-wordmark text-2xl sm:text-3xl tracking-[0.25em] sm:tracking-[0.3em] mb-2">
             {STORE_CONFIG.name}
           </div>
-          <div className="text-[10px] tracking-[0.35em] sm:tracking-[0.4em] text-bronze uppercase mb-3 sm:mb-4">
+          <div className="font-tagline text-[10px] tracking-[0.35em] sm:tracking-[0.4em] text-bronze uppercase mb-3 sm:mb-4">
             ✦ {STORE_CONFIG.tagline} ✦
           </div>
           <p className="text-[13px] sm:text-sm text-stone leading-relaxed max-w-md">

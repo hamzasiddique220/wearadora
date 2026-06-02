@@ -40,6 +40,15 @@ img {
   font-style: italic;
 }
 
+/* Brand wordmark + tagline (Logo & Brand Guide) */
+.font-wordmark {
+  font-family: var(--font-italiana), 'Italiana', 'Cormorant Garamond', serif;
+}
+
+.font-tagline {
+  font-family: var(--font-arsenal), 'Arsenal', sans-serif;
+}
+
 input,
 textarea,
 select {

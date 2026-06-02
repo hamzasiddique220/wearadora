@@ -22,6 +22,7 @@ import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import Modal from '@/components/ui/Modal';
 import { heartBurst } from '@/lib/heartBurst';
+import { trackAddToCart } from '@/lib/analytics';
 
 interface ProductModalProps {
   product: Product | null;
@@ -90,6 +91,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
       selectedSize,
       selectedColor,
     });
+    trackAddToCart(product, 1, { size: selectedSize, color: selectedColor });
     const variantText = [
       selectedSize ? `Size ${selectedSize}` : null,
       selectedColor,

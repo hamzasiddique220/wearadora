@@ -112,10 +112,10 @@ export default function Header() {
           </nav>
 
           <Link href="/" className="flex flex-col items-center min-w-0">
-            <div className="font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.3em] font-light truncate">
+            <div className="font-wordmark text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.3em] font-light truncate">
               {STORE_CONFIG.name}
             </div>
-            <div className="text-[9px] tracking-[0.4em] text-bronze uppercase mt-0.5 hide-mobile">
+            <div className="font-tagline text-[9px] tracking-[0.4em] text-bronze uppercase mt-0.5 hide-mobile">
               ✦ {STORE_CONFIG.tagline} ✦
             </div>
           </Link>

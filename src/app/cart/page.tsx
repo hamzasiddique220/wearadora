@@ -9,6 +9,7 @@ import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/utils';
 import { COLOR_HEX, STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { trackInitiateCheckout } from '@/lib/analytics';
 
 const CheckoutModal = dynamic(
   () => import('@/components/cart/CheckoutModal'),
@@ -216,7 +217,10 @@ export default function CartPage() {
               <span className="text-bronze">{formatPrice(total)}</span>
             </div>
             <button
-              onClick={() => setShowCheckout(true)}
+              onClick={() => {
+                trackInitiateCheckout(items, total);
+                setShowCheckout(true);
+              }}
               className="w-full bg-bronze text-white py-4 text-xs tracking-[0.2em] uppercase hover:bg-charcoal transition-colors flex items-center justify-center gap-2"
             >
               <Package size={14} /> Place Order

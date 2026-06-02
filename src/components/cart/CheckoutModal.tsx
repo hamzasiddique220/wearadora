@@ -8,6 +8,7 @@ import { useUIStore } from '@/lib/stores/ui';
 import { orderService } from '@/lib/services/orders';
 import { generateOrderId, formatDate, formatPrice } from '@/lib/utils';
 import { STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
+import { trackPurchase } from '@/lib/analytics';
 import Modal from '@/components/ui/Modal';
 
 interface CheckoutModalProps {
@@ -120,6 +121,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         dateDisplay,
       });
 
+      trackPurchase({ orderId, items, value: grandTotal });
       setPlacedOrder({
         orderId,
         phone: info.phone,

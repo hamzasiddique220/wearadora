@@ -20,6 +20,9 @@ const config: Config = {
         serif: ['var(--font-cormorant)', 'Cormorant Garamond', 'serif'],
         sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
         'italic-serif': ['var(--font-cormorant-italic)', 'Cormorant', 'serif'],
+        // Brand fonts (Logo & Brand Guide)
+        wordmark: ['var(--font-italiana)', 'Italiana', 'Cormorant Garamond', 'serif'],
+        tagline: ['var(--font-arsenal)', 'Arsenal', 'sans-serif'],
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s ease-out backwards',

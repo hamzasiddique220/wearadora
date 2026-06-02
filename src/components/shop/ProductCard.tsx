@@ -11,6 +11,7 @@ import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import { heartBurst } from '@/lib/heartBurst';
+import { trackAddToCart } from '@/lib/analytics';
 import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
@@ -59,6 +60,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       return;
     }
     addToCart(product);
+    trackAddToCart(product, 1);
     showToast('Added to bag');
   };
 

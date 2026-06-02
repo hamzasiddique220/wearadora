@@ -22,6 +22,7 @@ import { getProductType, COLOR_HEX, STORE_CONFIG } from '@/lib/constants';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
 import { heartBurst } from '@/lib/heartBurst';
+import { trackViewContent, trackAddToCart } from '@/lib/analytics';
 import type { Product } from '@/types';
 
 const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
@@ -55,6 +56,8 @@ export default function ProductDetail({
     setSelectedColor(undefined);
     setQty(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    trackViewContent(product);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id]);
 
   const productType =
@@ -88,6 +91,7 @@ export default function ProductDetail({
     for (let i = 0; i < qty; i++) {
       addToCart(product, { selectedSize, selectedColor });
     }
+    trackAddToCart(product, qty, { size: selectedSize, color: selectedColor });
     const variant = [selectedSize ? `Size ${selectedSize}` : null, selectedColor]
       .filter(Boolean)
       .join(' • ');
@@ -108,6 +112,7 @@ export default function ProductDetail({
     for (let i = 0; i < qty; i++) {
       addToCart(product, { selectedSize, selectedColor });
     }
+    trackAddToCart(product, qty, { size: selectedSize, color: selectedColor });
     router.push('/cart');
   };
 

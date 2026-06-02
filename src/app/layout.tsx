@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Cormorant_Garamond, Cormorant } from 'next/font/google';
+import {
+  Inter,
+  Cormorant_Garamond,
+  Cormorant,
+  Italiana,
+  Arsenal,
+} from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -7,6 +13,7 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Toast from '@/components/ui/Toast';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
+import Analytics from '@/components/analytics/Analytics';
 import StorageHydrator from '@/components/StorageHydrator';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
 import { fetchSiteSettings } from '@/lib/server/firestoreRest';
@@ -32,6 +39,24 @@ const cormorantItalic = Cormorant({
   weight: ['400'],
   style: ['italic'],
   variable: '--font-cormorant-italic',
+  display: 'swap',
+  preload: false,
+});
+
+// Brand wordmark — elegant high-fashion serif (per Logo & Brand Guide)
+const italiana = Italiana({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-italiana',
+  display: 'swap',
+  preload: true,
+});
+
+// Brand tagline — "Adorned in Artistry"
+const arsenal = Arsenal({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-arsenal',
   display: 'swap',
   preload: false,
 });
@@ -153,10 +178,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorant.variable} ${cormorantItalic.variable}`}
+      className={`${inter.variable} ${cormorant.variable} ${cormorantItalic.variable} ${italiana.variable} ${arsenal.variable}`}
     >
       <body>
         <OrganizationJsonLd />
+        <Analytics />
         <StorageHydrator />
         <ScrollProgress />
         <AnnouncementBar />

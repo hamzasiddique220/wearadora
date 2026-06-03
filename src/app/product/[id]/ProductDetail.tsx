@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -66,13 +66,18 @@ export default function ProductDetail({
   const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
   const hasColors = isSlippers && product.colors && product.colors.length > 0;
 
-  const galleryImages = (() => {
+  // Memoized so the reference is stable across renders (otherwise the gallery
+  // keeps resetting to the first image). Color images are included so selecting
+  // a color always finds a matching slide, even if that image wasn't already in
+  // product.images.
+  const galleryImages = useMemo(() => {
     const list = [
       ...(product.images || []),
       ...(product.image ? [product.image] : []),
+      ...(product.colorImages ? Object.values(product.colorImages) : []),
     ];
     return Array.from(new Set(list.filter(Boolean)));
-  })();
+  }, [product.images, product.image, product.colorImages]);
 
   const discount =
     product.originalPrice && product.originalPrice > product.price

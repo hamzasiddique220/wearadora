@@ -52,6 +52,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     const list = [
       ...(product.images || []),
       ...(product.image ? [product.image] : []),
+      ...(product.colorImages ? Object.values(product.colorImages) : []),
     ];
     return Array.from(new Set(list.filter(Boolean)));
   }, [product]);

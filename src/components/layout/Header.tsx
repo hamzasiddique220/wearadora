@@ -86,16 +86,38 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-stone">
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 flex items-center justify-between gap-2 sm:gap-4">
-          <button
-            className="md:hidden p-1 -ml-1"
-            onClick={() => setMobileMenu(!mobileMenu)}
-            aria-label="Toggle menu"
-          >
-            <Menu size={22} />
-          </button>
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 grid grid-cols-3 items-center gap-2 sm:gap-4">
+          {/* LEFT — menu toggle (mobile) + brand logo */}
+          <div className="flex items-center gap-2 sm:gap-3 justify-self-start min-w-0">
+            <button
+              className="md:hidden p-1 -ml-1 shrink-0"
+              onClick={() => setMobileMenu(!mobileMenu)}
+              aria-label="Toggle menu"
+            >
+              <Menu size={22} />
+            </button>
 
-          <nav className="hide-mobile flex gap-8 text-xs tracking-[0.15em] uppercase">
+            <Link
+              href="/"
+              className="flex flex-col items-center min-w-0 shrink-0"
+              aria-label={`${STORE_CONFIG.name} — ${STORE_CONFIG.tagline}`}
+            >
+              <Image
+                src="/wearadora-monogram.jpg"
+                alt={STORE_CONFIG.name}
+                width={56}
+                height={56}
+                priority
+                className="rounded-full w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 object-cover shadow-sm ring-1 ring-bronze/30"
+              />
+              <span className="hidden sm:block font-tagline text-[9px] tracking-[0.3em] text-bronze uppercase mt-1 whitespace-nowrap">
+                ✦ {STORE_CONFIG.tagline} ✦
+              </span>
+            </Link>
+          </div>
+
+          {/* CENTER — primary navigation */}
+          <nav className="hide-mobile justify-self-center flex gap-8 text-xs tracking-[0.15em] uppercase">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -111,16 +133,8 @@ export default function Header() {
             ))}
           </nav>
 
-          <Link href="/" className="flex flex-col items-center min-w-0">
-            <div className="font-wordmark text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.3em] font-light truncate">
-              {STORE_CONFIG.name}
-            </div>
-            <div className="font-tagline text-[9px] tracking-[0.4em] text-bronze uppercase mt-0.5 hide-mobile">
-              ✦ {STORE_CONFIG.tagline} ✦
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
+          {/* RIGHT — actions */}
+          <div className="flex items-center gap-3 sm:gap-4 md:gap-5 justify-self-end">
             <button
               onClick={() => setSearchOpen(true)}
               className="hover:text-bronze transition-colors"

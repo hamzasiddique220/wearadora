@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BarChart3, Package, ShoppingBag, LogOut, Home, Settings } from 'lucide-react';
 import { useAuthStore } from '@/lib/stores/auth';
 import { STORE_CONFIG } from '@/lib/constants';
@@ -45,9 +46,19 @@ export default function AdminLayout({
     <div className="min-h-screen bg-cream">
       <header className="bg-charcoal text-cream border-b border-stone/20 sticky top-0 z-40">
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
-          <Link href="/admin/dashboard" className="font-serif text-xl tracking-[0.2em]">
-            {STORE_CONFIG.name}
-            <span className="text-bronze text-xs ml-2 tracking-[0.3em]">ADMIN</span>
+          <Link
+            href="/admin/dashboard"
+            className="flex items-center gap-2.5"
+            aria-label={`${STORE_CONFIG.name} Admin`}
+          >
+            <Image
+              src="/wearadora-monogram.jpg"
+              alt={STORE_CONFIG.name}
+              width={36}
+              height={36}
+              className="rounded-full w-9 h-9 object-cover ring-1 ring-bronze/30"
+            />
+            <span className="text-bronze text-xs tracking-[0.3em]">ADMIN</span>
           </Link>
 
           <nav className="hidden md:flex gap-1">

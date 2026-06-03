@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
@@ -32,9 +33,19 @@ export default function Footer() {
     <footer className="bg-charcoal text-cream py-12 md:py-16 px-4 sm:px-6 md:px-8 mt-16 md:mt-20 relative overflow-hidden grain">
       <div className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 relative">
         <div className="col-span-2 md:col-span-1">
-          <div className="font-wordmark text-2xl sm:text-3xl tracking-[0.25em] sm:tracking-[0.3em] mb-2">
-            {STORE_CONFIG.name}
-          </div>
+          <Link
+            href="/"
+            aria-label={STORE_CONFIG.name}
+            className="inline-block mb-2"
+          >
+            <Image
+              src="/wearadora-monogram.jpg"
+              alt={STORE_CONFIG.name}
+              width={72}
+              height={72}
+              className="rounded-full w-16 h-16 sm:w-[72px] sm:h-[72px] object-cover ring-1 ring-bronze/30"
+            />
+          </Link>
           <div className="font-tagline text-[10px] tracking-[0.35em] sm:tracking-[0.4em] text-bronze uppercase mb-3 sm:mb-4">
             ✦ {STORE_CONFIG.tagline} ✦
           </div>

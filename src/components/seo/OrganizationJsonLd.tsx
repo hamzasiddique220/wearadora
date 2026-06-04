@@ -7,7 +7,7 @@ export default function OrganizationJsonLd() {
     name: STORE_CONFIG.name,
     alternateName: STORE_CONFIG.tagline,
     url: STORE_CONFIG.siteUrl,
-    logo: `${STORE_CONFIG.siteUrl}/wearadora-monogram.jpg`,
+    logo: `${STORE_CONFIG.siteUrl}/wearadora-profile-cream.png`,
     image: `${STORE_CONFIG.siteUrl}/opengraph-image`,
     email: STORE_CONFIG.email,
     address: {

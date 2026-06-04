@@ -98,20 +98,17 @@ export default function Header() {
 
             <Link
               href="/"
-              className="flex flex-col items-center min-w-0 shrink-0"
+              className="flex items-center min-w-0 shrink-0"
               aria-label={`${STORE_CONFIG.name} — ${STORE_CONFIG.tagline}`}
             >
               <Image
-                src="/wearadora-monogram.jpg"
+                src="/wearadora-wordmark-dark.png"
                 alt={STORE_CONFIG.name}
-                width={56}
-                height={56}
+                width={2600}
+                height={760}
                 priority
-                className="rounded-full w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 object-cover shadow-sm ring-1 ring-bronze/30"
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain"
               />
-              <span className="hidden sm:block font-tagline text-[9px] tracking-[0.3em] text-bronze uppercase mt-1 whitespace-nowrap">
-                ✦ {STORE_CONFIG.tagline} ✦
-              </span>
             </Link>
           </div>
 

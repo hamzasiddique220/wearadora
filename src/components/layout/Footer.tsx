@@ -39,11 +39,11 @@ export default function Footer() {
             className="inline-block mb-2"
           >
             <Image
-              src="/wearadora-monogram.jpg"
+              src="/wearadora-wordmark-light.png"
               alt={STORE_CONFIG.name}
-              width={72}
-              height={72}
-              className="rounded-full w-16 h-16 sm:w-[72px] sm:h-[72px] object-cover ring-1 ring-bronze/30"
+              width={2600}
+              height={760}
+              className="h-14 sm:h-16 w-auto object-contain"
             />
           </Link>
           <div className="font-tagline text-[10px] tracking-[0.35em] sm:tracking-[0.4em] text-bronze uppercase mb-3 sm:mb-4">

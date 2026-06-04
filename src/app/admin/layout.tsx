@@ -65,11 +65,11 @@ export default function AdminLayout({
             aria-label={`${STORE_CONFIG.name} Admin`}
           >
             <Image
-              src="/wearadora-monogram.jpg"
+              src="/wearadora-wordmark-light.png"
               alt={STORE_CONFIG.name}
-              width={36}
-              height={36}
-              className="rounded-full w-9 h-9 object-cover ring-1 ring-bronze/30"
+              width={2600}
+              height={760}
+              className="h-10 w-auto object-contain"
             />
             <span className="text-bronze text-xs tracking-[0.3em]">ADMIN</span>
           </Link>

@@ -17,18 +17,31 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const logout = useAuthStore((state) => state.logout);
 
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
-    if (!isLoggedIn && !isLoginPage) {
+    // Wait for the persisted session to load before deciding to redirect,
+    // otherwise a fresh load / refresh bounces a logged-in admin to login.
+    if (hasHydrated && !isLoggedIn && !isLoginPage) {
       router.push('/admin/login');
     }
-  }, [isLoggedIn, isLoginPage, router]);
+  }, [hasHydrated, isLoggedIn, isLoginPage, router]);
 
   if (isLoginPage) {
     return <>{children}</>;
+  }
+
+  if (!hasHydrated) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="text-bronze text-[11px] tracking-[0.3em] uppercase animate-pulse">
+          Loading…
+        </div>
+      </div>
+    );
   }
 
   if (!isLoggedIn) {

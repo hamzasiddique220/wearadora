@@ -9,7 +9,6 @@ import {
   Search,
   Heart,
   ShoppingBag,
-  Settings,
   X,
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
@@ -166,14 +165,6 @@ export default function Header() {
                 </span>
               )}
             </Link>
-
-            <Link
-              href="/admin/login"
-              className="hover:text-bronze hide-mobile transition-colors"
-              aria-label="Admin"
-            >
-              <Settings size={20} />
-            </Link>
           </div>
         </div>
 
@@ -195,16 +186,9 @@ export default function Header() {
             <Link
               href="/wishlist"
               onClick={() => setMobileMenu(false)}
-              className="block text-xs tracking-[0.2em] uppercase py-2 border-b border-stone"
-            >
-              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
-            </Link>
-            <Link
-              href="/admin/login"
-              onClick={() => setMobileMenu(false)}
               className="block text-xs tracking-[0.2em] uppercase py-2"
             >
-              Admin
+              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
             </Link>
           </div>
         )}

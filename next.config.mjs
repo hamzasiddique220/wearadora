@@ -19,17 +19,14 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   images: {
-    formats: ['image/avif', 'image/webp'],
+    // Resize/convert images on Cloudinary's CDN instead of Next's on-server
+    // optimizer. The shared Node host (Passenger, 2 worker threads, no reliable
+    // sharp) can't optimize fast enough, which made images load slowly.
+    // See src/lib/cloudinaryLoader.ts.
+    loader: 'custom',
+    loaderFile: './src/lib/cloudinaryLoader.ts',
     deviceSizes: [360, 480, 640, 768, 1024, 1280, 1536, 1920],
     imageSizes: [16, 32, 64, 88, 128, 256, 384],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
-    remotePatterns: [
-      { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'via.placeholder.com' },
-      { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'wearadora.com' },
-    ],
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'firebase', 'firebase/firestore'],

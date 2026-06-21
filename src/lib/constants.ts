@@ -5,7 +5,7 @@ export const STORE_CONFIG = {
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '92313266431',
   phoneDisplay: '0313 2166431',
-  email: 'hello@wearadora.com',
+  email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',
   deliveryFee: 200,
   freeDeliveryMinItems: 2,

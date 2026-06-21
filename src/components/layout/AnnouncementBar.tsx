@@ -1,9 +1,11 @@
+import { STORE_CONFIG } from '@/lib/constants';
+
 export default function AnnouncementBar() {
   const messages = [
     '✦ Handcrafted with 40+ years of experience',
     '✦ Free delivery on 2 or more items',
     '✦ Mega Sale — limited time',
-    '✦ Order via WhatsApp · Delivery in 2–3 days',
+    `✦ Order via WhatsApp · Delivery in ${STORE_CONFIG.deliveryDays}`,
     '✦ New collection arrived',
   ];
 

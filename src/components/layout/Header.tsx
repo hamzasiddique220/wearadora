@@ -67,7 +67,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/slippers', label: 'Women' },
+    { href: '/slippers', label: 'Shoes' },
     ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
     { href: '/about', label: 'About' },
   ];

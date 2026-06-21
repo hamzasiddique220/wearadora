@@ -43,7 +43,7 @@ export default async function AboutPage() {
     {
       icon: <MapPin size={22} />,
       title: 'Made in Karachi',
-      desc: 'Our workshop and branch are both in Karachi, Pakistan — shipping nationwide in 2–3 days.',
+      desc: `Our workshop and branch are both in Karachi, Pakistan — shipping nationwide in ${STORE_CONFIG.deliveryDays}.`,
     },
   ];
 

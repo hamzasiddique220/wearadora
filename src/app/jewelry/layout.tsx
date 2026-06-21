@@ -3,8 +3,7 @@ import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Handcrafted Jewelry — Necklaces, Rings, Earrings & Bangles',
-  description:
-    'Heritage-inspired necklaces, rings, earrings and bangles — handcrafted in Karachi. Free delivery on 2+ items, nationwide in 2–3 days.',
+  description: `Heritage-inspired necklaces, rings, earrings and bangles — handcrafted in Karachi. Free delivery on 2+ items, nationwide in ${STORE_CONFIG.deliveryDays}.`,
   alternates: { canonical: '/jewelry' },
   openGraph: {
     title: `Handcrafted Jewelry | ${STORE_CONFIG.name}`,

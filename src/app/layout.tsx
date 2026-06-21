@@ -70,8 +70,8 @@ export async function generateMetadata(): Promise<Metadata> {
     : 'Handcrafted Ladies Footwear';
 
   const description = jewelryEnabled
-    ? 'WEARADORA — 40+ years of handcrafted ladies footwear and jewelry. Slides, heels, sandals and timeless jewelry made in Karachi. Free delivery on 2+ items, nationwide in 2–3 days.'
-    : 'WEARADORA — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on 2+ items, nationwide in 2–3 days.';
+    ? `WEARADORA — 40+ years of handcrafted ladies footwear and jewelry. Slides, heels, sandals and timeless jewelry made in Karachi. Free delivery on 2+ items, nationwide in ${STORE_CONFIG.deliveryDays}.`
+    : `WEARADORA — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on 2+ items, nationwide in ${STORE_CONFIG.deliveryDays}.`;
 
   const baseKeywords = [
     'wearadora',

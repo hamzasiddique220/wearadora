@@ -10,6 +10,7 @@ import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
+import WhatsAppFloat from '@/components/layout/WhatsAppFloat';
 import Toast from '@/components/ui/Toast';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
@@ -190,6 +191,7 @@ export default function RootLayout({
         <main className="min-h-screen">{children}</main>
         <Footer />
         <Toast />
+        <WhatsAppFloat />
       </body>
     </html>
   );

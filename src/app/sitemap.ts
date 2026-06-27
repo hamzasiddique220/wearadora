@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
+import { productHandle } from '@/lib/utils';
 import {
   fetchAllProducts,
   fetchSiteSettings,
@@ -44,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       );
 
   const productEntries: MetadataRoute.Sitemap = visibleProducts.map((p) => ({
-    url: `${base}/product/${p.id}`,
+    url: `${base}/product/${productHandle(p)}`,
     lastModified: p.createdAt ? new Date(p.createdAt) : now,
     changeFrequency: 'weekly' as const,
     priority: 0.8,

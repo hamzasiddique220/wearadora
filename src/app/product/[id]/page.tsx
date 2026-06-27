@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import {
   fetchAllProducts,
-  fetchProduct,
+  fetchProductByHandle,
   fetchSiteSettings,
 } from '@/lib/server/firestoreRest';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
+import { productHandle } from '@/lib/utils';
 import DataInitializer from '@/components/DataInitializer';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ProductDetail from './ProductDetail';
 import ProductJsonLd from '@/components/seo/ProductJsonLd';
 
@@ -19,12 +21,12 @@ export const revalidate = 300;
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const [product, settings] = await Promise.all([
-    fetchProduct(params.id),
+  const [match, settings] = await Promise.all([
+    fetchProductByHandle(params.id),
     fetchSiteSettings(),
   ]);
 
-  if (!product) {
+  if (!match) {
     return {
       title: 'Product Not Found',
       description: 'This item may have been removed or is no longer available.',
@@ -32,6 +34,7 @@ export async function generateMetadata({
     };
   }
 
+  const { product } = match;
   const isJewelry =
     (product.productType || getProductType(product.category as string)) ===
     'jewelry';
@@ -43,7 +46,8 @@ export async function generateMetadata({
     };
   }
 
-  const url = `${STORE_CONFIG.siteUrl}/product/${params.id}`;
+  const handle = productHandle(product);
+  const url = `${STORE_CONFIG.siteUrl}/product/${handle}`;
   const image = product.images?.[0] || product.image;
   const description =
     product.description?.slice(0, 200) ||
@@ -52,7 +56,7 @@ export async function generateMetadata({
   return {
     title: `${product.name} — ${product.category}`,
     description,
-    alternates: { canonical: `/product/${params.id}` },
+    alternates: { canonical: `/product/${handle}` },
     openGraph: {
       title: `${product.name} | ${STORE_CONFIG.name}`,
       description,
@@ -80,14 +84,21 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const [product, allProducts, settings] = await Promise.all([
-    fetchProduct(params.id),
+  const [match, allProducts, settings] = await Promise.all([
+    fetchProductByHandle(params.id),
     fetchAllProducts(),
     fetchSiteSettings(),
   ]);
 
-  if (!product) {
+  if (!match) {
     notFound();
+  }
+
+  const { product, matchedBy } = match;
+
+  // Legacy id-based URL → 308 redirect to canonical slug URL for SEO.
+  if (matchedBy === 'id' && product.slug && product.slug !== params.id) {
+    permanentRedirect(`/product/${product.slug}`);
   }
 
   const isJewelry =
@@ -114,6 +125,9 @@ export default async function ProductPage({ params }: PageProps) {
     )
     .slice(0, 4);
 
+  const categoryLabel = productType === 'jewelry' ? 'Jewelry' : 'Shoes';
+  const categoryHref = productType === 'jewelry' ? '/jewelry' : '/slippers';
+
   return (
     <>
       <ProductJsonLd product={product} />
@@ -122,6 +136,14 @@ export default async function ProductPage({ params }: PageProps) {
         initialSettings={settings}
         realtime={false}
       />
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
+        <Breadcrumbs
+          items={[
+            { label: categoryLabel, href: categoryHref },
+            { label: product.name },
+          ]}
+        />
+      </div>
       <ProductDetail product={product} relatedProducts={related} />
     </>
   );

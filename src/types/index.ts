@@ -11,6 +11,7 @@ export type ProductCategory =
 
 export interface Product {
   id: string;
+  slug?: string;
   sku?: string;
   name: string;
   category: ProductCategory | string;

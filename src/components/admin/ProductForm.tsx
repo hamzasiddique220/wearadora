@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { X, Upload, Check, Plus, Trash2, Star, Sparkles } from 'lucide-react';
 import { Product } from '@/types';
+import { sluggify } from '@/lib/utils';
 import { productService } from '@/lib/services/products';
 import { useUIStore } from '@/lib/stores/ui';
 import {
@@ -209,8 +210,10 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
           }
         }
       }
+      const trimmedName = form.name.trim();
       const data = {
-        name: form.name.trim(),
+        name: trimmedName,
+        slug: product?.slug?.trim() || sluggify(trimmedName),
         sku: form.sku.trim(),
         tag: form.tag.trim(),
         category: form.category,

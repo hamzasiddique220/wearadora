@@ -69,6 +69,61 @@ export async function fetchProduct(id: string): Promise<Product | null> {
   }
 }
 
+/**
+ * Look up a product whose `slug` field equals the given value using a
+ * Firestore structured query — direct, indexed, and not cached so a freshly
+ * saved product is found immediately.
+ */
+async function fetchProductBySlug(slug: string): Promise<Product | null> {
+  if (!BASE) return null;
+  try {
+    const res = await fetch(`${BASE}:runQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: 'products' }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'slug' },
+              op: 'EQUAL',
+              value: { stringValue: slug },
+            },
+          },
+          limit: 1,
+        },
+      }),
+    });
+    if (!res.ok) return null;
+    const rows = (await res.json()) as Array<{ document?: FirestoreDocument }>;
+    const doc = rows.find((r) => r.document)?.document;
+    if (!doc?.fields) return null;
+    return fromDocument<Product>(doc);
+  } catch (err) {
+    console.error('fetchProductBySlug error:', err);
+    return null;
+  }
+}
+
+/**
+ * Look up a product by a URL handle that may be either a Firestore document
+ * id (legacy URLs) or a slug (new SEO-friendly URLs). Returns the product
+ * along with the matching mode so callers can issue a 301 from an id-based
+ * URL to the canonical slug-based one.
+ */
+export async function fetchProductByHandle(
+  handle: string
+): Promise<{ product: Product; matchedBy: 'id' | 'slug' } | null> {
+  const byId = await fetchProduct(handle);
+  if (byId) return { product: byId, matchedBy: 'id' };
+
+  const bySlug = await fetchProductBySlug(handle);
+  if (bySlug) return { product: bySlug, matchedBy: 'slug' };
+
+  return null;
+}
+
 /** Fetch the singleton site settings doc (used in server components / sitemap / metadata). */
 export async function fetchSiteSettings(): Promise<SiteSettings | null> {
   if (!BASE) return null;

@@ -62,3 +62,27 @@ export const storage = {
 export const cleanPhoneNumber = (phone: string): string => {
   return phone.replace(/[^0-9]/g, '');
 };
+
+/**
+ * Convert a free-form string (e.g. product name) into a URL-safe slug.
+ * Lower-cased, ASCII alphanumerics + dashes, max 80 chars.
+ */
+export const sluggify = (input: string): string => {
+  return input
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+    .replace(/-+$/g, '');
+};
+
+/**
+ * Return the SEO-friendly handle for a product URL — slug if available,
+ * else the Firestore document id.
+ */
+export const productHandle = (product: { slug?: string; id: string }): string =>
+  product.slug && product.slug.trim() ? product.slug : product.id;

@@ -18,7 +18,7 @@ import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, productHandle } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import Modal from '@/components/ui/Modal';
 import { heartBurst } from '@/lib/heartBurst';
@@ -324,7 +324,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           </div>
 
           <Link
-            href={`/product/${product.id}`}
+            href={`/product/${productHandle(product)}`}
             onClick={onClose}
             className="flex items-center justify-center gap-2 text-[11px] tracking-[0.25em] uppercase text-bronze hover:text-charcoal border-b border-bronze/40 hover:border-charcoal pb-1 mb-6 w-fit mx-auto transition"
           >

@@ -8,7 +8,7 @@ import { Product } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, productHandle } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
 import { heartBurst } from '@/lib/heartBurst';
 import { trackAddToCart } from '@/lib/analytics';
@@ -49,7 +49,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
     product.originalPrice > product.price;
   const hasLowStock = product.stock > 0 && product.stock <= 3;
 
-  const detailHref = `/product/${product.id}`;
+  const detailHref = `/product/${productHandle(product)}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();

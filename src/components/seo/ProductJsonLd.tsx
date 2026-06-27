@@ -1,12 +1,13 @@
 import type { Product } from '@/types';
 import { STORE_CONFIG } from '@/lib/constants';
+import { productHandle } from '@/lib/utils';
 
 interface ProductJsonLdProps {
   product: Product;
 }
 
 export default function ProductJsonLd({ product }: ProductJsonLdProps) {
-  const url = `${STORE_CONFIG.siteUrl}/product/${product.id}`;
+  const url = `${STORE_CONFIG.siteUrl}/product/${productHandle(product)}`;
   const images = (product.images && product.images.length > 0
     ? product.images
     : [product.image]

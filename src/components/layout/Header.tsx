@@ -15,7 +15,7 @@ import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, productHandle } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
@@ -246,7 +246,7 @@ export default function Header() {
                     <button
                       key={p.id}
                       onClick={() => {
-                        router.push(`/product/${p.id}`);
+                        router.push(`/product/${productHandle(p)}`);
                         closeAll();
                       }}
                       className="w-full flex items-center gap-4 p-4 hover:bg-sand/50 border-b border-stone/50 text-left transition"

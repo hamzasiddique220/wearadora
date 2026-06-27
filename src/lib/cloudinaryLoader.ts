@@ -23,7 +23,11 @@ export default function cloudinaryLoader({
 }: LoaderArgs): string {
   // Only Cloudinary delivery URLs support inline transformations.
   if (!src.includes('res.cloudinary.com') || !src.includes('/upload/')) {
-    return src;
+    // Append width as a URL fragment so Next.js considers each width a
+    // distinct URL (silences `next-image-missing-loader-width`). Hash is
+    // stripped by the browser before the network request, so the underlying
+    // file/asset still resolves the same and caching isn't duplicated.
+    return `${src}#w=${width}`;
   }
 
   const q = quality ?? 'auto';

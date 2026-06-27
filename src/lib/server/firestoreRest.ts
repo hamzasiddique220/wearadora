@@ -52,16 +52,51 @@ function fromDocument<T>(doc: FirestoreDocument): T {
   return result as T;
 }
 
+/**
+ * fetch + JSON with a hard timeout and small retry budget. Firestore is a
+ * remote service; on flaky networks (e.g. happy-eyeballs IPv6 hangs) a bare
+ * fetch can stall for tens of seconds before failing. This wrapper aborts
+ * each attempt at `timeoutMs` and retries up to `attempts` times before
+ * giving up, so the caller sees a quick failure rather than a long hang.
+ *
+ * Returns parsed JSON on 2xx, `null` on non-ok HTTP, and throws on
+ * exhausted network failure (callers should catch and degrade gracefully).
+ */
+async function fetchJson<T>(
+  url: string,
+  init: RequestInit & { next?: { revalidate?: number } } = {},
+  attempts = 3,
+  timeoutMs = 6000
+): Promise<T | null> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) return null;
+      return (await res.json()) as T;
+    } catch (err) {
+      clearTimeout(timer);
+      lastErr = err;
+      if (attempt < attempts - 1) {
+        await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 /** Fetch a single product by id from Firestore via the public REST API. */
 export async function fetchProduct(id: string): Promise<Product | null> {
   if (!BASE) return null;
   try {
-    const res = await fetch(`${BASE}/products/${encodeURIComponent(id)}`, {
-      next: { revalidate: 300 },
-    });
-    if (!res.ok) return null;
-    const doc = (await res.json()) as FirestoreDocument;
-    if (!doc.fields) return null;
+    const doc = await fetchJson<FirestoreDocument>(
+      `${BASE}/products/${encodeURIComponent(id)}`,
+      { next: { revalidate: 300 } }
+    );
+    if (!doc?.fields) return null;
     return fromDocument<Product>(doc);
   } catch (err) {
     console.error('fetchProduct error:', err);
@@ -77,27 +112,28 @@ export async function fetchProduct(id: string): Promise<Product | null> {
 async function fetchProductBySlug(slug: string): Promise<Product | null> {
   if (!BASE) return null;
   try {
-    const res = await fetch(`${BASE}:runQuery`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-      body: JSON.stringify({
-        structuredQuery: {
-          from: [{ collectionId: 'products' }],
-          where: {
-            fieldFilter: {
-              field: { fieldPath: 'slug' },
-              op: 'EQUAL',
-              value: { stringValue: slug },
+    const rows = await fetchJson<Array<{ document?: FirestoreDocument }>>(
+      `${BASE}:runQuery`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId: 'products' }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: 'slug' },
+                op: 'EQUAL',
+                value: { stringValue: slug },
+              },
             },
+            limit: 1,
           },
-          limit: 1,
-        },
-      }),
-    });
-    if (!res.ok) return null;
-    const rows = (await res.json()) as Array<{ document?: FirestoreDocument }>;
-    const doc = rows.find((r) => r.document)?.document;
+        }),
+      }
+    );
+    const doc = rows?.find((r) => r.document)?.document;
     if (!doc?.fields) return null;
     return fromDocument<Product>(doc);
   } catch (err) {
@@ -128,12 +164,11 @@ export async function fetchProductByHandle(
 export async function fetchSiteSettings(): Promise<SiteSettings | null> {
   if (!BASE) return null;
   try {
-    const res = await fetch(`${BASE}/siteSettings/main`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return null;
-    const doc = (await res.json()) as FirestoreDocument;
-    if (!doc.fields) return null;
+    const doc = await fetchJson<FirestoreDocument>(
+      `${BASE}/siteSettings/main`,
+      { next: { revalidate: 60 } }
+    );
+    if (!doc?.fields) return null;
     return fromDocument<SiteSettings>(doc);
   } catch (err) {
     console.error('fetchSiteSettings error:', err);
@@ -145,12 +180,11 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
 export async function fetchAllProducts(): Promise<Product[]> {
   if (!BASE) return [];
   try {
-    const res = await fetch(`${BASE}/products?pageSize=300`, {
-      next: { revalidate: 600 },
-    });
-    if (!res.ok) return [];
-    const data = (await res.json()) as { documents?: FirestoreDocument[] };
-    return (data.documents || []).map((d) => fromDocument<Product>(d));
+    const data = await fetchJson<{ documents?: FirestoreDocument[] }>(
+      `${BASE}/products?pageSize=300`,
+      { next: { revalidate: 600 } }
+    );
+    return (data?.documents || []).map((d) => fromDocument<Product>(d));
   } catch (err) {
     console.error('fetchAllProducts error:', err);
     return [];

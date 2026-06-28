@@ -69,6 +69,7 @@ export default function Header() {
     { href: '/', label: 'Home' },
     { href: '/slippers', label: 'Shoes' },
     ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
+    { href: '/blog', label: 'Journal' },
     { href: '/about', label: 'About' },
   ];
 

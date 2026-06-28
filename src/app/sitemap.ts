@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
 import { productHandle } from '@/lib/utils';
+import { listBlogPosts } from '@/lib/blog';
 import {
   fetchAllProducts,
   fetchSiteSettings,
@@ -35,7 +36,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/shipping`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${base}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
   ];
+
+  const blogEntries: MetadataRoute.Sitemap = listBlogPosts().map((p) => ({
+    url: `${base}/blog/${p.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
 
   const visibleProducts = jewelryEnabled
     ? products
@@ -51,5 +60,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...productEntries];
+  return [...staticEntries, ...blogEntries, ...productEntries];
 }

@@ -14,6 +14,21 @@ import { Product } from '@/types';
 
 const COLLECTION = 'products';
 
+/** Strip undefined values — Firestore's addDoc/updateDoc reject them. */
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((v) => stripUndefined(v)) as unknown as T;
+  }
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (v !== undefined) out[k] = stripUndefined(v);
+    }
+    return out as unknown as T;
+  }
+  return value;
+}
+
 export const productService = {
   subscribe: (callback: (products: Product[]) => void): Unsubscribe => {
     const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
@@ -26,15 +41,18 @@ export const productService = {
   },
 
   create: async (data: Omit<Product, 'id' | 'createdAt'>): Promise<string> => {
-    const docRef = await addDoc(collection(db, COLLECTION), {
-      ...data,
-      createdAt: new Date().toISOString(),
-    });
+    const docRef = await addDoc(
+      collection(db, COLLECTION),
+      stripUndefined({
+        ...data,
+        createdAt: new Date().toISOString(),
+      })
+    );
     return docRef.id;
   },
 
   update: async (id: string, data: Partial<Product>): Promise<void> => {
-    await updateDoc(doc(db, COLLECTION, id), data);
+    await updateDoc(doc(db, COLLECTION, id), stripUndefined(data));
   },
 
   delete: async (id: string): Promise<void> => {

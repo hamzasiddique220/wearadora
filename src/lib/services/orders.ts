@@ -14,6 +14,26 @@ import { Order, OrderStatus } from '@/types';
 
 const COLLECTION = 'orders';
 
+/**
+ * Recursively strip `undefined` values from an object/array before sending
+ * to Firestore — addDoc rejects undefined and crashes the checkout. Common
+ * source: jewelry products lack `sizes`/`colors`/`selectedSize`/etc., and
+ * optional customer fields like `notes`/`mapLink`.
+ */
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((v) => stripUndefined(v)) as unknown as T;
+  }
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (v !== undefined) out[k] = stripUndefined(v);
+    }
+    return out as unknown as T;
+  }
+  return value;
+}
+
 export const orderService = {
   /**
    * Subscribe to all orders with real-time updates
@@ -32,7 +52,7 @@ export const orderService = {
    * Create a new order
    */
   create: async (data: Omit<Order, 'id'>): Promise<string> => {
-    const docRef = await addDoc(collection(db, COLLECTION), data);
+    const docRef = await addDoc(collection(db, COLLECTION), stripUndefined(data));
     return docRef.id;
   },
 

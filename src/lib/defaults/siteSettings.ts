@@ -103,13 +103,13 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
 ];
 
 export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
-  Slides: '/images/main-WA-1-black-card-img.png',
-  Heels: '/images/remove.photos-removed-background-7.png',
-  Sandal: '/images/remove.photos-removed-background-9.png',
-  Necklace: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800',
-  Ring: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
-  Earring: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800',
-  Bangles: '/images/bangles-cover.jpg',
+  Slides: '/images/aw-1-slide.jpeg',
+  Heels: '/images/main-WA-1-black-card-img.png',
+  Sandal: '/images/as-01.jpeg',
+  Necklace: '/images/necklace-01-blk.jpg',
+  Ring: '/images/ring-bangle1.jpeg',
+  Earring: '/images/ring-01.jpeg',
+  Bangles: '/images/bangles-01.jpeg',
 };
 
 export const DEFAULT_STORY_IMAGE =

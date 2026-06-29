@@ -56,4 +56,4 @@ Whichever event you are dressing for, a few simple rules always help:
 
 Bridal jewellery is about telling a story across your wedding days — playful at the Mehndi, regal at the Barat, and softly elegant at the Walima. When each set is chosen to match its moment, every look feels complete.
 
-Ready to find your pieces? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — with free delivery on 2 or more items across Pakistan, and easy ordering on WhatsApp.
+Ready to find your pieces? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — with free delivery on orders Rs 3,000+ across Pakistan, and easy ordering on WhatsApp.

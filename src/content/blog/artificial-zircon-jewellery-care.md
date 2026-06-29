@@ -1,9 +1,9 @@
 <!--
 URL slug:        /blog/artificial-zircon-jewellery-care
 SEO Title:       How to Care for Artificial & Zircon Jewellery (Make It Last)
-Meta description: Keep your artificial and zircon jewellery shiny and tarnish-free for longer. Simple storage, cleaning and wearing tips to protect gold-plated and stone jewellery.
+Meta description: Keep your artificial and zircon jewellery shiny and tarnish-free for longer. Simple storage, cleaning and wearing tips to protect gold-tone and stone jewellery.
 Target keywords: artificial jewellery care, how to keep artificial jewellery from tarnishing, zircon jewellery care
-Excerpt: Simple storage, cleaning and wearing tips to keep gold-plated and stone jewellery shiny and tarnish-free for longer.
+Excerpt: Simple storage, cleaning and wearing tips to keep gold-tone and stone jewellery shiny and tarnish-free for longer.
 -->
 
 # How to Care for Artificial & Zircon Jewellery (So It Lasts Longer)
@@ -12,7 +12,7 @@ Artificial and zircon jewellery gives you the sparkle and elegance of fine jewel
 
 ## Why artificial jewellery tarnishes
 
-Most artificial jewellery is gold-plated or has a polished metal finish over a base metal. Over time, exposure to **moisture, sweat, perfume, lotions and air** can wear down that finish and make it look dull. The stones themselves stay sparkly, but the metal needs protecting. Almost all of jewellery care comes down to keeping these things away from your pieces.
+Most artificial jewellery has a polished gold-tone, silver-tone or rose-tone metal finish over a base metal. Over time, exposure to **moisture, sweat, perfume, lotions and air** can wear down that finish and make it look dull. The stones themselves stay sparkly, but the metal needs protecting. Almost all of jewellery care comes down to keeping these things away from your pieces.
 
 ## The golden rule: last on, first off
 
@@ -55,4 +55,4 @@ Storage is where most pieces are won or lost:
 
 With just a little care — last on, first off, kept dry, and stored separately — your artificial and zircon jewellery can stay beautiful for a very long time. That is the real value of well-made pieces: a small collection of sets that you can mix, match and wear again and again.
 
-Looking to add a new favourite to your collection? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — quality finishes, elegant designs, free delivery on 2 or more items across Pakistan, and easy ordering on WhatsApp.
+Looking to add a new favourite to your collection? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — quality finishes, elegant designs, free delivery on orders Rs 3,000+ across Pakistan, and easy ordering on WhatsApp.

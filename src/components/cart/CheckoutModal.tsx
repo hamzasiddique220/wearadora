@@ -23,7 +23,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const clearCart = useCartStore((state) => state.clearCart);
   const showToast = useUIStore((state) => state.showToast);
 
-  const deliveryFee = getDeliveryFee(itemCount);
+  const deliveryFee = getDeliveryFee(subtotal);
   const grandTotal = subtotal + deliveryFee;
 
   const [info, setInfo] = useState<CustomerInfo>({
@@ -219,12 +219,12 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               </>
             ) : (
               <>
-                Delivery charge <strong>{formatPrice(deliveryFee)}</strong> — add{' '}
-                <strong>{STORE_CONFIG.freeDeliveryMinItems - itemCount}</strong> more{' '}
-                {STORE_CONFIG.freeDeliveryMinItems - itemCount === 1
-                  ? 'item'
-                  : 'items'}{' '}
-                for free delivery. Arrives in{' '}
+                Delivery charge <strong>{formatPrice(deliveryFee)}</strong> —
+                spend{' '}
+                <strong>
+                  {formatPrice(STORE_CONFIG.freeDeliveryMinTotal - subtotal)}
+                </strong>{' '}
+                more for free delivery. Arrives in{' '}
                 <strong>{STORE_CONFIG.deliveryDays}</strong>.
               </>
             )}

@@ -120,8 +120,8 @@ export default async function AboutPage() {
       </div>
 
       <div className="mt-16 text-center text-sm text-mocha">
-        Karachi-based · Delivery in {STORE_CONFIG.deliveryDays} · Free delivery on
-        2 or more items · WhatsApp orders on {STORE_CONFIG.phoneDisplay}
+        Karachi-based · Delivery in {STORE_CONFIG.deliveryDays} · Free delivery
+        on orders Rs 3,000+ · WhatsApp orders on {STORE_CONFIG.phoneDisplay}
       </div>
     </div>
   );

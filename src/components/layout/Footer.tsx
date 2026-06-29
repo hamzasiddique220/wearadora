@@ -143,8 +143,10 @@ export default function Footer() {
               <MapPin size={14} /> {STORE_CONFIG.location}
             </li>
             <li className="text-xs text-stone/80 pt-1 leading-relaxed">
-              Delivery in {STORE_CONFIG.deliveryDays} · FREE on 2+ items,
-              otherwise Rs. {STORE_CONFIG.deliveryFee}
+              Delivery in {STORE_CONFIG.deliveryDays} · FREE on orders Rs{' '}
+              {STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')}+,
+              otherwise Rs. {STORE_CONFIG.deliveryFee} · 7-day exchange &amp;
+              refund
             </li>
           </ul>
         </div>

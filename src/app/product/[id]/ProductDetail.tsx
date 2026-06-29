@@ -10,7 +10,7 @@ import {
   ShoppingBag,
   Star,
   Truck,
-  Shield,
+  RotateCcw,
   Award,
   Copy,
 } from 'lucide-react';
@@ -336,7 +336,11 @@ export default function ProductDetail({
               </div>
               <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
                 <span className="text-mocha shrink-0">Shipping</span>
-                <span className="text-[#2d6a4f] text-right">FREE on 2+ items</span>
+                <span className="text-[#2d6a4f] text-right">FREE on orders Rs 3,000+</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
+                <span className="text-mocha shrink-0">Returns</span>
+                <span className="text-right">7-day exchange &amp; refund</span>
               </div>
               <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
                 <span className="text-mocha shrink-0">Category</span>
@@ -410,9 +414,9 @@ export default function ProductDetail({
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1.5">
-                <Shield size={18} className="text-bronze" />
+                <RotateCcw size={18} className="text-bronze" />
                 <span className="text-[9px] md:text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase text-mocha leading-tight">
-                  Handcrafted
+                  7-Day Returns
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1.5">

@@ -25,11 +25,11 @@ export default function CartPage() {
   const { settings } = useSiteSettings();
   const jewelryEnabled = settings.jewelryEnabled === true;
 
-  const deliveryFee = getDeliveryFee(itemCount);
+  const deliveryFee = getDeliveryFee(subtotal);
   const total = subtotal + deliveryFee;
-  const itemsToFreeDelivery = Math.max(
+  const amountToFreeDelivery = Math.max(
     0,
-    STORE_CONFIG.freeDeliveryMinItems - itemCount
+    STORE_CONFIG.freeDeliveryMinTotal - subtotal
   );
 
   const [showCheckout, setShowCheckout] = useState(false);
@@ -173,14 +173,15 @@ export default function CartPage() {
               Order Summary
             </h3>
 
-            {itemsToFreeDelivery > 0 ? (
+            {amountToFreeDelivery > 0 ? (
               <div className="bg-bronze/15 border border-bronze/40 text-cream p-3 mb-5 text-[11px] tracking-[0.05em] flex items-start gap-2">
                 <Truck size={14} className="text-bronze mt-0.5 shrink-0" />
                 <span>
-                  Add{' '}
-                  <strong className="text-bronze">{itemsToFreeDelivery}</strong>{' '}
-                  more {itemsToFreeDelivery === 1 ? 'item' : 'items'} to unlock{' '}
-                  <strong>FREE delivery</strong>.
+                  Spend{' '}
+                  <strong className="text-bronze">
+                    {formatPrice(amountToFreeDelivery)}
+                  </strong>{' '}
+                  more to unlock <strong>FREE delivery</strong>.
                 </span>
               </div>
             ) : (

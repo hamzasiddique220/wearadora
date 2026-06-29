@@ -8,7 +8,7 @@ export const STORE_CONFIG = {
   email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',
   deliveryFee: 200,
-  freeDeliveryMinItems: 2,
+  freeDeliveryMinTotal: 3000,
   deliveryDays: '4–5 days',
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
@@ -21,8 +21,8 @@ export const SOCIAL_LINKS = {
   tiktok: 'https://www.tiktok.com/@wearadora',
 } as const;
 
-export const getDeliveryFee = (itemCount: number): number =>
-  itemCount >= STORE_CONFIG.freeDeliveryMinItems ? 0 : STORE_CONFIG.deliveryFee;
+export const getDeliveryFee = (subtotal: number): number =>
+  subtotal >= STORE_CONFIG.freeDeliveryMinTotal ? 0 : STORE_CONFIG.deliveryFee;
 
 export const JEWELRY_CATEGORIES = [
   'Necklace',

@@ -60,6 +60,8 @@ export interface Order {
   orderId: string;
   customer: CustomerInfo;
   items: CartItem[];
+  subtotal?: number;
+  deliveryFee?: number;
   total: number;
   status: OrderStatus;
   createdAt: string;

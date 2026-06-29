@@ -111,7 +111,12 @@ export default function Footer() {
             </li>
             <li>
               <Link href="/shipping" className="hover:text-bronze">
-                Shipping & Returns
+                Shipping &amp; Delivery
+              </Link>
+            </li>
+            <li>
+              <Link href="/return-policy" className="hover:text-bronze">
+                Return &amp; Exchange Policy
               </Link>
             </li>
             <li>

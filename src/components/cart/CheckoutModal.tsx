@@ -115,6 +115,8 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         orderId,
         customer: info,
         items,
+        subtotal,
+        deliveryFee,
         total: grandTotal,
         status: 'pending',
         createdAt: new Date().toISOString(),
@@ -337,6 +339,18 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         </button>
         <p className="text-[11px] text-mocha text-center mt-3">
           We&apos;ll contact you on your phone shortly to confirm
+        </p>
+        <p className="text-[11px] text-mocha/80 text-center mt-1.5">
+          By placing this order you agree to our{' '}
+          <a
+            href="/return-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-bronze hover:text-charcoal underline underline-offset-2"
+          >
+            7-day Return Policy
+          </a>
+          .
         </p>
       </div>
     </Modal>

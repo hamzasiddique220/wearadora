@@ -201,6 +201,16 @@ export const trackPurchase = (data: {
   });
 };
 
+/**
+ * Fired when a visitor clicks a WhatsApp link to start a conversation —
+ * lets Meta count the off-site lead intent (custom order / wholesale /
+ * general support inquiries from the floating button, footer, etc.).
+ */
+export const trackContact = (source?: string) => {
+  meta('Contact', source ? { source } : undefined);
+  tiktok('Contact', source ? { source } : undefined);
+};
+
 /** Fired on client-side route changes so SPA navigations are counted. */
 export const trackPageView = (url?: string) => {
   if (typeof window === 'undefined') return;

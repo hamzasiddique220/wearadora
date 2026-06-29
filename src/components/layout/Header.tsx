@@ -86,7 +86,7 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-stone">
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 grid grid-cols-3 items-center gap-2 sm:gap-4">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 grid grid-cols-[auto_1fr_auto] md:grid-cols-3 items-center gap-2 sm:gap-4">
           {/* LEFT — menu toggle (mobile) + brand logo */}
           <div className="flex items-center gap-2 sm:gap-3 justify-self-start min-w-0">
             <button
@@ -108,7 +108,7 @@ export default function Header() {
                 width={2600}
                 height={760}
                 priority
-                className="h-16 sm:h-20 md:h-24 w-auto object-contain"
+                className="h-10 sm:h-16 md:h-24 w-auto object-contain"
               />
             </Link>
           </div>

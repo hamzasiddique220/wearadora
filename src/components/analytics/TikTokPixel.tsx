@@ -12,7 +12,7 @@ export default function TikTokPixel() {
   if (!id) return null;
 
   return (
-    <Script id="tiktok-pixel" strategy="afterInteractive">
+    <Script id="tiktok-pixel" strategy="lazyOnload">
       {`
         !function (w, d, t) {
           w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];

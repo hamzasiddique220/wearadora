@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { trackContact } from '@/lib/analytics';
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return (
@@ -184,6 +185,7 @@ export default function Footer() {
               href={`https://wa.me/${STORE_CONFIG.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackContact('footer_whatsapp')}
               aria-label="WhatsApp"
               className="w-10 h-10 border border-stone/30 flex items-center justify-center hover:bg-bronze hover:border-bronze transition-colors"
             >

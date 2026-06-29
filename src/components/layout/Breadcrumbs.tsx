@@ -36,30 +36,33 @@ export default function Breadcrumbs({ items, className = '' }: BreadcrumbsProps)
       />
       <nav
         aria-label="Breadcrumb"
-        className={`text-[11px] sm:text-xs tracking-[0.2em] uppercase text-charcoal/60 ${className}`}
+        className={`text-[11px] sm:text-xs text-charcoal/60 ${className}`}
       >
-        <ol className="flex flex-wrap items-center gap-1.5">
+        <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 min-w-0">
           {all.map((c, i) => {
             const isLast = i === all.length - 1;
+            // Nav items (Home, Jewelry, Shoes) get the high-fashion uppercase
+            // treatment; the current page (often a long product name) stays
+            // sentence-case so it wraps cleanly on narrow screens.
+            const styling = isLast
+              ? 'text-charcoal max-w-full break-words'
+              : 'tracking-[0.2em] uppercase hover:text-bronze transition-colors';
             return (
-              <li key={`${c.label}-${i}`} className="flex items-center gap-1.5">
+              <li key={`${c.label}-${i}`} className="flex items-center gap-1.5 min-w-0">
                 {c.href && !isLast ? (
-                  <Link
-                    href={c.href}
-                    className="hover:text-bronze transition-colors"
-                  >
+                  <Link href={c.href} className={styling}>
                     {c.label}
                   </Link>
                 ) : (
                   <span
-                    className={isLast ? 'text-charcoal' : ''}
+                    className={styling}
                     aria-current={isLast ? 'page' : undefined}
                   >
                     {c.label}
                   </span>
                 )}
                 {!isLast && (
-                  <ChevronRight size={12} className="text-charcoal/30" />
+                  <ChevronRight size={12} className="text-charcoal/30 shrink-0" />
                 )}
               </li>
             );

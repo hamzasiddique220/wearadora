@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 import { STORE_CONFIG } from '@/lib/constants';
+import { trackContact } from '@/lib/analytics';
 
 const WHATSAPP_GREEN = '#25D366';
 
@@ -66,7 +67,10 @@ export default function WhatsAppFloat() {
             href={customOrderUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              trackContact('whatsapp_custom_order');
+              setOpen(false);
+            }}
             className="bg-cream text-charcoal pl-4 pr-3 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-medium tracking-wide flex items-center gap-2 border border-charcoal/10"
           >
             Custom Order
@@ -81,7 +85,10 @@ export default function WhatsAppFloat() {
             href={wholesaleUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              trackContact('whatsapp_wholesale');
+              setOpen(false);
+            }}
             className="bg-cream text-charcoal pl-4 pr-3 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-medium tracking-wide flex items-center gap-2 border border-charcoal/10"
           >
             Wholesale

@@ -19,9 +19,12 @@ import StorageHydrator from '@/components/StorageHydrator';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
 import { fetchSiteSettings } from '@/lib/server/firestoreRest';
 
+// Only the weights actually used on first paint are preloaded — fewer
+// font files = much smaller LCP. Other weights are inlined via system
+// fallback (display: swap) or filled in by font synthesis.
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '600'],
   variable: '--font-inter',
   display: 'swap',
   preload: true,
@@ -29,7 +32,7 @@ const inter = Inter({
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500'],
   variable: '--font-cormorant',
   display: 'swap',
   preload: true,

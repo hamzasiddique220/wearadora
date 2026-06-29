@@ -522,6 +522,8 @@ select:focus {
   color: #3a312b;
   font-size: 1rem;
   line-height: 1.75;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .blog-article h1 {

@@ -1,13 +1,18 @@
 'use client';
 
 import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useDataStore } from '@/lib/stores/data';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import Hero from '@/components/home/Hero';
-import StatsBar from '@/components/home/StatsBar';
-import CategoriesGrid from '@/components/home/CategoriesGrid';
-import FeaturedProducts from '@/components/home/FeaturedProducts';
-import StorySection from '@/components/home/StorySection';
+
+// Below-fold sections are dynamic-imported so the initial JS payload only
+// ships Hero on first load. They still render server-side (no `ssr: false`)
+// so SEO content is preserved; only their client JS is split.
+const StatsBar = dynamic(() => import('@/components/home/StatsBar'));
+const CategoriesGrid = dynamic(() => import('@/components/home/CategoriesGrid'));
+const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'));
+const StorySection = dynamic(() => import('@/components/home/StorySection'));
 
 export default function HomeShell() {
   // Keep one realtime subscription alive while the homepage is mounted so the

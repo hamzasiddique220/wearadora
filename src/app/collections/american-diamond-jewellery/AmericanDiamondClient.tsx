@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData } from '@/lib/stores/data';
+import { STORE_CONFIG } from '@/lib/constants';
 import type { Product } from '@/types';
 
 interface AmericanDiamondClientProps {
@@ -54,6 +55,26 @@ export default function AmericanDiamondClient({
       heroKind={settings.jewelryHero.kind}
       description="Affordable artificial jewellery in Pakistan — American diamond (zircon / cubic zirconia) necklace sets, bridal chokers, earrings and bracelets that sparkle at everyday prices."
       initialProducts={initialProducts}
+      belowHero={
+        <section
+          className="max-w-[720px] mx-auto px-4 sm:px-6 md:px-8 pt-8 md:pt-12 text-center"
+          aria-labelledby="ad-collection-intro"
+        >
+          <p
+            id="ad-collection-intro"
+            className="text-mocha leading-relaxed text-sm md:text-base"
+          >
+            Handcrafted{' '}
+            <strong className="text-charcoal">artificial jewellery</strong> in
+            Pakistan — studded with{' '}
+            <strong className="text-charcoal">American diamond</strong> (zircon
+            / cubic zirconia) stones that shine like the real thing at a
+            fraction of the price. Necklace sets, bridal chokers, earrings and
+            bracelets for weddings, barat, walima, mehndi and Eid — with free
+            delivery on orders over Rs {STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and a 7-day exchange across Pakistan.
+          </p>
+        </section>
+      }
     />
   );
 }

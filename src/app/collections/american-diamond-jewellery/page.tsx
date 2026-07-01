@@ -65,31 +65,6 @@ export default async function AmericanDiamondCollectionPage() {
         <Breadcrumbs items={[{ label: 'Artificial Jewellery' }]} />
       </div>
 
-      {settings?.jewelryEnabled && (
-        <section
-          className="max-w-[900px] mx-auto px-4 sm:px-6 md:px-8 pt-6 md:pt-10 text-center"
-          aria-labelledby="ad-collection-intro"
-        >
-          <p
-            id="ad-collection-intro"
-            className="text-mocha leading-relaxed text-sm md:text-base"
-          >
-            Discover {STORE_CONFIG.name}&rsquo;s collection of{' '}
-            <strong className="text-charcoal">affordable artificial jewellery</strong>{' '}
-            in Pakistan — crafted with{' '}
-            <strong className="text-charcoal">American diamond</strong> (also
-            known as <strong className="text-charcoal">zircon</strong> or{' '}
-            <strong className="text-charcoal">cubic zirconia</strong>) stones
-            that shine like real diamonds at a fraction of the price. From
-            statement necklace sets and complete bridal choker sets to delicate
-            earrings and bracelets, every piece pairs premium design with
-            everyday affordability. Perfect for weddings, barat, walima, mehndi,
-            Eid and parties — with free delivery on orders over Rs 3,000 and a
-            7-day exchange &amp; return across Pakistan.
-          </p>
-        </section>
-      )}
-
       <AmericanDiamondClient
         initialJewelryEnabled={settings?.jewelryEnabled === true}
         initialProducts={jewelryProducts}

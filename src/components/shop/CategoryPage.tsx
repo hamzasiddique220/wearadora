@@ -36,12 +36,6 @@ interface CategoryPageProps {
    * the store so admin edits still stream in live.
    */
   initialProducts?: Product[];
-  /**
-   * Optional rich content rendered directly under the hero, above the
-   * search/filter row — useful for keyword-focused intro paragraphs on
-   * SEO landing pages.
-   */
-  belowHero?: React.ReactNode;
 }
 
 function CategoryContent({
@@ -53,7 +47,6 @@ function CategoryContent({
   heroKind = 'photo',
   heroImages,
   initialProducts,
-  belowHero,
 }: CategoryPageProps) {
   const { products: storeProducts, loading: storeLoading } = useProductsData();
   const hasInitial = Boolean(initialProducts && initialProducts.length > 0);
@@ -270,8 +263,6 @@ function CategoryContent({
           )}
         </section>
       )}
-
-      {belowHero}
 
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
         <div className="mb-6 md:mb-8 max-w-md mx-auto relative">

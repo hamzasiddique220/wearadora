@@ -4,11 +4,25 @@ import Link from 'next/link';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData } from '@/lib/stores/data';
+import type { Product } from '@/types';
 
-export default function JewelryClient() {
-  const { settings } = useSiteSettingsData();
+interface JewelryClientProps {
+  /** Server-fetched flag — used until the client store hydrates. */
+  initialJewelryEnabled?: boolean;
+  /** Pre-filtered jewelry products fetched on the server for SSR grid. */
+  initialProducts?: Product[];
+}
 
-  if (!settings.jewelryEnabled) {
+export default function JewelryClient({
+  initialJewelryEnabled = false,
+  initialProducts,
+}: JewelryClientProps) {
+  const { settings, loading } = useSiteSettingsData();
+  const jewelryEnabled = loading
+    ? initialJewelryEnabled
+    : settings.jewelryEnabled;
+
+  if (!jewelryEnabled) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-20 md:py-28 text-center">
         <div className="w-16 h-16 bg-bronze/10 text-bronze rounded-full flex items-center justify-center mx-auto mb-6">
@@ -40,6 +54,7 @@ export default function JewelryClient() {
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
       description="Timeless pieces that tell a story — from delicate necklaces to statement rings, each crafted for those who cherish refined elegance."
+      initialProducts={initialProducts}
     />
   );
 }

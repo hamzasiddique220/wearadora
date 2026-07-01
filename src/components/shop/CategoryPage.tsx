@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useMemo, useEffect, useDeferredValue, Suspense } from 'react';
+import { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProductsData } from '@/lib/stores/data';
 import { Product, ProductType } from '@/types';
@@ -31,6 +30,12 @@ interface CategoryPageProps {
   heroKind?: 'photo' | 'product';
   /** Optional list of additional images to cycle through as a slideshow. */
   heroImages?: string[];
+  /**
+   * Server-fetched products used to render the grid in the initial HTML.
+   * Once the client-side store finishes loading its own copy, we switch to
+   * the store so admin edits still stream in live.
+   */
+  initialProducts?: Product[];
 }
 
 function CategoryContent({
@@ -41,9 +46,15 @@ function CategoryContent({
   description,
   heroKind = 'photo',
   heroImages,
+  initialProducts,
 }: CategoryPageProps) {
-  const { products, loading } = useProductsData();
-  const searchParams = useSearchParams();
+  const { products: storeProducts, loading: storeLoading } = useProductsData();
+  const hasInitial = Boolean(initialProducts && initialProducts.length > 0);
+  const products =
+    storeLoading && hasInitial ? initialProducts! : storeProducts;
+  // Skip the "Loading products..." spinner if we have SSR products — those
+  // renders are what search engines and first-paint visitors see.
+  const loading = storeLoading && !hasInitial;
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const deferredQuery = useDeferredValue(searchQuery);
@@ -85,7 +96,11 @@ function CategoryContent({
   );
 
   useEffect(() => {
-    const param = searchParams?.get('category');
+    // Read `?category=` from the URL client-side. Avoids `useSearchParams`
+    // (which forces the whole component behind a Suspense boundary and
+    // makes the grid render only after hydration — bad for SEO).
+    if (typeof window === 'undefined') return;
+    const param = new URLSearchParams(window.location.search).get('category');
     if (!param) return;
     const normalized = normalizeCategory(param);
     if (subCategories.includes(normalized)) {
@@ -93,7 +108,7 @@ function CategoryContent({
     } else if (normalized.toLowerCase() === 'all') {
       setSelectedCategory('all');
     }
-  }, [searchParams, subCategories]);
+  }, [subCategories]);
 
   const filteredProducts = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase();
@@ -315,9 +330,5 @@ function CategoryContent({
 }
 
 export default function CategoryPage(props: CategoryPageProps) {
-  return (
-    <Suspense fallback={<Loading />}>
-      <CategoryContent {...props} />
-    </Suspense>
-  );
+  return <CategoryContent {...props} />;
 }

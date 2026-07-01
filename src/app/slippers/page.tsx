@@ -1,4 +1,5 @@
 import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import { getProductType } from '@/lib/constants';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SlippersClient from './SlippersClient';
@@ -11,6 +12,10 @@ export default async function SlippersPage() {
     fetchSiteSettings(),
   ]);
 
+  const slippersProducts = products.filter(
+    (p) => (p.productType || getProductType(p.category as string)) === 'slippers'
+  );
+
   return (
     <>
       <DataInitializer
@@ -21,7 +26,7 @@ export default async function SlippersPage() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
         <Breadcrumbs items={[{ label: 'Shoes' }]} />
       </div>
-      <SlippersClient />
+      <SlippersClient initialProducts={slippersProducts} />
     </>
   );
 }

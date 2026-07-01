@@ -13,12 +13,21 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
-import { useVisibleProductsData } from '@/lib/stores/data';
+import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
-export default function Header() {
+interface HeaderProps {
+  /**
+   * Server-fetched jewelryEnabled — used as the source of truth until the
+   * client-side data store finishes hydrating, so /jewelry links render in
+   * the initial HTML (SEO + no post-hydration flicker).
+   */
+  initialJewelryEnabled?: boolean;
+}
+
+export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,7 +37,14 @@ export default function Header() {
 
   const cartCount = useCartStore((state) => state.getCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
-  const { products, jewelryEnabled } = useVisibleProductsData();
+  const { products, jewelryEnabled: storeJewelryEnabled } =
+    useVisibleProductsData();
+  const { loading: settingsLoading } = useSiteSettingsData();
+  // Prefer the server-fetched value until the client store has loaded — this
+  // keeps SSR and first client render identical (no hydration mismatch).
+  const jewelryEnabled = settingsLoading
+    ? initialJewelryEnabled
+    : storeJewelryEnabled;
   const deferredQuery = useDeferredValue(searchQuery);
 
   useEffect(() => {

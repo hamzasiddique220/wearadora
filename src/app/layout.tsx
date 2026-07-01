@@ -177,11 +177,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Fetched on the server so nav/footer can render the correct set of
+  // links in the initial HTML — otherwise the /jewelry link only appears
+  // after client-side store hydration, which loses SEO + first-paint UX.
+  const settings = await fetchSiteSettings();
+  const initialJewelryEnabled = settings?.jewelryEnabled === true;
+
   return (
     <html
       lang="en"
@@ -193,7 +199,7 @@ export default function RootLayout({
         <StorageHydrator />
         <ScrollProgress />
         <AnnouncementBar />
-        <Header />
+        <Header initialJewelryEnabled={initialJewelryEnabled} />
         <main className="min-h-screen">{children}</main>
         <Footer />
         <Toast />

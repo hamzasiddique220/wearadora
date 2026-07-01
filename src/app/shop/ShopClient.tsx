@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect, useDeferredValue, Suspense } from 'react';
+import { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import dynamic from 'next/dynamic';
-import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import { Product } from '@/types';
@@ -15,10 +14,18 @@ const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
   ssr: false,
 });
 
-function ShopContent() {
-  const { products, loading } = useVisibleProductsData();
-  const searchParams = useSearchParams();
-  const urlCategory = searchParams.get('category');
+interface ShopClientProps {
+  /** Server-fetched products to render the grid in the initial HTML. */
+  initialProducts?: Product[];
+}
+
+function ShopContent({ initialProducts }: ShopClientProps) {
+  const { products: storeProducts, loading: storeLoading } =
+    useVisibleProductsData();
+  const hasInitial = Boolean(initialProducts && initialProducts.length > 0);
+  const products =
+    storeLoading && hasInitial ? initialProducts! : storeProducts;
+  const loading = storeLoading && !hasInitial;
 
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,8 +33,14 @@ function ShopContent() {
   const [selected, setSelected] = useState<Product | null>(null);
 
   useEffect(() => {
+    // Client-side URL param read (avoids `useSearchParams` which suspends
+    // the entire subtree during SSR).
+    if (typeof window === 'undefined') return;
+    const urlCategory = new URLSearchParams(window.location.search).get(
+      'category'
+    );
     if (urlCategory) setSelectedCategory(normalizeCategory(urlCategory));
-  }, [urlCategory]);
+  }, []);
 
   const categories = useMemo(
     () => [
@@ -128,10 +141,6 @@ function ShopContent() {
   );
 }
 
-export default function ShopClient() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <ShopContent />
-    </Suspense>
-  );
+export default function ShopClient(props: ShopClientProps) {
+  return <ShopContent {...props} />;
 }

@@ -49,12 +49,23 @@ export async function generateMetadata({
   const handle = productHandle(product);
   const url = `${STORE_CONFIG.siteUrl}/product/${handle}`;
   const image = product.images?.[0] || product.image;
-  const description =
-    product.description?.slice(0, 200) ||
+
+  // Jewellery pieces are all zircon/American diamond — bake that into the
+  // <title> and meta description so search intent for "American diamond"
+  // matches, and always suffix with the trust signals customers scan for.
+  const categoryPart = isJewelry
+    ? `Zircon (American Diamond) ${product.category}`
+    : product.category;
+  const trustSuffix = ' Free delivery on Rs 3,000+ orders & 7-day returns across Pakistan.';
+  const baseDescription =
+    product.description?.slice(0, 155) ||
     `${product.name} — handcrafted ${product.category} from ${STORE_CONFIG.name}.`;
+  const description = `${baseDescription}${
+    baseDescription.endsWith('.') ? '' : '.'
+  }${trustSuffix}`;
 
   return {
-    title: `${product.name} — ${product.category}`,
+    title: `${product.name} – ${categoryPart}`,
     description,
     alternates: { canonical: `/product/${handle}` },
     openGraph: {

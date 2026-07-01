@@ -49,6 +49,20 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
+      {
+        // Long-cache the static /public assets (images, wordmark PNGs) that
+        // change rarely. Bumping the file name (or query) busts the cache.
+        source: '/images/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' },
+        ],
+      },
+      {
+        source: '/:file(.*\\.(?:png|jpg|jpeg|webp|avif|svg|ico))',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' },
+        ],
+      },
     ];
   },
 };

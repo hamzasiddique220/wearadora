@@ -58,9 +58,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze">
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze font-normal">
             Shop
-          </h4>
+          </p>
           <ul className="space-y-2 text-sm">
             <li>
               <Link href="/shop" className="hover:text-bronze">
@@ -100,9 +100,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze">
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze font-normal">
             Help
-          </h4>
+          </p>
           <ul className="space-y-2 text-sm">
             <li>
               <Link href="/about" className="hover:text-bronze">
@@ -128,9 +128,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze">
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze font-normal">
             Contact
-          </h4>
+          </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2">
               <Phone size={14} />
@@ -157,9 +157,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze">
+          <p className="text-xs tracking-[0.3em] uppercase mb-4 text-bronze font-normal">
             Follow
-          </h4>
+          </p>
           <div className="flex gap-3 flex-wrap">
             <a
               href={SOCIAL_LINKS.instagram}

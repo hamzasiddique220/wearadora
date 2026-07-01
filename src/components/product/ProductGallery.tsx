@@ -139,7 +139,10 @@ export default function ProductGallery({ images, alt, activeUrl }: ProductGaller
               alt={alt}
               fill
               priority
-              sizes="(min-width: 768px) 55vw, 100vw"
+              // Encode gallery padding + column split so mobile requests a
+              // ~480px image instead of 640px, matching what actually
+              // paints on screen (report: displayed 620, served 768).
+              sizes="(min-width: 1024px) 55vw, (min-width: 640px) 90vw, 92vw"
               className={`object-contain p-4 sm:p-6 md:p-10 mix-blend-darken transition-opacity duration-300 ${
                 lens ? 'md:opacity-0 opacity-100' : 'opacity-100'
               }`}

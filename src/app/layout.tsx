@@ -193,6 +193,16 @@ export default async function RootLayout({
       lang="en"
       className={`${inter.variable} ${cormorant.variable} ${cormorantItalic.variable} ${italiana.variable} ${arsenal.variable}`}
     >
+      <head>
+        {/* Preconnect to origins that block the LCP path — image CDN and
+            the deferred pixel scripts. Warming these TCP/TLS handshakes
+            early trims a few hundred ms off first paint on mobile. */}
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://analytics.tiktok.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+      </head>
       <body>
         <OrganizationJsonLd />
         <Analytics />

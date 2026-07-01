@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useDataStore } from '@/lib/stores/data';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import Hero from '@/components/home/Hero';
+import type { Product } from '@/types';
 
 // Below-fold sections are dynamic-imported so the initial JS payload only
 // ships Hero on first load. They still render server-side (no `ssr: false`)
@@ -14,7 +15,21 @@ const CategoriesGrid = dynamic(() => import('@/components/home/CategoriesGrid'))
 const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'));
 const StorySection = dynamic(() => import('@/components/home/StorySection'));
 
-export default function HomeShell() {
+interface HomeShellProps {
+  /**
+   * Server-fetched products used to render the FeaturedProducts grid in the
+   * initial HTML — kills the "Loading collection..." flash (better LCP + CLS).
+   * Once the client-side store finishes loading, we switch to the store copy.
+   */
+  initialProducts?: Product[];
+  /** Server-fetched flag — used until the client store hydrates. */
+  initialJewelryEnabled?: boolean;
+}
+
+export default function HomeShell({
+  initialProducts,
+  initialJewelryEnabled = false,
+}: HomeShellProps) {
   // Keep one realtime subscription alive while the homepage is mounted so the
   // catalog stays in sync with admin edits without each component opening its
   // own onSnapshot listener.
@@ -25,7 +40,18 @@ export default function HomeShell() {
     };
   }, []);
 
-  const { products, loading, jewelryEnabled } = useVisibleProductsData();
+  const {
+    products: storeProducts,
+    loading: storeLoading,
+    jewelryEnabled: storeJewelryEnabled,
+  } = useVisibleProductsData();
+  const hasInitial = Boolean(initialProducts && initialProducts.length > 0);
+  const products =
+    storeLoading && hasInitial ? initialProducts! : storeProducts;
+  const loading = storeLoading && !hasInitial;
+  const jewelryEnabled = storeLoading
+    ? initialJewelryEnabled
+    : storeJewelryEnabled;
 
   return (
     <>

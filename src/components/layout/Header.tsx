@@ -165,11 +165,19 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
 
             <Link
               href="/wishlist"
+              aria-label={
+                wishlistCount > 0
+                  ? `Wishlist, ${wishlistCount} item${wishlistCount === 1 ? '' : 's'}`
+                  : 'Wishlist'
+              }
               className="relative hover:text-bronze hide-mobile transition-colors"
             >
-              <Heart size={20} />
+              <Heart size={20} aria-hidden="true" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center"
+                >
                   {wishlistCount}
                 </span>
               )}
@@ -177,11 +185,19 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
 
             <Link
               href="/cart"
+              aria-label={
+                cartCount > 0
+                  ? `Cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`
+                  : 'Cart'
+              }
               className="relative hover:text-bronze transition-colors"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={20} aria-hidden="true" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center"
+                >
                   {cartCount}
                 </span>
               )}

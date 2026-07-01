@@ -84,7 +84,15 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/slippers', label: 'Shoes' },
-    ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
+    ...(jewelryEnabled
+      ? [
+          { href: '/jewelry', label: 'Jewelry' },
+          {
+            href: '/collections/american-diamond-jewellery',
+            label: 'Artificial Jewellery',
+          },
+        ]
+      : []),
     { href: '/blog', label: 'Journal' },
     { href: '/about', label: 'About' },
   ];

@@ -11,28 +11,34 @@ import AmericanDiamondClient from './AmericanDiamondClient';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: `American Diamond Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
+  // `absolute` bypasses the root layout's `| WEARADORA` template — the
+  // brand suffix is already part of the title string.
+  title: {
+    absolute: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
+  },
   description:
-    'Shop affordable American diamond (zircon) jewellery in Pakistan — necklace sets, bridal choker sets, earrings & bracelets with a premium finish. Free delivery on orders Rs 3,000+ & 7-day returns.',
+    'Shop affordable artificial jewellery online in Pakistan — American diamond (zircon) necklace sets, bridal choker sets, earrings & bracelets. Free delivery & 7-day returns.',
   alternates: {
     canonical: '/collections/american-diamond-jewellery',
   },
   keywords: [
+    'artificial jewellery',
+    'artificial jewellery Pakistan',
+    'artificial jewellery online',
     'american diamond',
     'american diamond jewellery',
     'american diamond jewellery Pakistan',
     'zircon jewellery',
     'zircon necklace set',
     'bridal choker set',
-    'artificial jewellery Pakistan',
     'cubic zirconia jewellery',
     'wedding jewellery',
     'wearadora',
   ],
   openGraph: {
-    title: `American Diamond Jewellery | ${STORE_CONFIG.name}`,
+    title: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
     description:
-      'Handcrafted American diamond (zircon) jewellery — necklace sets, bridal chokers, earrings & bracelets. Free delivery on orders Rs 3,000+ across Pakistan.',
+      'Affordable artificial jewellery — American diamond (zircon) necklace sets, bridal chokers, earrings & bracelets. Free delivery on orders Rs 3,000+ across Pakistan.',
     url: `${STORE_CONFIG.siteUrl}/collections/american-diamond-jewellery`,
     type: 'website',
   },
@@ -68,18 +74,18 @@ export default async function AmericanDiamondCollectionPage() {
             id="ad-collection-intro"
             className="text-mocha leading-relaxed text-sm md:text-base"
           >
-            Discover {STORE_CONFIG.name}&rsquo;s{' '}
-            <strong className="text-charcoal">American diamond jewellery</strong>{' '}
-            — also known as{' '}
-            <strong className="text-charcoal">zircon</strong> or{' '}
-            <strong className="text-charcoal">cubic zirconia</strong> —
-            handcrafted to bring the sparkle of real diamonds at an affordable
-            price. From statement necklace sets and complete bridal choker sets
-            to delicate earrings and bracelets, every piece is studded with
-            high-grade American diamond stones in a premium gold-tone finish.
-            Perfect for weddings, barat, walima, mehndi, Eid and parties — with
-            free delivery on orders over Rs 3,000 and a 7-day exchange &amp;
-            return across Pakistan.
+            Discover {STORE_CONFIG.name}&rsquo;s collection of{' '}
+            <strong className="text-charcoal">affordable artificial jewellery</strong>{' '}
+            in Pakistan — crafted with{' '}
+            <strong className="text-charcoal">American diamond</strong> (also
+            known as <strong className="text-charcoal">zircon</strong> or{' '}
+            <strong className="text-charcoal">cubic zirconia</strong>) stones
+            that shine like real diamonds at a fraction of the price. From
+            statement necklace sets and complete bridal choker sets to delicate
+            earrings and bracelets, every piece pairs premium design with
+            everyday affordability. Perfect for weddings, barat, walima, mehndi,
+            Eid and parties — with free delivery on orders over Rs 3,000 and a
+            7-day exchange &amp; return across Pakistan.
           </p>
         </section>
       )}

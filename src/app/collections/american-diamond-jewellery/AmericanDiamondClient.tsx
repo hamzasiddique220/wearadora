@@ -48,11 +48,11 @@ export default function AmericanDiamondClient({
   return (
     <CategoryPage
       productType="jewelry"
-      eyebrow="✦ American Diamond Jewellery"
-      title="American Diamond Jewellery"
+      eyebrow="✦ Artificial & American Diamond Jewellery"
+      title="Artificial & American Diamond Jewellery"
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
-      description="Discover handcrafted American diamond (zircon / cubic zirconia) jewellery — necklace sets, bridal chokers, earrings and bracelets that sparkle like real diamonds at an affordable price."
+      description="Affordable artificial jewellery in Pakistan — American diamond (zircon / cubic zirconia) necklace sets, bridal chokers, earrings and bracelets that sparkle at everyday prices."
       initialProducts={initialProducts}
     />
   );

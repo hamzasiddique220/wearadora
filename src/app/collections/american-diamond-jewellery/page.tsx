@@ -62,7 +62,7 @@ export default async function AmericanDiamondCollectionPage() {
         realtime={false}
       />
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
-        <Breadcrumbs items={[{ label: 'American Diamond Jewellery' }]} />
+        <Breadcrumbs items={[{ label: 'Artificial Jewellery' }]} />
       </div>
 
       {settings?.jewelryEnabled && (

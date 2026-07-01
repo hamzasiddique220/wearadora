@@ -86,7 +86,6 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
     { href: '/slippers', label: 'Shoes' },
     ...(jewelryEnabled
       ? [
-          { href: '/jewelry', label: 'Jewelry' },
           {
             href: '/collections/american-diamond-jewellery',
             label: 'Artificial Jewellery',

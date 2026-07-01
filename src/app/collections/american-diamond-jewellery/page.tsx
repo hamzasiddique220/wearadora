@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     absolute: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
   },
   description:
-    'Shop affordable artificial jewellery online in Pakistan — American diamond (zircon) necklace sets, bridal choker sets, earrings & bracelets. Free delivery & 7-day returns.',
+    'Shop affordable artificial jewellery online in Pakistan — American diamond (zircon) necklace sets, bridal choker sets, earrings & bracelets. Free delivery on orders Rs 3,000+ & 7-day returns.',
   alternates: {
     canonical: '/collections/american-diamond-jewellery',
   },

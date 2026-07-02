@@ -86,7 +86,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_WHATSAPP_NUMBER=923112032415
 NEXT_PUBLIC_STORE_NAME=WEARADORA
 NEXT_PUBLIC_STORE_TAGLINE=Adorned in Artistry
-NEXT_PUBLIC_ADMIN_PASSWORD=wearadora2026
+NEXT_PUBLIC_ADMIN_PASSWORD=wearRUHAAFIDAZ321!@#
 ```
 
 ---
@@ -96,7 +96,7 @@ NEXT_PUBLIC_ADMIN_PASSWORD=wearadora2026
 Setup complete hone ke baad ye test karein:
 
 1. **Home page** — `http://localhost:3000` pe load ho
-2. **Admin Login** — `http://localhost:3000/admin/login` pe password: `wearadora2026`
+2. **Admin Login** — `http://localhost:3000/admin/login` pe password: `wearRUHAAFIDAZ321!@#`
 3. **Add Product** — Admin → Products → New Product button
 4. **Image Upload** — Product form mein image upload kaam kare
 5. **Customer flow** — Home pe product dikhe → Add to cart → Checkout → WhatsApp open ho

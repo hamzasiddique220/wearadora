@@ -114,7 +114,7 @@ npm start
 ## Admin Access
 
 - **URL:** `/admin/login`
-- **Default Password:** `wearadora2026` (change in `.env.local`)
+- **Default Password:** `wearRUHAAFIDAZ321!@#` (change in `.env.local`)
 
 ## Architecture Decisions
 

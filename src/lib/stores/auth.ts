@@ -13,7 +13,7 @@ interface AuthState {
 }
 
 // Note: In production, replace this with server-side authentication
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'wearadora2026';
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'wearRUHAAFIDAZ321!@#';
 
 export const useAuthStore = create<AuthState>()(
   persist(

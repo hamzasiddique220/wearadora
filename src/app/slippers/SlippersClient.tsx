@@ -4,8 +4,15 @@ import { useMemo } from 'react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData, useVisibleProductsData } from '@/lib/stores/data';
 import { getProductType } from '@/lib/constants';
+import type { Product } from '@/types';
 
-export default function SlippersClient() {
+interface SlippersClientProps {
+  initialProducts?: Product[];
+}
+
+export default function SlippersClient({
+  initialProducts,
+}: SlippersClientProps) {
   const { settings } = useSiteSettingsData();
   const { products } = useVisibleProductsData();
 
@@ -33,6 +40,7 @@ export default function SlippersClient() {
       heroImages={heroImages}
       heroKind={settings.slippersHero.kind}
       description="Slides, heels and sandals handcrafted in-house — four decades of cobbling experience bringing you comfort and design in a single pair."
+      initialProducts={initialProducts}
     />
   );
 }

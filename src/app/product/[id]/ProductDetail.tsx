@@ -195,12 +195,6 @@ export default function ProductDetail({
               )}
             </div>
 
-            {product.description && (
-              <p className="text-[13px] sm:text-sm md:text-base text-mocha leading-relaxed mb-6 md:mb-8 whitespace-pre-line">
-                {product.description}
-              </p>
-            )}
-
             {hasSizes && (
               <div className="mb-5 md:mb-6">
                 <div className="flex items-center justify-between mb-2.5 md:mb-3">
@@ -317,19 +311,74 @@ export default function ProductDetail({
               </div>
             </div>
 
-            <div className="space-y-2.5 md:space-y-3 mb-5 md:mb-6 text-[13px] md:text-sm">
-              <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
-                <span className="text-mocha shrink-0">Availability</span>
-                <span
-                  className={`text-right ${
-                    product.stock > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
-                  }`}
-                >
-                  {product.stock > 0
-                    ? `✓ In Stock (${product.stock})`
-                    : '✗ Out of Stock'}
-                </span>
+            {/* Quick stock line — reassurance right before the CTA */}
+            <div className="flex items-center gap-2 mb-4 text-[13px]">
+              <span
+                className={`${
+                  product.stock > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
+                }`}
+              >
+                {product.stock > 0
+                  ? `✓ In Stock (${product.stock})`
+                  : '✗ Out of Stock'}
+              </span>
+              <span className="text-mocha/60">·</span>
+              <span className="text-mocha">
+                Delivery in {STORE_CONFIG.deliveryDays}
+              </span>
+            </div>
+
+            {/* CTA — Add to Bag + Wishlist + Buy It Now moved above the fold so
+                first-time visitors see the buy actions immediately on desktop. */}
+            <div className="hidden md:flex gap-3 mb-3">
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={product.stock === 0}
+                className="btn-primary flex-1 flex items-center justify-center gap-2"
+              >
+                <ShoppingBag size={14} /> Add to Bag
+              </button>
+              <button
+                type="button"
+                onClick={handleWishlist}
+                className="btn-outline px-4"
+                aria-label="Wishlist"
+              >
+                <Heart
+                  size={16}
+                  fill={isWishlisted ? '#8b6f47' : 'none'}
+                  color={isWishlisted ? '#8b6f47' : 'currentColor'}
+                />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              disabled={product.stock === 0}
+              className="btn-outline w-full mb-6 hidden md:block"
+            >
+              Buy It Now
+            </button>
+
+            {/* Full product description — placed below the CTA so first-time
+                visitors see title, price, quantity and buy actions above the
+                fold on desktop even when the description is long. */}
+            {product.description && (
+              <div className="mb-5 md:mb-6 pt-4 md:pt-6 border-t border-stone">
+                <p className="text-[10px] tracking-[0.25em] uppercase text-bronze mb-3">
+                  ✦ Description
+                </p>
+                <p className="text-[13px] sm:text-sm md:text-base text-mocha leading-relaxed whitespace-pre-line">
+                  {product.description}
+                </p>
               </div>
+            )}
+
+            {/* Product info table (Delivery, Shipping, Returns, Category, SKU,
+                Tag) — kept for reference below the CTA. */}
+            <div className="space-y-2.5 md:space-y-3 mb-5 md:mb-6 text-[13px] md:text-sm">
               <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
                 <span className="text-mocha shrink-0">Delivery</span>
                 <span className="text-right">{STORE_CONFIG.deliveryDays} nationwide</span>
@@ -373,38 +422,6 @@ export default function ProductDetail({
                 </div>
               )}
             </div>
-
-            <div className="hidden md:flex gap-3 mb-4">
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="btn-primary flex-1 flex items-center justify-center gap-2"
-              >
-                <ShoppingBag size={14} /> Add to Bag
-              </button>
-              <button
-                type="button"
-                onClick={handleWishlist}
-                className="btn-outline px-4"
-                aria-label="Wishlist"
-              >
-                <Heart
-                  size={16}
-                  fill={isWishlisted ? '#8b6f47' : 'none'}
-                  color={isWishlisted ? '#8b6f47' : 'currentColor'}
-                />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleBuyNow}
-              disabled={product.stock === 0}
-              className="btn-outline w-full mb-6 hidden md:block"
-            >
-              Buy It Now
-            </button>
 
             <div className="grid grid-cols-3 gap-2 md:gap-3 pt-4 border-t border-stone text-center">
               <div className="flex flex-col items-center gap-1.5">

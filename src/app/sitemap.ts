@@ -30,12 +30,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'weekly' as const,
             priority: 0.9,
           },
+          {
+            url: `${base}/collections/american-diamond-jewellery`,
+            lastModified: now,
+            changeFrequency: 'weekly' as const,
+            priority: 0.85,
+          },
         ]
       : []),
     { url: `${base}/slippers`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/shipping`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/return-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
+    { url: `${base}/faq`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
   ];

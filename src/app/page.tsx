@@ -1,4 +1,5 @@
 import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import { getProductType } from '@/lib/constants';
 import DataInitializer from '@/components/DataInitializer';
 import HomeShell from './HomeShell';
 
@@ -10,6 +11,16 @@ export default async function HomePage() {
     fetchSiteSettings(),
   ]);
 
+  const jewelryEnabled = settings?.jewelryEnabled === true;
+  // Mirror `useVisibleProductsData` server-side so the initial HTML matches
+  // what the client store will resolve to after hydration.
+  const visibleProducts = jewelryEnabled
+    ? products
+    : products.filter(
+        (p) =>
+          (p.productType || getProductType(p.category as string)) !== 'jewelry'
+      );
+
   return (
     <>
       <DataInitializer
@@ -17,7 +28,10 @@ export default async function HomePage() {
         initialSettings={settings}
         realtime={false}
       />
-      <HomeShell />
+      <HomeShell
+        initialProducts={visibleProducts}
+        initialJewelryEnabled={jewelryEnabled}
+      />
     </>
   );
 }

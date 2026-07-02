@@ -13,12 +13,21 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { useWishlistStore } from '@/lib/stores/wishlist';
-import { useVisibleProductsData } from '@/lib/stores/data';
+import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
-export default function Header() {
+interface HeaderProps {
+  /**
+   * Server-fetched jewelryEnabled — used as the source of truth until the
+   * client-side data store finishes hydrating, so /jewelry links render in
+   * the initial HTML (SEO + no post-hydration flicker).
+   */
+  initialJewelryEnabled?: boolean;
+}
+
+export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,7 +37,14 @@ export default function Header() {
 
   const cartCount = useCartStore((state) => state.getCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
-  const { products, jewelryEnabled } = useVisibleProductsData();
+  const { products, jewelryEnabled: storeJewelryEnabled } =
+    useVisibleProductsData();
+  const { loading: settingsLoading } = useSiteSettingsData();
+  // Prefer the server-fetched value until the client store has loaded — this
+  // keeps SSR and first client render identical (no hydration mismatch).
+  const jewelryEnabled = settingsLoading
+    ? initialJewelryEnabled
+    : storeJewelryEnabled;
   const deferredQuery = useDeferredValue(searchQuery);
 
   useEffect(() => {
@@ -68,7 +84,14 @@ export default function Header() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/slippers', label: 'Shoes' },
-    ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
+    ...(jewelryEnabled
+      ? [
+          {
+            href: '/collections/american-diamond-jewellery',
+            label: 'Artificial Jewellery',
+          },
+        ]
+      : []),
     { href: '/blog', label: 'Journal' },
     { href: '/about', label: 'About' },
   ];
@@ -142,11 +165,19 @@ export default function Header() {
 
             <Link
               href="/wishlist"
+              aria-label={
+                wishlistCount > 0
+                  ? `Wishlist, ${wishlistCount} item${wishlistCount === 1 ? '' : 's'}`
+                  : 'Wishlist'
+              }
               className="relative hover:text-bronze hide-mobile transition-colors"
             >
-              <Heart size={20} />
+              <Heart size={20} aria-hidden="true" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center"
+                >
                   {wishlistCount}
                 </span>
               )}
@@ -154,11 +185,19 @@ export default function Header() {
 
             <Link
               href="/cart"
+              aria-label={
+                cartCount > 0
+                  ? `Cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`
+                  : 'Cart'
+              }
               className="relative hover:text-bronze transition-colors"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={20} aria-hidden="true" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 bg-bronze text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center"
+                >
                   {cartCount}
                 </span>
               )}

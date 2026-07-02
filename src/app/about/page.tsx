@@ -7,7 +7,7 @@ import { fetchSiteSettings } from '@/lib/server/firestoreRest';
 export const metadata: Metadata = {
   title: 'About Us | WEARADORA',
   description:
-    'Four decades of handcrafted ladies footwear — comfort, design, and unbeatable value. Meet the family behind WEARADORA.',
+    'WEARADORA is a Pakistani online store offering affordable handcrafted artificial jewellery (American diamond / zircon) and 40+ years of ladies footwear, shipping nationwide from Karachi.',
 };
 
 export default async function AboutPage() {
@@ -54,18 +54,20 @@ export default async function AboutPage() {
           ✦ About WEARADORA
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl font-light mt-3 md:mt-4 mb-4 md:mb-6">
-          Four decades of{' '}
-          <span className="font-italic-serif text-bronze">handcrafted</span>
+          Handcrafted{' '}
+          <span className="font-italic-serif text-bronze">jewellery</span>{' '}
+          &amp; footwear
           <br />
-          ladies footwear
+          from Karachi, Pakistan
         </h1>
         <p className="text-[14px] sm:text-base md:text-lg text-mocha leading-relaxed max-w-2xl mx-auto">
-          WEARADORA is a family-run workshop with{' '}
-          <strong className="text-charcoal">40+ years of experience</strong> in
-          crafting ladies shoes — slides, heels, sandals and more. What started as
-          a single cobbler&rsquo;s bench has grown into a full collection, but the
-          philosophy stays the same: <em>make shoes you&rsquo;d be proud to put
-          your name on.</em>
+          WEARADORA is a Pakistani online store offering affordable handcrafted{' '}
+          <strong className="text-charcoal">artificial jewellery</strong> —
+          American diamond (zircon) necklace sets, bridal choker sets, earrings
+          and bracelets — alongside a family-run{' '}
+          <strong className="text-charcoal">40+ years</strong> of ladies footwear
+          (slides, heels and sandals). Prices from around Rs. 499, free
+          delivery on orders over Rs {STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and a 7-day return across Pakistan.
         </p>
       </div>
 

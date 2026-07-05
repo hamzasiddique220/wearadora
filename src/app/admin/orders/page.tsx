@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { Phone, MapPin, Trash2, Bell, BellOff, Sparkles, Calendar, X } from 'lucide-react';
+import Link from 'next/link';
+import { Phone, MapPin, Trash2, Bell, BellOff, Sparkles, Calendar, X, FileText } from 'lucide-react';
 import { OrderStatus } from '@/types';
 import { useOrders } from '@/hooks/useOrders';
 import { orderService } from '@/lib/services/orders';
@@ -450,6 +451,12 @@ export default function AdminOrdersPage() {
                     </option>
                   ))}
                 </select>
+                <Link
+                  href={`/admin/orders/${o.id}/receipt`}
+                  className="px-4 py-2 border border-charcoal text-charcoal text-[10px] tracking-[0.2em] uppercase flex items-center gap-1 hover:bg-charcoal hover:text-cream transition-colors"
+                >
+                  <FileText size={12} /> Receipt
+                </Link>
                 <a
                   href={`https://wa.me/${cleanPhoneNumber(o.customer?.phone || '')}`}
                   target="_blank"

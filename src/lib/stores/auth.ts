@@ -35,7 +35,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'wearadora-auth',
-      storage: createJSONStorage(() => sessionStorage),
+      // Use localStorage so the admin session survives new tabs (Receipt
+      // opens in a new tab and would otherwise bounce to login) and browser
+      // restarts. sessionStorage was per-tab which broke the receipt flow.
+      storage: createJSONStorage(() => localStorage),
       skipHydration: true,
       // Only the session flag is persisted — never the hydration marker.
       partialize: (state) => ({ isLoggedIn: state.isLoggedIn }),

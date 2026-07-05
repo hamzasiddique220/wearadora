@@ -625,3 +625,107 @@ select:focus {
 .blog-article em {
   font-style: italic;
 }
+
+/* ============== PRINTABLE SURFACES (CATALOGUE + RECEIPT) ============== */
+
+.cat-root,
+.receipt-root {
+  color: #1a1614;
+}
+
+.cat-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.cat-section {
+  break-inside: auto;
+}
+
+.cat-section h2 {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.receipt-sheet {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+@media print {
+  /* Print ONLY the catalogue/receipt: hide everything, then re-show the
+     printable container. Robust against site chrome (announcement bar,
+     sticky admin header, WhatsApp float, toast, etc.). */
+  body * {
+    visibility: hidden !important;
+  }
+
+  .cat-root,
+  .cat-root *,
+  .receipt-root,
+  .receipt-root * {
+    visibility: visible !important;
+  }
+
+  .cat-root,
+  .receipt-root {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #1a1614 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cat-card,
+  .receipt-sheet {
+    border: 1px solid #d9d3c9 !important;
+    box-shadow: none !important;
+  }
+
+  /* Editable receipt inputs render as clean plain text on paper. */
+  .receipt-root input,
+  .receipt-root textarea {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    resize: none !important;
+  }
+
+  .cat-section h2 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Force a clean 3-column catalogue grid on paper. */
+  .cat-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 12mm 10mm;
+}

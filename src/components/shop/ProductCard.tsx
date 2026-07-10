@@ -96,7 +96,7 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
           <>
             <Image
               src={primaryImage}
-              alt={product.name}
+              alt={`${product.name} — handcrafted ${product.category} by Wear Adora Pakistan`}
               fill
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               loading="lazy"

@@ -120,7 +120,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: `${STORE_CONFIG.name} — ${headline}`,
       description: `${STORE_CONFIG.tagline} · 40+ years of craft · Free delivery on orders Rs 3,000+.`,
-      siteName: STORE_CONFIG.name,
+      siteName: STORE_CONFIG.brandName,
       url: STORE_CONFIG.siteUrl,
       type: 'website',
       locale: 'en_PK',

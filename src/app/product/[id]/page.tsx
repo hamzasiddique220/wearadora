@@ -6,11 +6,12 @@ import {
   fetchSiteSettings,
 } from '@/lib/server/firestoreRest';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
-import { productHandle } from '@/lib/utils';
+import { productHandle, formatPrice } from '@/lib/utils';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ProductDetail from './ProductDetail';
 import ProductJsonLd from '@/components/seo/ProductJsonLd';
+import ProductMeta from '@/components/seo/ProductMeta';
 
 interface PageProps {
   params: { id: string };
@@ -64,16 +65,23 @@ export async function generateMetadata({
     baseDescription.endsWith('.') ? '' : '.'
   }${trustSuffix}`;
 
+  // Price in the share title is what actually surfaces in WhatsApp/Facebook
+  // link previews (they show og:title, not the product:price meta). The
+  // `og:type=product` + `product:price:*` tags are emitted separately by
+  // <ProductMeta> — `type` is intentionally omitted here so there's exactly
+  // one og:type in the document.
+  const shareTitle = `${product.name} – ${formatPrice(product.price)}`;
+
   return {
     title: `${product.name} – ${categoryPart}`,
     description,
     alternates: { canonical: `/product/${handle}` },
     openGraph: {
-      title: `${product.name} | ${STORE_CONFIG.name}`,
+      title: shareTitle,
       description,
       url,
-      type: 'website',
-      siteName: STORE_CONFIG.name,
+      siteName: STORE_CONFIG.brandName,
+      locale: 'en_PK',
       images: image
         ? [
             {
@@ -87,7 +95,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${product.name} | ${STORE_CONFIG.name}`,
+      title: shareTitle,
       description,
       images: image ? [image] : undefined,
     },
@@ -142,6 +150,7 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <>
       <ProductJsonLd product={product} />
+      <ProductMeta product={product} />
       <DataInitializer
         initialProducts={visibleAll}
         initialSettings={settings}

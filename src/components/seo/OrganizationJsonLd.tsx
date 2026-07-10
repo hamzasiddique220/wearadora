@@ -22,8 +22,11 @@ export default function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': orgId,
-    name: STORE_CONFIG.name,
-    alternateName: STORE_CONFIG.tagline,
+    // Proper brand name for Google's Knowledge Graph / SERP site name; the
+    // stylised wordmark "WEARADORA" is kept as an alternate name.
+    name: STORE_CONFIG.brandName,
+    alternateName: STORE_CONFIG.name,
+    slogan: STORE_CONFIG.tagline,
     description:
       'Pakistani online store offering handcrafted artificial jewellery (American diamond / zircon necklace sets, bridal chokers, earrings, bracelets) and ladies footwear, based in Karachi.',
     url: STORE_CONFIG.siteUrl,
@@ -48,7 +51,8 @@ export default function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Store',
     '@id': `${STORE_CONFIG.siteUrl}/#store`,
-    name: STORE_CONFIG.name,
+    name: STORE_CONFIG.brandName,
+    alternateName: STORE_CONFIG.name,
     description:
       'Affordable artificial jewellery (American diamond / zircon) and handcrafted ladies footwear, shipping nationwide across Pakistan.',
     url: STORE_CONFIG.siteUrl,

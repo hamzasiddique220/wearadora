@@ -153,7 +153,7 @@ export default function ProductDetail({
           <div className="min-w-0">
             <ProductGallery
               images={galleryImages}
-              alt={product.name}
+              alt={`${product.name} — handcrafted ${product.category} by Wear Adora`}
               activeUrl={
                 selectedColor && product.colorImages
                   ? product.colorImages[selectedColor]

@@ -18,6 +18,53 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
       ? 'https://schema.org/InStock'
       : 'https://schema.org/OutOfStock';
 
+  // Prices don't expire, but Google Merchant flags offers with no
+  // priceValidUntil — set it a year out so free Shopping listings stay valid.
+  const priceValidUntil = `${new Date().getFullYear() + 1}-12-31`;
+
+  // Shipping + return policy in the offer are what qualify a product for
+  // Google's free Shopping listings. Values mirror the on-site policy:
+  // Rs 200 flat delivery nationwide (free over Rs 3,000), 4–5 day transit,
+  // 7-day returns with the customer covering return postage.
+  const shippingDetails = {
+    '@type': 'OfferShippingDetails',
+    shippingRate: {
+      '@type': 'MonetaryAmount',
+      value: String(STORE_CONFIG.deliveryFee),
+      currency: 'PKR',
+    },
+    shippingDestination: {
+      '@type': 'DefinedRegion',
+      addressCountry: 'PK',
+    },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 0,
+        maxValue: 1,
+        unitCode: 'DAY',
+      },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 4,
+        maxValue: 5,
+        unitCode: 'DAY',
+      },
+    },
+  };
+
+  const returnPolicy = {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'PK',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+    merchantReturnDays: 7,
+    returnMethod: 'https://schema.org/ReturnByMail',
+    // Change-of-mind returns: the customer pays return postage (per the
+    // published return policy) — so this is NOT a FreeReturn.
+    returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+  };
+
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -27,7 +74,7 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
     sku: product.sku || product.id,
     brand: {
       '@type': 'Brand',
-      name: STORE_CONFIG.name,
+      name: STORE_CONFIG.brandName,
     },
     category: product.category,
     offers: {
@@ -35,12 +82,15 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
       url,
       priceCurrency: 'PKR',
       price: product.price,
+      priceValidUntil,
       availability,
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
-        name: STORE_CONFIG.name,
+        name: STORE_CONFIG.brandName,
       },
+      shippingDetails,
+      hasMerchantReturnPolicy: returnPolicy,
       ...(product.originalPrice && product.originalPrice > product.price
         ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: product.originalPrice, priceCurrency: 'PKR' } }
         : {}),

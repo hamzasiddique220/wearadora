@@ -1,9 +1,15 @@
 import type { ProductType } from '@/types';
 
 export const STORE_CONFIG = {
+  // Visual wordmark shown on the site (header/footer). Stays as the stylised
+  // all-caps "WEARADORA".
   name: process.env.NEXT_PUBLIC_STORE_NAME || 'WEARADORA',
+  // Proper brand name used in structured data (JSON-LD) and og:site_name so
+  // Google's site name and Facebook shares display "Wear Adora". Not shown as
+  // a visible wordmark — that's `name` above.
+  brandName: 'Wear Adora',
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '92313266431',
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923132166431',
   phoneDisplay: '0313 2166431',
   email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',

@@ -13,7 +13,7 @@ export const STORE_CONFIG = {
   phoneDisplay: '0313 2166431',
   email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',
-  deliveryFee: 200,
+  deliveryFee: 250,
   freeDeliveryMinTotal: 3000,
   deliveryDays: '4–5 days',
   siteUrl:

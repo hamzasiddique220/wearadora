@@ -23,6 +23,8 @@ interface FeaturedProductsProps {
   title?: string;
   description?: string;
   viewAllHref?: string;
+  /** Keyword-rich anchor text for the "view all" link (SEO). */
+  viewAllLabel?: string;
   limit?: number;
   theme?: 'light' | 'dark';
 }
@@ -35,6 +37,7 @@ export default function FeaturedProducts({
   title = 'Curated Favorites',
   description = 'Pieces loved most by our community, each one handpicked for its exceptional craftsmanship.',
   viewAllHref = '/shop',
+  viewAllLabel = 'View All',
   limit = 8,
   theme = 'light',
 }: FeaturedProductsProps) {
@@ -89,7 +92,7 @@ export default function FeaturedProducts({
                     : 'border-charcoal hover:text-bronze hover:border-bronze'
                 }`}
               >
-                View All <ArrowRight size={14} />
+                {viewAllLabel} <ArrowRight size={14} />
               </Link>
             </div>
           </Reveal>

@@ -2,6 +2,7 @@ import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest'
 import { getProductType } from '@/lib/constants';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import JewelrySeoSection from '@/components/seo/JewelrySeoSection';
 import JewelryClient from './JewelryClient';
 
 export const revalidate = 60;
@@ -30,6 +31,9 @@ export default async function JewelryPage() {
         initialJewelryEnabled={settings?.jewelryEnabled === true}
         initialProducts={jewelryProducts}
       />
+      {settings?.jewelryEnabled === true && (
+        <JewelrySeoSection products={jewelryProducts} full={false} />
+      )}
     </>
   );
 }

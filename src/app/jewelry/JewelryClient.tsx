@@ -49,11 +49,11 @@ export default function JewelryClient({
   return (
     <CategoryPage
       productType="jewelry"
-      eyebrow="✦ The Jewelry Collection"
-      title="Handcrafted Jewelry"
+      eyebrow="✦ The Jewellery Collection"
+      title="Artificial Jewellery Online in Pakistan"
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
-      description="Timeless pieces that tell a story — from delicate necklaces to statement rings, each crafted for those who cherish refined elegance."
+      description="Handcrafted artificial jewellery — American diamond (zircon) necklace sets, bridal chokers, earrings and bracelets. Free delivery over Rs. 3,000, cash on delivery nationwide across Pakistan."
       initialProducts={initialProducts}
     />
   );

@@ -67,6 +67,7 @@ export default function HomeShell({
         title="Slides & Heels"
         description="Handcrafted footwear with embellished detailing — where contemporary design meets lasting comfort."
         viewAllHref="/slippers"
+        viewAllLabel="Shop Ladies Shoes"
         limit={8}
       />
 
@@ -79,6 +80,7 @@ export default function HomeShell({
           title="Handcrafted Jewelry"
           description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
           viewAllHref="/jewelry"
+          viewAllLabel="Shop Jewellery"
           limit={8}
           theme="dark"
         />

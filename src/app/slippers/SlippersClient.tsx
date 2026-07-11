@@ -35,11 +35,11 @@ export default function SlippersClient({
     <CategoryPage
       productType="slippers"
       eyebrow="✦ 40+ Years of Craft"
-      title="Shoes Collection"
+      title="Ladies Shoes Online in Pakistan"
       heroImage={settings.slippersHero.image}
       heroImages={heroImages}
       heroKind={settings.slippersHero.kind}
-      description="Slides, heels and sandals handcrafted in-house — four decades of cobbling experience bringing you comfort and design in a single pair."
+      description="Handcrafted heels, slides, sandals and flats — four decades of cobbling experience, made in Karachi. Cash on delivery nationwide, free delivery over Rs. 3,000."
       initialProducts={initialProducts}
     />
   );

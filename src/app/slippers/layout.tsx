@@ -2,14 +2,18 @@ import type { Metadata } from 'next';
 import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Shoes Collection — Slides, Heels & Sandals',
+  // `absolute` bypasses the root layout's "%s | WEARADORA" template so the
+  // brand appears once, as the proper "Wear Adora" name for search.
+  title: {
+    absolute: `Ladies Shoes Online in Pakistan — Heels, Slides, Sandals & Flats | ${STORE_CONFIG.brandName}`,
+  },
   description:
-    'Handcrafted slides, heels and sandals — 40+ years of cobbling experience. Comfort and design in a single pair, made in Karachi.',
+    'Buy handcrafted ladies shoes online in Pakistan — heels, slides, sandals & flats from Rs. 1,700, made in Karachi. Cash on delivery, free delivery over Rs. 3,000, 7-day exchange.',
   alternates: { canonical: '/slippers' },
   openGraph: {
-    title: `Shoes Collection | ${STORE_CONFIG.name}`,
+    title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.brandName}`,
     description:
-      'Slides, heels and sandals handcrafted in-house — four decades of craft.',
+      'Handcrafted heels, slides, sandals and flats made in Karachi. Cash on delivery nationwide, free delivery over Rs. 3,000, 7-day exchange.',
     url: `${STORE_CONFIG.siteUrl}/slippers`,
     type: 'website',
   },

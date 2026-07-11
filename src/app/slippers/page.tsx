@@ -3,6 +3,7 @@ import { getProductType } from '@/lib/constants';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SlippersClient from './SlippersClient';
+import SlippersSeoSection from './SlippersSeoSection';
 
 export const revalidate = 60;
 
@@ -27,6 +28,7 @@ export default async function SlippersPage() {
         <Breadcrumbs items={[{ label: 'Shoes' }]} />
       </div>
       <SlippersClient initialProducts={slippersProducts} />
+      <SlippersSeoSection products={slippersProducts} />
     </>
   );
 }

@@ -48,8 +48,8 @@ export default function AmericanDiamondClient({
   return (
     <CategoryPage
       productType="jewelry"
-      eyebrow="✦ Artificial Jewellery"
-      title="Artificial Jewellery"
+      eyebrow="✦ American Diamond Collection"
+      title="American Diamond & Zircon Jewellery in Pakistan"
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
       description="Handcrafted artificial jewellery in Pakistan — studded with American diamond (zircon / cubic zirconia) stones that shine like the real thing at a fraction of the price. Necklace sets, bridal chokers, earrings and bracelets for weddings, barat, walima, mehndi and Eid — with free delivery on orders over Rs 3,000 and a 7-day exchange across Pakistan."

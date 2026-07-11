@@ -6,6 +6,7 @@ import {
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import JewelrySeoSection from '@/components/seo/JewelrySeoSection';
 import AmericanDiamondClient from './AmericanDiamondClient';
 
 export const revalidate = 60;
@@ -14,10 +15,10 @@ export const metadata: Metadata = {
   // `absolute` bypasses the root layout's `| WEARADORA` template — the
   // brand suffix is already part of the title string.
   title: {
-    absolute: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
+    absolute: `American Diamond & Zircon Jewellery Online in Pakistan | ${STORE_CONFIG.brandName}`,
   },
   description:
-    'Shop affordable artificial jewellery online in Pakistan — American diamond (zircon) necklace sets, bridal choker sets, earrings & bracelets. Free delivery on orders Rs 3,000+ & 7-day returns.',
+    'Shop American diamond (zircon) jewellery online in Pakistan — necklace sets, bridal choker sets with maang tikka, earrings & bracelets from Rs. 449. Free delivery on orders Rs 3,000+ & 7-day exchange.',
   alternates: {
     canonical: '/collections/american-diamond-jewellery',
   },
@@ -36,9 +37,9 @@ export const metadata: Metadata = {
     'wearadora',
   ],
   openGraph: {
-    title: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.name}`,
+    title: `American Diamond & Zircon Jewellery Online in Pakistan | ${STORE_CONFIG.brandName}`,
     description:
-      'Affordable artificial jewellery — American diamond (zircon) necklace sets, bridal chokers, earrings & bracelets. Free delivery on orders Rs 3,000+ across Pakistan.',
+      'American diamond (zircon) necklace sets, bridal chokers, earrings & bracelets from Rs. 449. Free delivery on orders Rs 3,000+ across Pakistan.',
     url: `${STORE_CONFIG.siteUrl}/collections/american-diamond-jewellery`,
     type: 'website',
   },
@@ -69,6 +70,9 @@ export default async function AmericanDiamondCollectionPage() {
         initialJewelryEnabled={settings?.jewelryEnabled === true}
         initialProducts={jewelryProducts}
       />
+      {settings?.jewelryEnabled === true && (
+        <JewelrySeoSection products={jewelryProducts} />
+      )}
     </>
   );
 }

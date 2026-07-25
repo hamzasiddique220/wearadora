@@ -63,8 +63,8 @@ export default async function AboutPage() {
         <p className="text-[14px] sm:text-base md:text-lg text-mocha leading-relaxed max-w-2xl mx-auto">
           WEARADORA is a Pakistani online store offering affordable handcrafted{' '}
           <strong className="text-charcoal">artificial jewellery</strong> —
-          American diamond (zircon) necklace sets, bridal choker sets, earrings
-          and bracelets — alongside a family-run{' '}
+          premium necklace sets, bridal choker sets, earrings and bracelets —
+          alongside a family-run{' '}
           <strong className="text-charcoal">40+ years</strong> of ladies footwear
           (slides, heels and sandals). Prices from around Rs. 499, free
           delivery on orders over Rs {STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and a 7-day return across Pakistan.

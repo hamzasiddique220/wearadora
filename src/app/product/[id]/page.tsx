@@ -51,11 +51,11 @@ export async function generateMetadata({
   const url = `${STORE_CONFIG.siteUrl}/product/${handle}`;
   const image = product.images?.[0] || product.image;
 
-  // Jewellery pieces are all zircon/American diamond — bake that into the
-  // <title> and meta description so search intent for "American diamond"
-  // matches, and always suffix with the trust signals customers scan for.
+  // Customer-facing <title> uses honest, high-search "artificial jewellery"
+  // wording; the "American diamond / zircon" search intent is preserved in the
+  // invisible `keywords` meta below instead of being shown to customers.
   const categoryPart = isJewelry
-    ? `Zircon (American Diamond) ${product.category}`
+    ? `Artificial ${product.category} Online in Pakistan`
     : product.category;
   const trustSuffix = ' Free delivery on Rs 3,000+ orders & 7-day returns across Pakistan.';
   const baseDescription =
@@ -64,6 +64,30 @@ export async function generateMetadata({
   const description = `${baseDescription}${
     baseDescription.endsWith('.') ? '' : '.'
   }${trustSuffix}`;
+
+  // Invisible-to-customer SEO keywords per product type. For jewellery this
+  // also keeps the "American diamond / zircon" search intent alive now that the
+  // visible title reads "artificial jewellery"; footwear gets its own set.
+  const keywords = isJewelry
+    ? [
+        `${product.category} online Pakistan`,
+        'artificial jewellery',
+        'artificial jewellery Pakistan',
+        'american diamond jewellery',
+        'zircon jewellery',
+        'wedding jewellery Pakistan',
+        'party wear jewellery',
+        'jewellery set online',
+        'best artificial jewellery online',
+      ]
+    : [
+        `${product.category} online Pakistan`,
+        'ladies shoes online Pakistan',
+        'ladies footwear Pakistan',
+        'party wear heels',
+        'women shoes online',
+        'handmade shoes Karachi',
+      ];
 
   // Price in the share title is what actually surfaces in WhatsApp/Facebook
   // link previews (they show og:title, not the product:price meta). The
@@ -75,6 +99,7 @@ export async function generateMetadata({
   return {
     title: `${product.name} – ${categoryPart}`,
     description,
+    keywords,
     alternates: { canonical: `/product/${handle}` },
     openGraph: {
       title: shareTitle,

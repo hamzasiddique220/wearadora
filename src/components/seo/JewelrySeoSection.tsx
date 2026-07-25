@@ -32,13 +32,13 @@ export default function JewelrySeoSection({
 
   const faqs: { question: string; answer: string }[] = [
     {
-      question: 'What is artificial (American diamond) jewellery?',
+      question: 'What is artificial jewellery?',
       answer:
-        'Artificial jewellery — also called fashion or bridal jewellery — is made with American diamond (zircon / cubic zirconia) stones set in gold-, silver- or rose-tone plated metal. It shines like real diamond jewellery at a fraction of the price. It is not solid gold and does not contain real diamonds.',
+        'Artificial jewellery — also called fashion or bridal jewellery — is made with brilliant, high-clarity stones set in gold-, silver- or rose-tone plated metal. It shines like fine jewellery at a fraction of the price. It is not solid gold and does not contain real diamonds.',
     },
     {
       question: 'What is the price range of jewellery at Wear Adora?',
-      answer: `Jewellery at Wear Adora ranges from ${range}, including zircon necklace sets, bridal choker sets with maang tikka, earrings, bracelets and rings — all handcrafted in Pakistan.`,
+      answer: `Jewellery at Wear Adora ranges from ${range}, including premium necklace sets, bridal choker sets with maang tikka, earrings, bracelets and rings — all handcrafted in Pakistan.`,
     },
     {
       question: 'Is cash on delivery available across Pakistan?',
@@ -52,7 +52,7 @@ export default function JewelrySeoSection({
     {
       question: 'Is this jewellery suitable for bridal and wedding wear?',
       answer:
-        'Yes. Our bridal choker sets, necklace sets with maang tikka and statement earrings are designed for barat, walima, mehndi, engagements and Eid — the American diamond stones give a full bridal sparkle without the cost of real diamonds.',
+        'Yes. Our bridal choker sets, necklace sets with maang tikka and statement earrings are designed for barat, walima, mehndi, engagements and Eid — the sparkling stones give a full bridal shine without the cost of real diamonds.',
     },
     {
       question: "How do I care for the jewellery so it doesn't tarnish?",
@@ -110,15 +110,15 @@ export default function JewelrySeoSection({
           ✦ About the Collection
         </span>
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mt-3 mb-4">
-          Artificial &amp; American Diamond Jewellery — Made in Pakistan
+          Best Artificial &amp; Bridal Jewellery — Made in Pakistan
         </h2>
         <p className="text-mocha leading-relaxed text-sm md:text-base">
-          Wear Adora offers handcrafted artificial jewellery online in Pakistan
-          — American diamond (zircon / cubic zirconia) necklace sets, bridal
-          choker sets with maang tikka, earrings, bracelets and rings, priced
-          between {formatPrice(minPrice)} and {formatPrice(maxPrice)}. Every
-          piece shines like real diamond jewellery at a fraction of the price,
-          in gold-, silver- and rose-tone finishes. We deliver nationwide in{' '}
+          Wear Adora offers the best handcrafted artificial jewellery online in
+          Pakistan — premium necklace sets, bridal choker sets with maang tikka,
+          earrings, bracelets and rings, priced between {formatPrice(minPrice)}{' '}
+          and {formatPrice(maxPrice)}. Every piece shines like fine jewellery at
+          a fraction of the price, in gold-, silver- and rose-tone finishes. We
+          deliver nationwide in{' '}
           {STORE_CONFIG.deliveryDays} with cash on delivery, free delivery on
           orders above {freeOver}, and a 7-day exchange.
         </p>

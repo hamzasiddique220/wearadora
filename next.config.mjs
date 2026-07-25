@@ -31,6 +31,18 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'firebase', 'firebase/firestore'],
   },
+  async redirects() {
+    return [
+      {
+        // Retired the "American Diamond" collection page. Permanently redirect
+        // its old URL to the general jewellery landing so any indexed links or
+        // bookmarks don't 404 and search equity carries over to /jewelry.
+        source: '/collections/american-diamond-jewellery',
+        destination: '/jewelry',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

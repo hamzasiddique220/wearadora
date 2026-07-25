@@ -9,6 +9,22 @@ export const metadata: Metadata = {
   },
   description:
     'Buy handcrafted ladies shoes online in Pakistan — heels, slides, sandals & flats from Rs. 1,700, made in Karachi. Cash on delivery, free delivery over Rs. 3,000, 7-day exchange.',
+  keywords: [
+    'ladies shoes online Pakistan',
+    'ladies footwear Pakistan',
+    'women shoes online Pakistan',
+    'heels online Pakistan',
+    'block heels Pakistan',
+    'kitten heels',
+    'party wear heels',
+    'bridal heels Pakistan',
+    'wedding shoes Pakistan',
+    'flats for women',
+    'sandals for women Pakistan',
+    'slides for women',
+    'khussa online Pakistan',
+    'handmade shoes Karachi',
+  ],
   alternates: { canonical: '/slippers' },
   openGraph: {
     title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.brandName}`,

@@ -24,20 +24,20 @@ interface Faq {
 
 const faqs: Faq[] = [
   {
-    q: 'What is American diamond jewellery?',
-    a: 'American diamond is another name for zircon (cubic zirconia) — a high-clarity synthetic stone that mimics the brilliance of a real diamond at a fraction of the price. All WEARADORA jewellery is handcrafted with high-grade American diamond (zircon) stones set in a polished gold-tone finish over a base metal.',
+    q: 'What is artificial jewellery?',
+    a: 'Artificial jewellery — also called fashion or bridal jewellery — is handcrafted with brilliant, high-clarity stones that mimic the sparkle of a real diamond at a fraction of the price. Every WEARADORA piece is set in a polished gold-, silver- or rose-tone finish over a base metal.',
   },
   {
     q: 'Is your jewellery real gold or artificial?',
-    a: 'All WEARADORA jewellery is artificial (also called fashion or bridal jewellery). Each piece has a polished gold-tone, silver-tone or rose-tone metal finish over a base metal — never solid gold. The stones are American diamond (zircon / cubic zirconia) rather than real diamonds.',
+    a: 'All WEARADORA jewellery is artificial (also called fashion or bridal jewellery). Each piece has a polished gold-tone, silver-tone or rose-tone metal finish over a base metal — never solid gold. The stones are premium high-clarity crystals rather than real diamonds.',
   },
   {
     q: 'Is artificial jewellery good for weddings?',
     a: 'Yes — high-quality artificial jewellery is an ideal choice for weddings, barat, walima, mehndi and Eid. It gives you the sparkle and design of fine bridal jewellery without the price or security worry, so you can wear something bold on your big day and still build a versatile collection for the years ahead.',
   },
   {
-    q: 'What is the difference between American diamond (zircon) and a real diamond?',
-    a: 'Real diamonds are natural carbon crystals graded on cut, clarity, colour and carat. American diamond (zircon / cubic zirconia) is a lab-made stone chosen for its clarity and sparkle. To the naked eye they look similar, but real diamonds are far more expensive and long-lived. Zircon is perfect for fashion and bridal pieces where the look matters most.',
+    q: 'What is the difference between artificial jewellery and real diamond jewellery?',
+    a: 'Real diamonds are natural carbon crystals graded on cut, clarity, colour and carat, and cost lakhs of rupees. Artificial (fashion) jewellery uses brilliant, high-clarity stones chosen for their clarity and sparkle. To the naked eye they look similar, but real diamonds are far more expensive. Artificial jewellery is perfect for weddings and everyday wear where the look matters most.',
   },
   {
     q: 'How do I care for artificial and gold-tone jewellery?',

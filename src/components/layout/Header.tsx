@@ -87,7 +87,7 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
     ...(jewelryEnabled
       ? [
           {
-            href: '/collections/american-diamond-jewellery',
+            href: '/jewelry',
             label: 'Artificial Jewellery',
           },
         ]

@@ -151,8 +151,11 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     verification: {
-      google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
-    },
+  google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
+  other: {
+    "p:domain_verify": "65b9cdbf475be1b6c4ceaefddcbfa0d7",
+  },
+},
     formatDetection: {
       telephone: true,
       email: true,

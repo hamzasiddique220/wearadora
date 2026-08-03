@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useDataStore } from '@/lib/stores/data';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import Hero from '@/components/home/Hero';
 import type { Product } from '@/types';
@@ -30,16 +28,6 @@ export default function HomeShell({
   initialProducts,
   initialJewelryEnabled = false,
 }: HomeShellProps) {
-  // Keep one realtime subscription alive while the homepage is mounted so the
-  // catalog stays in sync with admin edits without each component opening its
-  // own onSnapshot listener.
-  useEffect(() => {
-    useDataStore.getState().acquire();
-    return () => {
-      useDataStore.getState().release();
-    };
-  }, []);
-
   const {
     products: storeProducts,
     loading: storeLoading,

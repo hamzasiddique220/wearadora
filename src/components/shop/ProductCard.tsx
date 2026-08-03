@@ -18,9 +18,17 @@ interface ProductCardProps {
   product: Product;
   onClick: () => void;
   delay?: number;
+  /** Card sits on a dark (e.g. charcoal) background — swaps text colors that would otherwise fail contrast. */
+  theme?: 'light' | 'dark';
 }
 
-export default function ProductCard({ product, onClick, delay = 0 }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onClick,
+  delay = 0,
+  theme = 'light',
+}: ProductCardProps) {
+  const isDark = theme === 'dark';
   const router = useRouter();
   const addToCart = useCartStore((state) => state.addItem);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
@@ -176,7 +184,11 @@ export default function ProductCard({ product, onClick, delay = 0 }: ProductCard
       <div className="pt-3 md:pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-2 md:gap-3 mb-1.5">
           <div className="flex items-baseline gap-2 flex-wrap min-w-0">
-            <div className="text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-bronze truncate">
+            <div
+              className={`text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase truncate ${
+                isDark ? 'text-stone' : 'text-mocha'
+              }`}
+            >
               {product.category}
             </div>
             {product.sku && (

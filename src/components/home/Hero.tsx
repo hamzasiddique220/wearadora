@@ -341,14 +341,12 @@ export default function Hero() {
                 key={i}
                 onClick={() => setCurrent(i)}
                 aria-label={`Go to slide ${i + 1}`}
-                className={`transition-all h-[3px] ${
+                className={`h-[3px] w-8 md:w-10 origin-center transition-[transform,opacity] duration-300 ${
+                  isDarkSlide ? 'bg-cream' : 'bg-charcoal'
+                } ${
                   i === current
-                    ? `w-8 md:w-10 ${isDarkSlide ? 'bg-cream' : 'bg-charcoal'}`
-                    : `w-5 md:w-6 ${
-                        isDarkSlide
-                          ? 'bg-cream/30 hover:bg-cream/60'
-                          : 'bg-charcoal/30 hover:bg-charcoal/60'
-                      }`
+                    ? 'scale-x-100 opacity-100'
+                    : 'scale-x-[0.6] opacity-30 hover:opacity-60'
                 }`}
               />
             ))}

@@ -33,7 +33,7 @@ export default function StorySection() {
             href="/about"
             className="inline-block border border-stone px-5 md:px-6 py-3 text-[11px] md:text-xs tracking-[0.18em] md:tracking-[0.2em] uppercase hover:bg-bronze hover:border-bronze transition-colors"
           >
-            Learn More
+            Learn More About Us
           </Link>
         </div>
 

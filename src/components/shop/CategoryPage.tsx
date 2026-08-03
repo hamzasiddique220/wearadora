@@ -209,10 +209,10 @@ function CategoryContent({
                     key={i}
                     onClick={() => setHeroIndex(i)}
                     aria-label={`Go to slide ${i + 1}`}
-                    className={`transition-all h-[3px] ${
+                    className={`h-[3px] w-8 bg-charcoal origin-center transition-[transform,opacity] duration-300 ${
                       i === heroIndex
-                        ? 'w-8 bg-charcoal'
-                        : 'w-5 bg-charcoal/30 hover:bg-charcoal/60'
+                        ? 'scale-x-100 opacity-100'
+                        : 'scale-x-[0.6] opacity-30 hover:opacity-60'
                     }`}
                   />
                 ))}
@@ -255,10 +255,10 @@ function CategoryContent({
                   key={i}
                   onClick={() => setHeroIndex(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`transition-all h-[3px] ${
+                  className={`h-[3px] w-8 bg-cream origin-center transition-[transform,opacity] duration-300 ${
                     i === heroIndex
-                      ? 'w-8 bg-cream'
-                      : 'w-5 bg-cream/40 hover:bg-cream/70'
+                      ? 'scale-x-100 opacity-100'
+                      : 'scale-x-[0.6] opacity-40 hover:opacity-70'
                   }`}
                 />
               ))}

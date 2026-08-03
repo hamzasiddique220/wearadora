@@ -14,7 +14,7 @@ export default function StatsBar() {
             <div className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mb-1">
               {stat.num}
             </div>
-            <div className="text-[9px] sm:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-bronze">
+            <div className="text-[9px] sm:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-mocha">
               {stat.label}
             </div>
           </div>

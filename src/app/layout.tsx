@@ -214,7 +214,7 @@ export default async function RootLayout({
         <AnnouncementBar />
         <Header initialJewelryEnabled={initialJewelryEnabled} />
         <main className="min-h-screen">{children}</main>
-        <Footer />
+        <Footer initialJewelryEnabled={initialJewelryEnabled} />
         <Toast />
         <WhatsAppFloat />
       </body>

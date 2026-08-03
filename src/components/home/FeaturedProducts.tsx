@@ -109,6 +109,7 @@ export default function FeaturedProducts({
                   product={p}
                   onClick={() => setSelected(p)}
                   delay={i * 0.05}
+                  theme={theme}
                 />
               ))}
             </div>

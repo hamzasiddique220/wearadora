@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useSiteSettingsData } from '@/lib/stores/data';
 import { trackContact } from '@/lib/analytics';
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
@@ -23,10 +23,22 @@ function TikTokIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-export default function Footer() {
+interface FooterProps {
+  /**
+   * Server-fetched jewelryEnabled — used as the source of truth until the
+   * client-side data store finishes hydrating. Mirrors Header's pattern:
+   * reads the shared store WITHOUT opening a realtime subscription, since
+   * every storefront page already hydrates it once via DataInitializer.
+   */
+  initialJewelryEnabled?: boolean;
+}
+
+export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
   const pathname = usePathname();
-  const { settings } = useSiteSettings();
-  const jewelryEnabled = settings.jewelryEnabled === true;
+  const { settings, loading } = useSiteSettingsData();
+  const jewelryEnabled = loading
+    ? initialJewelryEnabled
+    : settings.jewelryEnabled === true;
 
   if (pathname?.startsWith('/admin')) return null;
 

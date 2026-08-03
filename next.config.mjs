@@ -47,6 +47,19 @@ const nextConfig = {
       permanent: true,
     }));
 
+    const slippersCategoryRedirects = [
+      { value: 'Slides', slug: 'slides' },
+      { value: 'Khussa', slug: 'slides' },
+      { value: 'Khussas', slug: 'slides' },
+      { value: 'Heels', slug: 'heels' },
+      { value: 'Sandal', slug: 'sandals' },
+    ].map(({ value, slug }) => ({
+      source: '/slippers',
+      has: [{ type: 'query', key: 'category', value }],
+      destination: `/slippers/${slug}`,
+      permanent: true,
+    }));
+
     return [
       {
         // Retired the "American Diamond" collection page. Permanently redirect
@@ -66,6 +79,7 @@ const nextConfig = {
       },
       // Old ?category= filter links now have dedicated SEO pages.
       ...jewelryCategoryRedirects,
+      ...slippersCategoryRedirects,
     ];
   },
   async headers() {

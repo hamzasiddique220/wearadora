@@ -4,7 +4,7 @@ interface CategoryDescriptionProps {
   def: CategoryDef;
 }
 
-/** Long-form SEO/GEO content block for a /jewelry/[category] page. */
+/** Long-form SEO/GEO content block for a /[vertical]/[category] page. */
 export default function CategoryDescription({ def }: CategoryDescriptionProps) {
   return (
     <section className="max-w-[900px] mx-auto px-4 sm:px-6 md:px-8 py-10 md:py-14 border-t border-stone">

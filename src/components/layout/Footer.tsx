@@ -68,17 +68,17 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/shop?category=Slides" className="hover:text-bronze">
+              <Link href="/slippers/slides" className="hover:text-bronze">
                 Slides
               </Link>
             </li>
             <li>
-              <Link href="/shop?category=Heels" className="hover:text-bronze">
+              <Link href="/slippers/heels" className="hover:text-bronze">
                 Heels
               </Link>
             </li>
             <li>
-              <Link href="/shop?category=Sandal" className="hover:text-bronze">
+              <Link href="/slippers/sandals" className="hover:text-bronze">
                 Sandals
               </Link>
             </li>

@@ -10,6 +10,7 @@ import { getProductType, normalizeCategory, STORE_CONFIG } from '@/lib/constants
 import {
   getCategoryDef,
   JEWELRY_CATEGORY_SLUGS,
+  relatedCategoryDefs,
 } from '@/lib/categories';
 import {
   DEFAULT_CATEGORY_IMAGES,
@@ -19,11 +20,11 @@ import { buildCategoryMetadata, NOT_FOUND_METADATA } from '@/lib/seo';
 import { buildCollectionPageSchema } from '@/lib/schema';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import CategoryBanner from '@/components/jewelry/CategoryBanner';
-import CategoryDescription from '@/components/jewelry/CategoryDescription';
-import CategoryFAQ from '@/components/jewelry/CategoryFAQ';
-import CategoryNavigation from '@/components/jewelry/CategoryNavigation';
-import ProductGrid from '@/components/jewelry/ProductGrid';
+import CategoryBanner from '@/components/category/CategoryBanner';
+import CategoryDescription from '@/components/category/CategoryDescription';
+import CategoryFAQ from '@/components/category/CategoryFAQ';
+import CategoryNavigation from '@/components/category/CategoryNavigation';
+import ProductGrid from '@/components/category/ProductGrid';
 
 interface PageProps {
   params: { category: string };
@@ -105,7 +106,7 @@ export default async function JewelryCategoryPage({ params, searchParams }: Page
           items={[{ label: 'Jewelry', href: '/jewelry' }, { label: def.plural }]}
         />
       </div>
-      <CategoryBanner def={def} image={bannerImage} />
+      <CategoryBanner def={def} image={bannerImage} eyebrow="✦ The Jewellery Collection" />
       <ProductGrid
         products={pagedProducts}
         currentPage={currentPage}
@@ -126,7 +127,11 @@ export default async function JewelryCategoryPage({ params, searchParams }: Page
         </div>
       )}
       <CategoryFAQ def={def} products={categoryProducts} />
-      <CategoryNavigation currentSlug={def.slug} />
+      <CategoryNavigation
+        others={relatedCategoryDefs(def.slug)}
+        basePath="/jewelry"
+        viewAll={{ href: '/jewelry', label: 'View All Jewellery' }}
+      />
     </>
   );
 }

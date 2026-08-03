@@ -3,6 +3,7 @@ import { STORE_CONFIG, getProductType } from '@/lib/constants';
 import { productHandle } from '@/lib/utils';
 import { listBlogPosts } from '@/lib/blog';
 import { JEWELRY_CATEGORY_DEFS } from '@/lib/categories';
+import { SLIPPERS_CATEGORY_DEFS } from '@/lib/footwearCategories';
 import {
   fetchAllProducts,
   fetchSiteSettings,
@@ -40,6 +41,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ]
       : []),
     { url: `${base}/slippers`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    ...SLIPPERS_CATEGORY_DEFS.map((d) => ({
+      url: `${base}/slippers/${d.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
     { url: `${base}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${base}/shipping`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/return-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },

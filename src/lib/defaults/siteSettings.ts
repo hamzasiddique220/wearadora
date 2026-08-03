@@ -49,7 +49,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Shimmering golden bow heels for unforgettable occasions. Every detail handcrafted to make you shine — perfect for weddings, festivities, and defining moments.',
     primaryLabel: 'Shop Heels',
-    primaryHref: '/slippers?category=Heels',
+    primaryHref: '/slippers/heels',
     secondaryLabel: 'Bestsellers',
     secondaryHref: '/slippers',
     kind: 'shoe',
@@ -80,7 +80,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Elegant nude bow slides — refined minimalism with a touch of glamour. Designed for comfort that never compromises on sophistication.',
     primaryLabel: 'Shop Slides',
-    primaryHref: '/slippers?category=Slides',
+    primaryHref: '/slippers/slides',
     secondaryLabel: 'View Jewelry',
     secondaryHref: '/jewelry',
     kind: 'shoe',
@@ -95,7 +95,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Shimmering sandals for the season ahead — weightless comfort, unmistakable polish, and a finish that catches every eye.',
     primaryLabel: 'Shop Sandals',
-    primaryHref: '/slippers?category=Sandal',
+    primaryHref: '/slippers/sandals',
     secondaryLabel: 'View All',
     secondaryHref: '/shop',
     kind: 'shoe',

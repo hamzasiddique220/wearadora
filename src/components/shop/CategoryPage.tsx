@@ -14,6 +14,7 @@ import {
   SLIPPERS_CATEGORIES,
 } from '@/lib/constants';
 import { jewelryCategoryHref } from '@/lib/categories';
+import { slippersCategoryHref } from '@/lib/footwearCategories';
 import ProductCard from '@/components/shop/ProductCard';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
@@ -298,28 +299,21 @@ function CategoryContent({
                 ? 'bg-charcoal text-cream border-charcoal'
                 : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
             }`;
-            // Jewelry sub-categories are real SEO pages — link to them instead
-            // of filtering client-side. Slippers has no per-category pages
-            // yet, so it keeps the existing client-side filter.
-            if (productType === 'jewelry') {
-              return (
-                <Link
-                  key={cat}
-                  href={cat === 'all' ? '/jewelry' : jewelryCategoryHref(cat)}
-                  className={className}
-                >
-                  {cat === 'all' ? 'All Items' : cat}
-                </Link>
-              );
-            }
+            // Sub-categories are real SEO pages — link to them instead of
+            // filtering client-side.
+            const basePath = productType === 'jewelry' ? '/jewelry' : '/slippers';
+            const categoryHref =
+              productType === 'jewelry'
+                ? jewelryCategoryHref(cat)
+                : slippersCategoryHref(cat);
             return (
-              <button
+              <Link
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                href={cat === 'all' ? basePath : categoryHref}
                 className={className}
               >
                 {cat === 'all' ? 'All Items' : cat}
-              </button>
+              </Link>
             );
           })}
         </div>

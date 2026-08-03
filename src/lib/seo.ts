@@ -3,22 +3,23 @@ import { STORE_CONFIG } from './constants';
 import type { CategoryDef } from './categories';
 
 /**
- * Metadata for a /jewelry/[category] page. `page` > 1 still points its
+ * Metadata for a /[vertical]/[category] page. `page` > 1 still points its
  * canonical at the base category URL — Google indexes the category by its
  * first page, and this collection is small enough that deep pagination
  * pages don't need to compete for their own listing.
  */
 export function buildCategoryMetadata(
   def: CategoryDef,
-  opts: { image?: string } = {}
+  opts: { image?: string; basePath?: string } = {}
 ): Metadata {
-  const url = `${STORE_CONFIG.siteUrl}/jewelry/${def.slug}`;
+  const basePath = opts.basePath || '/jewelry';
+  const url = `${STORE_CONFIG.siteUrl}${basePath}/${def.slug}`;
 
   return {
     title: { absolute: `${def.seoTitle}` },
     description: def.metaDescription,
     keywords: def.keywords,
-    alternates: { canonical: `/jewelry/${def.slug}` },
+    alternates: { canonical: `${basePath}/${def.slug}` },
     openGraph: {
       title: `${def.h1} | ${STORE_CONFIG.brandName}`,
       description: def.metaDescription,

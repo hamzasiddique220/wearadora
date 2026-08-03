@@ -10,7 +10,7 @@ interface CategoryFAQProps {
 }
 
 /**
- * Visible FAQ accordion + matching FAQPage JSON-LD for a /jewelry/[category]
+ * Visible FAQ accordion + matching FAQPage JSON-LD for a /[vertical]/[category]
  * page. The price-range question is computed from the actual filtered
  * products so it never drifts from real catalog pricing, and is inserted
  * right after the category's own static FAQs.

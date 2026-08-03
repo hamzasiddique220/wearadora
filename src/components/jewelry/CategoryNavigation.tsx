@@ -20,7 +20,7 @@ export default function CategoryNavigation({ currentSlug }: CategoryNavigationPr
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mt-3 mb-6 md:mb-8">
           Related Categories
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           {others.map((d) => (
             <Link
               key={d.slug}

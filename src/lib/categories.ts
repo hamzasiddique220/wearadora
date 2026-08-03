@@ -323,6 +323,65 @@ export const JEWELRY_CATEGORY_DEFS: CategoryDef[] = [
       },
     ],
   },
+  {
+    slug: 'bridal',
+    category: 'Bridal',
+    label: 'Bridal',
+    plural: 'Bridal Sets',
+    h1: 'Bridal Jewellery Collection',
+    seoTitle: 'Bridal Jewellery Online in Pakistan — Bridal Sets & Choker Sets | Wear Adora',
+    metaDescription:
+      'Shop bridal jewellery sets online in Pakistan — matching choker, earrings and maang tikka sets for barat, walima and mehndi. Handcrafted, cash on delivery nationwide.',
+    keywords: [
+      'bridal jewellery online Pakistan',
+      'bridal set price in Pakistan',
+      'wedding jewellery set Pakistan',
+      'barat jewellery set',
+      'walima jewellery set',
+      'dulhan jewellery set',
+      'zircon bridal set',
+      'american diamond bridal set',
+      'choker set with maang tikka',
+      'mehndi jewellery set',
+    ],
+    intro:
+      'Complete, matching bridal sets — choker, earrings and maang tikka handcrafted together for barat, walima and every function in between.',
+    description: [
+      'A bridal set solves a different problem than buying jewellery piece by piece: instead of matching a necklace, earrings and maang tikka separately and hoping the metal tones and stone sizes agree, every piece in a Wear Adora bridal set is designed and handcrafted together from the start. Each set is built around a choker or rani-haar necklace in a gold-, silver- or rose-tone finish, paired with matching earrings and, in most sets, a maang tikka — so the whole look is decided in one purchase rather than three or four separate ones.',
+      'Pakistani weddings run across several distinct functions, and this collection is organised around that calendar rather than around single product types. Mehndi and dholki call for bold, colourful stacks — sets with warmer stone tones and heavier bangles that hold up under bright lights and constant movement. Barat and nikkah are where the most elaborate sets belong, typically a full choker with maang tikka and jhumki earrings, worn with the heaviest outfit of the week. Walima and reception tend toward a slightly lighter, more polished set — often a rani-haar or a more structured choker without quite as much drape — since the outfit itself is usually more tailored. Buying by function first, rather than by piece, is the fastest way to narrow down a set from this page.',
+      'Matching a set to your outfit comes down to three things: neckline, dupatta, and the base colour of your embroidery. A high or heavily embellished neckline pairs best with a choker set, since the shorter length sits above the busiest part of the outfit instead of competing with it. A deep or simple neckline has room for a longer rani-haar to become the statement piece on its own. For colour, gold-tone sets work with warm-toned outfits (reds, maroons, golds, oranges), while silver- and rose-tone sets sit better against cooler or pastel palettes (blues, greens, dusty pinks) — though brides increasingly mix gold-tone jewellery with any outfit colour for a more traditional bridal look, and that combination works just as well.',
+      'Every bridal set here is built to be worn as-is, but also to be broken apart and restyled afterward — the earrings work on their own for a later mehndi or a friend’s wedding, the choker can be layered under a plainer necklace for a dawaat, and the maang tikka doubles as a hair accessory for other festive occasions. This is worth keeping in mind when choosing a set: the more versatile pieces (studs-adjacent earrings, a mid-weight choker) tend to get more wear after the wedding season than the most elaborate, single-occasion designs.',
+      'Because a full set carries more weight and more points of contact with hair, skin and outfit fabric than any single piece, a little extra care goes a long way across a wedding week. Put the set on last — after hair, makeup and perfume — and take it off first when the function ends, since hairspray and perfume are the fastest way to dull a gold- or silver-tone finish. Store each set together in its original box between functions rather than mixing pieces into a general jewellery drawer, both to keep the set matched for next time and to stop stones from knocking against harder pieces like bangles.',
+      'Every bridal set ships from our Karachi workshop with cash on delivery available nationwide, arriving in 4–5 days with free delivery on orders above Rs. 3,000 — which every set here comfortably clears. Given how central these pieces are to a single day, we’d suggest ordering at least a week ahead of the function so there’s time for a 7-day exchange if the tone or size needs adjusting once it arrives in hand rather than on a screen. If you’re piecing together several functions at once, our necklace, earring, bangle and anklet collections are all made in the same finishes as these sets, so anything you add later still matches.',
+    ],
+    faqs: [
+      {
+        question: 'What’s included in a Wear Adora bridal set?',
+        answer:
+          'Most bridal sets include a matching choker or rani-haar necklace and earrings, with a maang tikka included in most designs — check each product listing for the exact pieces included in that set.',
+      },
+      {
+        question: 'How do I choose the right bridal set for my outfit?',
+        answer:
+          'Match neckline first (choker for high/embellished necklines, rani-haar for deep or simple ones), then metal tone to your outfit colour — gold-tone for warm reds/maroons/golds, silver- or rose-tone for cooler or pastel palettes.',
+      },
+      {
+        question: 'Can I wear a bridal set for more than one wedding function?',
+        answer:
+          'Yes — many brides choose a bolder set for barat or nikkah and a lighter one for walima, and pieces from any set can be worn individually afterward for mehndis, dawaats or other events.',
+      },
+      {
+        question: 'How far in advance should I order a bridal set?',
+        answer:
+          'We recommend at least a week before the function, so there’s time to use the 7-day exchange window if the tone or fit needs adjusting once the set arrives.',
+      },
+      {
+        question: 'Can I exchange a bridal set if it doesn’t match my outfit?',
+        answer:
+          'Yes, unused bridal sets in their original packaging can be exchanged within 7 days of delivery — useful since colour and tone can look different on screen versus in person.',
+      },
+    ],
+  },
 ];
 
 export const JEWELRY_CATEGORY_SLUGS: string[] = JEWELRY_CATEGORY_DEFS.map(

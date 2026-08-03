@@ -36,6 +36,7 @@ export const JEWELRY_CATEGORIES = [
   'Earring',
   'Bangles',
   'Anklet',
+  'Bridal',
 ] as const;
 
 export const SLIPPERS_CATEGORIES = ['Slides', 'Heels', 'Sandal'] as const;
@@ -107,6 +108,9 @@ const CATEGORY_ALIASES: Record<string, string> = {
   earrings: 'Earring',
   anklet: 'Anklet',
   anklets: 'Anklet',
+  bridal: 'Bridal',
+  'bridal set': 'Bridal',
+  'bridal sets': 'Bridal',
   // Slipper variations
   slide: 'Slides',
   slides: 'Slides',

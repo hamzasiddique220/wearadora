@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import {
   fetchAllProducts,
   fetchSiteSettings,
@@ -112,6 +114,17 @@ export default async function JewelryCategoryPage({ params, searchParams }: Page
         emptyMessage={`No ${def.plural.toLowerCase()} in stock right now — check back soon or browse the full jewellery collection.`}
       />
       <CategoryDescription def={def} />
+      {def.slug === 'bridal' && (
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 md:px-8 -mt-6 pb-10 md:pb-14 text-center">
+          <Link
+            href="/blog/bridal-jewellery-guide-barat-walima-mayun"
+            className="text-xs tracking-[0.2em] uppercase text-bronze hover:text-charcoal inline-flex items-center gap-2"
+          >
+            Read Our Full Bridal Jewellery Guide (Mayun, Barat &amp; Walima)
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
       <CategoryFAQ def={def} products={categoryProducts} />
       <CategoryNavigation currentSlug={def.slug} />
     </>

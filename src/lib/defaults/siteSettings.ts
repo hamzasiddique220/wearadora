@@ -122,6 +122,9 @@ export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
   // No dedicated anklet photo shot yet — falls back to the general jewelry
   // hero image until one is uploaded via admin settings.
   Anklet: DEFAULT_JEWELRY_HERO.image,
+  // No dedicated bridal-set photo yet — the necklace shot is the closest
+  // visual match (chokers are the centrepiece of most bridal sets).
+  Bridal: '/images/necklace-01-blk.jpg',
 };
 
 export const DEFAULT_SLIPPERS_HERO = {

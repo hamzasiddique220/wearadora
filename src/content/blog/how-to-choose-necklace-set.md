@@ -59,4 +59,4 @@ You do not need to spend a fortune to look elegant. Well-made artificial and zir
 
 ## Ready to find your set?
 
-Once you know your neckline, length, colour and occasion, choosing becomes easy — and even fun. Browse the full handcrafted [WEARADORA jewellery collection](/jewelry) to find a set that fits your style and your wardrobe, with free delivery on orders Rs 3,000+ across Pakistan and simple ordering on WhatsApp.
+Once you know your neckline, length, colour and occasion, choosing becomes easy — and even fun. Browse the full handcrafted [WEARADORA jewellery collection](/jewelry) to find a set that fits your style and your wardrobe, with free delivery on orders Rs 4,500+ across Pakistan and simple ordering on WhatsApp.

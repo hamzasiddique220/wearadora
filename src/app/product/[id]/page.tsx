@@ -57,7 +57,7 @@ export async function generateMetadata({
   const categoryPart = isJewelry
     ? `Artificial ${product.category} Online in Pakistan`
     : product.category;
-  const trustSuffix = ' Free delivery on Rs 3,000+ orders & 7-day returns across Pakistan.';
+  const trustSuffix = ' Free delivery on Rs 4,500+ orders & 7-day returns across Pakistan.';
   const baseDescription =
     product.description?.slice(0, 155) ||
     `${product.name} — handcrafted ${product.category} from ${STORE_CONFIG.name}.`;

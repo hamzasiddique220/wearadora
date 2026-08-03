@@ -151,7 +151,7 @@ export default function ShippingPage() {
       </div>
 
       <div className="mt-10 text-center text-sm text-mocha">
-        Karachi-based · Free delivery on orders Rs 3,000+ · WhatsApp orders on{' '}
+        Karachi-based · Free delivery on orders Rs 4,500+ · WhatsApp orders on{' '}
         <Link
           href={`tel:+92${STORE_CONFIG.whatsappNumber.slice(2)}`}
           className="text-bronze hover:text-charcoal"

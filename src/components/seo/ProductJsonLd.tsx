@@ -24,7 +24,7 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
 
   // Shipping + return policy in the offer are what qualify a product for
   // Google's free Shopping listings. Values mirror the on-site policy:
-  // Rs 250 flat delivery nationwide (free over Rs 3,000), 4–5 day transit,
+  // Rs 250 flat delivery nationwide (free over Rs 4,500), 4–5 day transit,
   // 7-day returns with the customer covering return postage.
   const shippingDetails = {
     '@type': 'OfferShippingDetails',

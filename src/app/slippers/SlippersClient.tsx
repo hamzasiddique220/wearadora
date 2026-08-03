@@ -39,7 +39,7 @@ export default function SlippersClient({
       heroImage={settings.slippersHero.image}
       heroImages={heroImages}
       heroKind={settings.slippersHero.kind}
-      description="Handcrafted heels, slides, sandals and flats — four decades of cobbling experience, made in Karachi. Cash on delivery nationwide, free delivery over Rs. 3,000."
+      description="Handcrafted heels, slides, sandals and flats — four decades of cobbling experience, made in Karachi. Cash on delivery nationwide, free delivery over Rs. 4,500."
       initialProducts={initialProducts}
     />
   );

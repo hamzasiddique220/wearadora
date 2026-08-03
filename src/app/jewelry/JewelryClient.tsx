@@ -53,7 +53,7 @@ export default function JewelryClient({
       title="Artificial Jewellery Online in Pakistan"
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
-      description="Shop the best artificial jewellery online in Pakistan — premium necklace sets, bridal chokers, earrings, bracelets and rings that sparkle like the real thing. Free delivery over Rs. 3,000, cash on delivery nationwide across Pakistan."
+      description="Shop the best artificial jewellery online in Pakistan — premium necklace sets, bridal chokers, earrings, bracelets and rings that sparkle like the real thing. Free delivery over Rs. 4,500, cash on delivery nationwide across Pakistan."
       initialProducts={initialProducts}
     />
   );

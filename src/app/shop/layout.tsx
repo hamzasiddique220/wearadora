@@ -3,7 +3,7 @@ import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Shop All — Shoes & Jewelry',
-  description: `Browse the complete ${STORE_CONFIG.name} collection — handcrafted slides, heels, sandals and timeless jewelry. Free delivery on orders Rs 3,000+, nationwide in ${STORE_CONFIG.deliveryDays}.`,
+  description: `Browse the complete ${STORE_CONFIG.name} collection — handcrafted slides, heels, sandals and timeless jewelry. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`,
   alternates: { canonical: '/shop' },
   openGraph: {
     title: `Shop All | ${STORE_CONFIG.name}`,

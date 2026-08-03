@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: {
     absolute: `Artificial Jewellery Online in Pakistan — Necklace Sets, Earrings & Bracelets | ${STORE_CONFIG.brandName}`,
   },
-  description: `Buy artificial jewellery online in Pakistan — zircon (American diamond) necklace sets, bridal chokers, earrings and bracelets from Rs. 449. Cash on delivery, free delivery over Rs. 3,000, 7-day exchange, nationwide in ${STORE_CONFIG.deliveryDays}.`,
+  description: `Buy artificial jewellery online in Pakistan — zircon (American diamond) necklace sets, bridal chokers, earrings and bracelets from Rs. 449. Cash on delivery, free delivery over Rs. 4,500, 7-day exchange, nationwide in ${STORE_CONFIG.deliveryDays}.`,
   keywords: [
     'artificial jewellery',
     'artificial jewellery Pakistan',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Artificial Jewellery Online in Pakistan | ${STORE_CONFIG.brandName}`,
     description:
-      'Zircon (American diamond) necklace sets, bridal chokers, earrings and bracelets from Rs. 449 — handcrafted, with free delivery on orders Rs 3,000+ across Pakistan.',
+      'Zircon (American diamond) necklace sets, bridal chokers, earrings and bracelets from Rs. 449 — handcrafted, with free delivery on orders Rs 4,500+ across Pakistan.',
     url: `${STORE_CONFIG.siteUrl}/jewelry`,
     type: 'website',
   },

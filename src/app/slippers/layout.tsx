@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     absolute: `Ladies Shoes Online in Pakistan — Heels, Slides, Sandals & Flats | ${STORE_CONFIG.brandName}`,
   },
   description:
-    'Buy handcrafted ladies shoes online in Pakistan — heels, slides, sandals & flats from Rs. 1,700, made in Karachi. Cash on delivery, free delivery over Rs. 3,000, 7-day exchange.',
+    'Buy handcrafted ladies shoes online in Pakistan — heels, slides, sandals & flats from Rs. 1,700, made in Karachi. Cash on delivery, free delivery over Rs. 4,500, 7-day exchange.',
   keywords: [
     'ladies shoes online Pakistan',
     'ladies footwear Pakistan',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.brandName}`,
     description:
-      'Handcrafted heels, slides, sandals and flats made in Karachi. Cash on delivery nationwide, free delivery over Rs. 3,000, 7-day exchange.',
+      'Handcrafted heels, slides, sandals and flats made in Karachi. Cash on delivery nationwide, free delivery over Rs. 4,500, 7-day exchange.',
     url: `${STORE_CONFIG.siteUrl}/slippers`,
     type: 'website',
   },

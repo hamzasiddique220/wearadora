@@ -385,7 +385,7 @@ export default function ProductDetail({
               </div>
               <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
                 <span className="text-mocha shrink-0">Shipping</span>
-                <span className="text-[#2d6a4f] text-right">FREE on orders Rs 3,000+</span>
+                <span className="text-[#2d6a4f] text-right">FREE on orders Rs 4,500+</span>
               </div>
               <div className="flex items-center justify-between gap-3 pb-2.5 md:pb-3 border-b border-stone">
                 <span className="text-mocha shrink-0">Returns</span>

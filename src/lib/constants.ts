@@ -14,7 +14,7 @@ export const STORE_CONFIG = {
   email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',
   deliveryFee: 250,
-  freeDeliveryMinTotal: 3000,
+  freeDeliveryMinTotal: 4500,
   deliveryDays: '4–5 days',
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||

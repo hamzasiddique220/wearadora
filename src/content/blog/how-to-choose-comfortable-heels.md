@@ -40,4 +40,4 @@ Comfort also comes from how a shoe is built — a smooth lining, a padded footbe
 
 ## Ready to find your pair?
 
-Browse the full [ladies shoes collection](/slippers) — kitten heels, block heels, sandals, flats and slides, handcrafted in Karachi with nationwide cash on delivery, free delivery over Rs. 3,000 and a 7-day exchange if the size isn't right.
+Browse the full [ladies shoes collection](/slippers) — kitten heels, block heels, sandals, flats and slides, handcrafted in Karachi with nationwide cash on delivery, free delivery over Rs. 4,500 and a 7-day exchange if the size isn't right.

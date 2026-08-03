@@ -32,6 +32,21 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', 'firebase', 'firebase/firestore'],
   },
   async redirects() {
+    const jewelryCategoryRedirects = [
+      { value: 'Necklace', slug: 'necklace' },
+      { value: 'Ring', slug: 'rings' },
+      { value: 'Earring', slug: 'earrings' },
+      { value: 'Bangles', slug: 'bangles' },
+      { value: 'Bracelet', slug: 'bangles' },
+      { value: 'Bracelets', slug: 'bangles' },
+      { value: 'Anklet', slug: 'anklets' },
+    ].map(({ value, slug }) => ({
+      source: '/jewelry',
+      has: [{ type: 'query', key: 'category', value }],
+      destination: `/jewelry/${slug}`,
+      permanent: true,
+    }));
+
     return [
       {
         // Retired the "American Diamond" collection page. Permanently redirect
@@ -41,6 +56,16 @@ const nextConfig = {
         destination: '/jewelry',
         permanent: true,
       },
+      // "Bangles" and "Bracelets" are the same catalog category — one
+      // canonical page (/jewelry/bangles) avoids duplicate-content pages
+      // targeting identical products.
+      {
+        source: '/jewelry/bracelets',
+        destination: '/jewelry/bangles',
+        permanent: true,
+      },
+      // Old ?category= filter links now have dedicated SEO pages.
+      ...jewelryCategoryRedirects,
     ];
   },
   async headers() {

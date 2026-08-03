@@ -85,12 +85,12 @@ export default function Footer() {
             {jewelryEnabled && (
               <>
                 <li>
-                  <Link href="/shop?category=Necklace" className="hover:text-bronze">
+                  <Link href="/jewelry/necklace" className="hover:text-bronze">
                     Necklaces
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=Ring" className="hover:text-bronze">
+                  <Link href="/jewelry/rings" className="hover:text-bronze">
                     Rings
                   </Link>
                 </li>

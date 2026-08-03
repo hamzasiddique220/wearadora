@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProductsData } from '@/lib/stores/data';
 import { Product, ProductType } from '@/types';
@@ -12,6 +13,7 @@ import {
   JEWELRY_CATEGORIES,
   SLIPPERS_CATEGORIES,
 } from '@/lib/constants';
+import { jewelryCategoryHref } from '@/lib/categories';
 import ProductCard from '@/components/shop/ProductCard';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
@@ -289,19 +291,37 @@ function CategoryContent({
         </div>
 
         <div className="flex gap-2 mb-8 md:mb-10 overflow-x-auto scrollbar-hide pb-2 -mx-3 sm:mx-0 px-3 sm:px-0 justify-start md:justify-center">
-          {subCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`whitespace-nowrap px-4 md:px-5 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
-                selectedCategory === cat
-                  ? 'bg-charcoal text-cream border-charcoal'
-                  : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
-              }`}
-            >
-              {cat === 'all' ? 'All Items' : cat}
-            </button>
-          ))}
+          {subCategories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            const className = `whitespace-nowrap px-4 md:px-5 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
+              isActive
+                ? 'bg-charcoal text-cream border-charcoal'
+                : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
+            }`;
+            // Jewelry sub-categories are real SEO pages — link to them instead
+            // of filtering client-side. Slippers has no per-category pages
+            // yet, so it keeps the existing client-side filter.
+            if (productType === 'jewelry') {
+              return (
+                <Link
+                  key={cat}
+                  href={cat === 'all' ? '/jewelry' : jewelryCategoryHref(cat)}
+                  className={className}
+                >
+                  {cat === 'all' ? 'All Items' : cat}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={className}
+              >
+                {cat === 'all' ? 'All Items' : cat}
+              </button>
+            );
+          })}
         </div>
 
         {loading ? (

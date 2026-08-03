@@ -16,10 +16,10 @@ const CATEGORY_TILES: CategoryTile[] = [
   { name: 'Slides', href: '/slippers?category=Slides', kind: 'shoe' },
   { name: 'Heels', href: '/slippers?category=Heels', kind: 'shoe' },
   { name: 'Sandal', href: '/slippers?category=Sandal', kind: 'shoe' },
-  { name: 'Necklace', href: '/jewelry?category=Necklace', kind: 'jewel' },
-  { name: 'Ring', href: '/jewelry?category=Ring', kind: 'jewel' },
-  { name: 'Earring', href: '/jewelry?category=Earring', kind: 'jewel' },
-  { name: 'Bangles', href: '/jewelry?category=Bangles', kind: 'jewel' },
+  { name: 'Necklace', href: '/jewelry/necklace', kind: 'jewel' },
+  { name: 'Ring', href: '/jewelry/rings', kind: 'jewel' },
+  { name: 'Earring', href: '/jewelry/earrings', kind: 'jewel' },
+  { name: 'Bangles', href: '/jewelry/bangles', kind: 'jewel' },
 ];
 
 export default function CategoriesGrid() {

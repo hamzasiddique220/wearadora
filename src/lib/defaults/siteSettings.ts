@@ -36,7 +36,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     primaryLabel: 'Shop Jewelry',
     primaryHref: '/jewelry',
     secondaryLabel: 'Necklaces',
-    secondaryHref: '/jewelry?category=Necklace',
+    secondaryHref: '/jewelry/necklace',
     kind: 'jewel',
   },
   {
@@ -65,7 +65,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Sculpted earrings catching candlelight at every turn. Designed to frame your face with unmistakable softness.',
     primaryLabel: 'Shop Earrings',
-    primaryHref: '/jewelry?category=Earring',
+    primaryHref: '/jewelry/earrings',
     secondaryLabel: 'View Jewelry',
     secondaryHref: '/jewelry',
     kind: 'jewel',
@@ -102,6 +102,15 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
   },
 ];
 
+export const DEFAULT_STORY_IMAGE =
+  'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800';
+
+export const DEFAULT_JEWELRY_HERO = {
+  image:
+    'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1800&q=85',
+  kind: 'photo' as const,
+};
+
 export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
   Slides: '/images/aw-1-slide.jpeg',
   Heels: '/images/main-WA-1-black-card-img.png',
@@ -110,15 +119,9 @@ export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
   Ring: '/images/ring-bangle1.jpeg',
   Earring: '/images/ring-01.jpeg',
   Bangles: '/images/bangles-01.jpeg',
-};
-
-export const DEFAULT_STORY_IMAGE =
-  'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800';
-
-export const DEFAULT_JEWELRY_HERO = {
-  image:
-    'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1800&q=85',
-  kind: 'photo' as const,
+  // No dedicated anklet photo shot yet — falls back to the general jewelry
+  // hero image until one is uploaded via admin settings.
+  Anklet: DEFAULT_JEWELRY_HERO.image,
 };
 
 export const DEFAULT_SLIPPERS_HERO = {

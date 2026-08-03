@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { getProductType } from '@/lib/constants';
+import { jewelryCategoryHref } from '@/lib/categories';
 import { productHandle } from '@/lib/utils';
 import {
   JEWELRY_BG,
@@ -51,7 +52,7 @@ function buildSlideFromProduct(p: Product, img: string): Slide {
   const isShoeIndex = !isJewel;
   const href = `/product/${productHandle(p)}`;
   const categoryHref = isJewel
-    ? `/jewelry?category=${encodeURIComponent(p.category)}`
+    ? jewelryCategoryHref(p.category as string)
     : `/slippers?category=${encodeURIComponent(p.category)}`;
 
   const words = p.name.split(' ');

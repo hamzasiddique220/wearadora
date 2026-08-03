@@ -1,3 +1,8 @@
+// Canonical apex domain — must match STORE_CONFIG.siteUrl in src/lib/constants.ts.
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://wearadora.com').replace(/\/$/, '');
+const SITE_HOST = new URL(SITE_URL).hostname;
+const WWW_HOST = `www.${SITE_HOST}`;
+
 /** @type {import('next').NextConfig} */
 const securityHeaders = [
   { key: 'X-DNS-Prefetch-Control', value: 'on' },
@@ -61,6 +66,15 @@ const nextConfig = {
     }));
 
     return [
+      // Force the www subdomain onto the canonical apex domain — serving both
+      // as 200s creates duplicate content in Google's eyes and splits ranking
+      // signals between the two hosts.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: WWW_HOST }],
+        destination: `${SITE_URL}/:path*`,
+        permanent: true,
+      },
       {
         // Retired the "American Diamond" collection page. Permanently redirect
         // its old URL to the general jewellery landing so any indexed links or

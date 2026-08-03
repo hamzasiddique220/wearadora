@@ -74,7 +74,7 @@ export async function generateMetadata(): Promise<Metadata> {
     : 'Handcrafted Ladies Footwear';
 
   const description = jewelryEnabled
-    ? `WEARADORA — 40+ years of handcrafted ladies footwear and jewelry. Slides, heels, sandals and timeless jewelry made in Karachi. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`
+    ? `WEARADORA — handcrafted ladies footwear and jewelry, made in Karachi. Slides, heels, sandals and jewelry sets, cash on delivery, free delivery on Rs 4,500+.`
     : `WEARADORA — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`;
 
   const baseKeywords = [
@@ -105,7 +105,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(STORE_CONFIG.siteUrl),
     title: {
-      default: `${STORE_CONFIG.name} — ${headline} | ${STORE_CONFIG.tagline}`,
+      default: `${STORE_CONFIG.name} — ${headline} in Pakistan`,
       template: `%s | ${STORE_CONFIG.name}`,
     },
     description,

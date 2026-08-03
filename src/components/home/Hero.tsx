@@ -300,7 +300,7 @@ export default function Hero() {
             >
               <Image
                 src={slide.image}
-                alt={slide.title}
+                alt={`${slide.title} ${slide.italic}${slide.tail ? ` ${slide.tail}` : ''}`}
                 width={1200}
                 height={1200}
                 priority

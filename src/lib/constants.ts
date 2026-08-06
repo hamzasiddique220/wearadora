@@ -1,13 +1,11 @@
 import type { ProductType } from '@/types';
 
 export const STORE_CONFIG = {
-  // Visual wordmark shown on the site (header/footer). Stays as the stylised
-  // all-caps "WEARADORA".
-  name: process.env.NEXT_PUBLIC_STORE_NAME || 'WEARADORA',
-  // Proper brand name used in structured data (JSON-LD) and og:site_name so
-  // Google's site name and Facebook shares display "Wear Adora". Not shown as
-  // a visible wordmark — that's `name` above.
-  brandName: 'Wear Adora',
+  // Brand name used everywhere in text — page titles, meta tags, structured
+  // data, on-site copy. The header/footer logo is a separate design asset
+  // (wearadora-wordmark-*.png) and keeps its stylised all-caps "WEARADORA"
+  // look regardless of this value.
+  name: process.env.NEXT_PUBLIC_STORE_NAME || 'Wear Adora',
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923132166431',
   phoneDisplay: '0313 2166431',

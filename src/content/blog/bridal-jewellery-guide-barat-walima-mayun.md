@@ -1,6 +1,6 @@
 <!--
 URL slug:        /blog/bridal-jewellery-guide-barat-walima-mayun
-SEO Title:       Bridal Jewellery Guide: Barat, Walima & Mayun | WEARADORA
+SEO Title:       Bridal Jewellery Guide: Barat, Walima & Mayun | Wear Adora
 Meta description: A simple guide to choosing bridal jewellery for every Pakistani wedding event — Mayun, Barat & Walima. Colours, styles & sets to help you shine on your big day.
 Target keywords: bridal jewellery Pakistan, barat jewellery, walima jewellery, necklace set for bride
 Excerpt: A simple guide to choosing bridal jewellery for every Pakistani wedding event — Mayun, Barat & Walima.
@@ -56,4 +56,4 @@ Whichever event you are dressing for, a few simple rules always help:
 
 Bridal jewellery is about telling a story across your wedding days — playful at the Mehndi, regal at the Barat, and softly elegant at the Walima. When each set is chosen to match its moment, every look feels complete.
 
-Ready to find your pieces? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — with free delivery on orders Rs 4,500+ across Pakistan, and easy ordering on WhatsApp.
+Ready to find your pieces? Explore the full handcrafted [Wear Adora jewellery collection](/jewelry) — with free delivery on orders Rs 4,500+ across Pakistan, and easy ordering on WhatsApp.

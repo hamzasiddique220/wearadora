@@ -105,7 +105,7 @@ export async function generateMetadata({
       title: shareTitle,
       description,
       url,
-      siteName: STORE_CONFIG.brandName,
+      siteName: STORE_CONFIG.name,
       locale: 'en_PK',
       images: image
         ? [

@@ -8,12 +8,12 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 export const metadata: Metadata = {
   title: 'Style Journal',
   description:
-    'Style guides, jewellery care tips and buying advice from WEARADORA — handcrafted in Karachi, made for every Pakistani occasion.',
+    'Style guides, jewellery care tips and buying advice from Wear Adora — handcrafted in Karachi, made for every Pakistani occasion.',
   alternates: { canonical: '/blog' },
   openGraph: {
     title: `Style Journal | ${STORE_CONFIG.name}`,
     description:
-      'Style guides, jewellery care tips and buying advice from WEARADORA.',
+      'Style guides, jewellery care tips and buying advice from Wear Adora.',
     url: `${STORE_CONFIG.siteUrl}/blog`,
     type: 'website',
   },

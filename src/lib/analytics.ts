@@ -1,5 +1,5 @@
 /**
- * Central analytics layer for WEARADORA.
+ * Central analytics layer for Wear Adora.
  *
  * One place that fires conversion events to every connected platform
  * (Meta Pixel, TikTok Pixel, Google Analytics 4). Components call the
@@ -174,7 +174,7 @@ export const trackPurchase = (data: {
     value,
     currency: CURRENCY,
   });
-  // Most WEARADORA sales are confirmed off-site (WhatsApp/COD), so the
+  // Most Wear Adora sales are confirmed off-site (WhatsApp/COD), so the
   // browser-side order placement is also reported as a Lead for ad learning.
   meta('Lead', { value, currency: CURRENCY });
   tiktok('CompletePayment', {

@@ -194,7 +194,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
           <p className="text-sm text-mocha leading-relaxed mb-6">
             {product.description ||
-              'A beautiful handcrafted piece from the WEARADORA collection.'}
+              'A beautiful handcrafted piece from the Wear Adora collection.'}
           </p>
 
           {hasSizes && (

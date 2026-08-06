@@ -74,7 +74,7 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
     sku: product.sku || product.id,
     brand: {
       '@type': 'Brand',
-      name: STORE_CONFIG.brandName,
+      name: STORE_CONFIG.name,
     },
     category: product.category,
     offers: {
@@ -87,7 +87,7 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
-        name: STORE_CONFIG.brandName,
+        name: STORE_CONFIG.name,
       },
       shippingDetails,
       hasMerchantReturnPolicy: returnPolicy,

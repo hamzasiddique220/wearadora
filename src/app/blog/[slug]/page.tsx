@@ -23,7 +23,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   }
   const url = `${STORE_CONFIG.siteUrl}/blog/${post.slug}`;
   return {
-    // `absolute` bypasses the root layout's `| WEARADORA` template since the
+    // `absolute` bypasses the root layout's `| Wear Adora` template since the
     // frontmatter title already ends with the brand.
     title: { absolute: post.title },
     description: post.description,

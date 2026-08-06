@@ -22,7 +22,7 @@ export default function ProductMeta({ product }: ProductMetaProps) {
   return (
     <>
       <meta property="og:type" content="product" />
-      <meta property="product:brand" content={STORE_CONFIG.brandName} />
+      <meta property="product:brand" content={STORE_CONFIG.name} />
       <meta property="product:availability" content={inStock ? 'in stock' : 'out of stock'} />
       <meta property="product:condition" content="new" />
       <meta property="product:price:amount" content={amount} />

@@ -3,7 +3,7 @@ import { STORE_CONFIG } from '@/lib/constants';
 
 const DISALLOW = ['/admin', '/admin/*', '/api', '/api/*', '/cart', '/wishlist'];
 
-// AI assistants / answer engines. Explicitly listing them means WEARADORA
+// AI assistants / answer engines. Explicitly listing them means Wear Adora
 // content is eligible to be surfaced when someone asks ChatGPT / Claude /
 // Perplexity / Google's Gemini something like "affordable artificial
 // jewellery in Pakistan". Trade-off: public content may also be used in

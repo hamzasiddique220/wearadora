@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  // `absolute` bypasses the root layout's "%s | WEARADORA" template so the
-  // brand appears once, as the proper "Wear Adora" name for search.
+  // `absolute` bypasses the root layout's "%s | Wear Adora" template so the
+  // brand name doesn't appear twice.
   title: {
-    absolute: `Ladies Shoes Online in Pakistan — Heels, Slides, Sandals & Flats | ${STORE_CONFIG.brandName}`,
+    absolute: `Ladies Shoes Online in Pakistan — Heels, Slides, Sandals & Flats | ${STORE_CONFIG.name}`,
   },
   description:
     'Buy handcrafted ladies shoes online in Pakistan — heels, slides, sandals & flats from Rs. 1,700, made in Karachi. Cash on delivery, free delivery over Rs. 4,500, 7-day exchange.',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/slippers' },
   openGraph: {
-    title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.brandName}`,
+    title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.name}`,
     description:
       'Handcrafted heels, slides, sandals and flats made in Karachi. Cash on delivery nationwide, free delivery over Rs. 4,500, 7-day exchange.',
     url: `${STORE_CONFIG.siteUrl}/slippers`,

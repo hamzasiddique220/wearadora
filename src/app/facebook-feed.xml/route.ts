@@ -85,7 +85,7 @@ function buildItem(product: Product): string | null {
     '    <g:condition>new</g:condition>',
     `    <g:price>${regularPrice} PKR</g:price>`,
     hasDiscount ? `    <g:sale_price>${product.price} PKR</g:sale_price>` : '',
-    `    <g:brand>${escapeXml(STORE_CONFIG.brandName)}</g:brand>`,
+    `    <g:brand>${escapeXml(STORE_CONFIG.name)}</g:brand>`,
     `    <g:google_product_category>${escapeXml(GOOGLE_CATEGORY[type])}</g:google_product_category>`,
     `    <g:product_type>${escapeXml(product.category)}</g:product_type>`,
     '    <g:identifier_exists>no</g:identifier_exists>',

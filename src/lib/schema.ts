@@ -25,7 +25,7 @@ export function buildCollectionPageSchema({
     url,
     isPartOf: {
       '@type': 'WebSite',
-      name: STORE_CONFIG.brandName,
+      name: STORE_CONFIG.name,
       url: STORE_CONFIG.siteUrl,
     },
     mainEntity: {

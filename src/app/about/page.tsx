@@ -5,9 +5,9 @@ import { STORE_CONFIG } from '@/lib/constants';
 import { fetchSiteSettings } from '@/lib/server/firestoreRest';
 
 export const metadata: Metadata = {
-  title: 'About Us | WEARADORA',
+  title: 'About Us | Wear Adora',
   description:
-    'WEARADORA is a Pakistani online store offering affordable handcrafted artificial jewellery (American diamond / zircon) and 40+ years of ladies footwear, shipping nationwide from Karachi.',
+    'Wear Adora is a Pakistani online store offering affordable handcrafted artificial jewellery (American diamond / zircon) and 40+ years of ladies footwear, shipping nationwide from Karachi.',
 };
 
 export default async function AboutPage() {
@@ -51,7 +51,7 @@ export default async function AboutPage() {
     <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20">
       <div className="text-center mb-10 md:mb-14">
         <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
-          ✦ About WEARADORA
+          ✦ About Wear Adora
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl font-light mt-3 md:mt-4 mb-4 md:mb-6">
           Handcrafted{' '}
@@ -61,7 +61,7 @@ export default async function AboutPage() {
           from Karachi, Pakistan
         </h1>
         <p className="text-[14px] sm:text-base md:text-lg text-mocha leading-relaxed max-w-2xl mx-auto">
-          WEARADORA is a Pakistani online store offering affordable handcrafted{' '}
+          Wear Adora is a Pakistani online store offering affordable handcrafted{' '}
           <strong className="text-charcoal">artificial jewellery</strong> —
           premium necklace sets, bridal choker sets, earrings and bracelets —
           alongside a family-run{' '}
@@ -94,7 +94,7 @@ export default async function AboutPage() {
         }}
       >
         <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
-          ✦ Why women pick WEARADORA
+          ✦ Why women pick Wear Adora
         </span>
         <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl font-light mt-3 mb-4 md:mb-5 leading-tight">
           Comfort of a pair you&rsquo;ve owned for years —
@@ -104,7 +104,7 @@ export default async function AboutPage() {
         <p className="max-w-2xl mx-auto text-stone/90 text-[13px] sm:text-sm md:text-base leading-relaxed mb-6 md:mb-8">
           When you&rsquo;ve been making women&rsquo;s shoes for 40+ years, you
           learn which straps dig in, which heels wobble, which soles crack. Every
-          WEARADORA pair is built with those lessons baked in — then finished with
+          Wear Adora pair is built with those lessons baked in — then finished with
           the embellishment and design detail our customers keep coming back for.
           And because we make in-house, you get it at a fraction of what big
           brands charge.

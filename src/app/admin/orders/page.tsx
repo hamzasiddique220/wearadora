@@ -151,7 +151,7 @@ export default function AdminOrdersPage() {
       // Test ping so admin knows it works
       playOrderChime();
       try {
-        new Notification('WEARADORA Admin', {
+        new Notification('Wear Adora Admin', {
           body: 'You will be alerted here when a new order arrives.',
         });
       } catch (e) {

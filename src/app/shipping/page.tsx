@@ -4,7 +4,7 @@ import { Truck, RefreshCw, Mail, Phone, MapPin } from 'lucide-react';
 import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Shipping & Returns | WEARADORA',
+  title: 'Shipping & Returns | Wear Adora',
   description:
     'Delivery times across Pakistan and our 7-day refund & exchange policy.',
 };

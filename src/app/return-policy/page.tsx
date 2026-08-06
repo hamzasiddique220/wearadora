@@ -5,14 +5,14 @@ import { STORE_CONFIG } from '@/lib/constants';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'Return & Exchange Policy | WEARADORA',
+  title: 'Return & Exchange Policy | Wear Adora',
   description:
-    '7-day exchange and refund policy at WEARADORA — eligibility, how to request, refund timelines, and contact details.',
+    '7-day exchange and refund policy at Wear Adora — eligibility, how to request, refund timelines, and contact details.',
   alternates: { canonical: '/return-policy' },
   openGraph: {
     title: `Return & Exchange Policy | ${STORE_CONFIG.name}`,
     description:
-      '7-day exchange and refund policy at WEARADORA — handcrafted ladies footwear & jewellery.',
+      '7-day exchange and refund policy at Wear Adora — handcrafted ladies footwear & jewellery.',
     url: `${STORE_CONFIG.siteUrl}/return-policy`,
     type: 'website',
   },
@@ -39,7 +39,7 @@ export default function ReturnPolicyPage() {
             <span className="font-italic-serif text-bronze">or send it back.</span>
           </h1>
           <p className="text-mocha leading-relaxed max-w-2xl mx-auto text-sm md:text-base">
-            At WEARADORA, we want you to love every piece you order. If
+            At Wear Adora, we want you to love every piece you order. If
             something isn&rsquo;t quite right, we&rsquo;re here to help.
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function ReturnPolicyPage() {
             If your order arrives <strong>damaged, faulty, or incorrect</strong>,
             contact us within <strong>48 hours</strong> of delivery with photos.
             We will arrange a <strong>free replacement or refund of the item
-            price</strong>, and <strong>WEARADORA will cover the return
+            price</strong>, and <strong>Wear Adora will cover the return
             shipping</strong> in these cases. Original delivery charges remain
             non-refundable.
           </p>
@@ -146,7 +146,7 @@ export default function ReturnPolicyPage() {
             For change-of-mind returns and exchanges, the{' '}
             <strong>customer is responsible for the return shipping cost</strong>.
             For damaged, defective, or wrong items,{' '}
-            <strong>WEARADORA covers the shipping</strong>.
+            <strong>Wear Adora covers the shipping</strong>.
           </p>
 
           <h2>9. Need Help?</h2>
@@ -194,7 +194,7 @@ export default function ReturnPolicyPage() {
         </div>
 
         <p className="text-center text-xs sm:text-sm text-mocha/80 italic mt-10">
-          Thank you for shopping with WEARADORA — adorned in artistry.
+          Thank you for shopping with Wear Adora — adorned in artistry.
         </p>
 
         <div className="mt-10 text-center">

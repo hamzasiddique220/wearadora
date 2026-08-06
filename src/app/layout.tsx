@@ -74,8 +74,8 @@ export async function generateMetadata(): Promise<Metadata> {
     : 'Handcrafted Ladies Footwear';
 
   const description = jewelryEnabled
-    ? `WEARADORA — handcrafted ladies footwear and jewelry, made in Karachi. Slides, heels, sandals and jewelry sets, cash on delivery, free delivery on Rs 4,500+.`
-    : `WEARADORA — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`;
+    ? `Wear Adora — handcrafted ladies footwear and jewelry, made in Karachi. Slides, heels, sandals and jewelry sets, cash on delivery, free delivery on Rs 4,500+.`
+    : `Wear Adora — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`;
 
   const baseKeywords = [
     'wearadora',
@@ -120,7 +120,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: `${STORE_CONFIG.name} — ${headline}`,
       description: `${STORE_CONFIG.tagline} · 40+ years of craft · Free delivery on orders Rs 4,500+.`,
-      siteName: STORE_CONFIG.brandName,
+      siteName: STORE_CONFIG.name,
       url: STORE_CONFIG.siteUrl,
       type: 'website',
       locale: 'en_PK',

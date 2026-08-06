@@ -4,14 +4,14 @@ import { STORE_CONFIG } from '@/lib/constants';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Frequently Asked Questions | WEARADORA' },
+  title: { absolute: 'Frequently Asked Questions | Wear Adora' },
   description:
-    'Answers about WEARADORA artificial jewellery (American diamond / zircon), delivery, returns and orders across Pakistan.',
+    'Answers about Wear Adora artificial jewellery (American diamond / zircon), delivery, returns and orders across Pakistan.',
   alternates: { canonical: '/faq' },
   openGraph: {
     title: `FAQs | ${STORE_CONFIG.name}`,
     description:
-      'Answers about WEARADORA — artificial jewellery, delivery, returns and orders.',
+      'Answers about Wear Adora — artificial jewellery, delivery, returns and orders.',
     url: `${STORE_CONFIG.siteUrl}/faq`,
     type: 'website',
   },
@@ -25,11 +25,11 @@ interface Faq {
 const faqs: Faq[] = [
   {
     q: 'What is artificial jewellery?',
-    a: 'Artificial jewellery — also called fashion or bridal jewellery — is handcrafted with brilliant, high-clarity stones that mimic the sparkle of a real diamond at a fraction of the price. Every WEARADORA piece is set in a polished gold-, silver- or rose-tone finish over a base metal.',
+    a: 'Artificial jewellery — also called fashion or bridal jewellery — is handcrafted with brilliant, high-clarity stones that mimic the sparkle of a real diamond at a fraction of the price. Every Wear Adora piece is set in a polished gold-, silver- or rose-tone finish over a base metal.',
   },
   {
     q: 'Is your jewellery real gold or artificial?',
-    a: 'All WEARADORA jewellery is artificial (also called fashion or bridal jewellery). Each piece has a polished gold-tone, silver-tone or rose-tone metal finish over a base metal — never solid gold. The stones are premium high-clarity crystals rather than real diamonds.',
+    a: 'All Wear Adora jewellery is artificial (also called fashion or bridal jewellery). Each piece has a polished gold-tone, silver-tone or rose-tone metal finish over a base metal — never solid gold. The stones are premium high-clarity crystals rather than real diamonds.',
   },
   {
     q: 'Is artificial jewellery good for weddings?',
@@ -41,7 +41,7 @@ const faqs: Faq[] = [
   },
   {
     q: 'How do I care for artificial and gold-tone jewellery?',
-    a: 'Put your jewellery on last (after hair, makeup and perfume) and take it off first when you get home. Keep it away from water, sweat, perfume and lotions. Wipe with a soft dry cloth after wearing and store each piece separately in an airtight pouch or box. A small silica gel packet inside your jewellery box slows tarnishing. See our full care guide on the WEARADORA Journal.',
+    a: 'Put your jewellery on last (after hair, makeup and perfume) and take it off first when you get home. Keep it away from water, sweat, perfume and lotions. Wipe with a soft dry cloth after wearing and store each piece separately in an airtight pouch or box. A small silica gel packet inside your jewellery box slows tarnishing. See our full care guide on the Wear Adora Journal.',
   },
   {
     q: 'How much does delivery cost across Pakistan?',
@@ -57,15 +57,15 @@ const faqs: Faq[] = [
   },
   {
     q: 'What if my order arrives damaged, defective or wrong?',
-    a: 'Contact us on WhatsApp within 48 hours of delivery with photos of the item. We will arrange a free replacement or full refund of the item price, and WEARADORA will cover the return shipping in these cases. Original delivery charges are non-refundable.',
+    a: 'Contact us on WhatsApp within 48 hours of delivery with photos of the item. We will arrange a free replacement or full refund of the item price, and Wear Adora will cover the return shipping in these cases. Original delivery charges are non-refundable.',
   },
   {
     q: 'How can I place an order?',
     a: 'Add pieces to your cart on wearadora.com, tap Checkout, fill in your address, and we’ll confirm your order on WhatsApp before it ships. You can also place orders directly on WhatsApp — the button is on every page of the site.',
   },
   {
-    q: 'Where is WEARADORA based and where do you ship?',
-    a: 'WEARADORA is a Pakistani brand based in Karachi. We ship nationwide across Pakistan — Karachi, Lahore, Islamabad, Punjab, KPK, Balochistan and everywhere in between.',
+    q: 'Where is Wear Adora based and where do you ship?',
+    a: 'Wear Adora is a Pakistani brand based in Karachi. We ship nationwide across Pakistan — Karachi, Lahore, Islamabad, Punjab, KPK, Balochistan and everywhere in between.',
   },
   {
     q: 'How can I contact you?',
@@ -106,7 +106,7 @@ export default function FaqPage() {
             <span className="font-italic-serif text-bronze">be looking for</span>
           </h1>
           <p className="text-mocha leading-relaxed max-w-2xl mx-auto text-sm md:text-base">
-            Quick answers about WEARADORA artificial jewellery, delivery,
+            Quick answers about Wear Adora artificial jewellery, delivery,
             returns and orders across Pakistan.
           </p>
         </div>

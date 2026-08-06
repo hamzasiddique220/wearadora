@@ -21,10 +21,10 @@ export function buildCategoryMetadata(
     keywords: def.keywords,
     alternates: { canonical: `${basePath}/${def.slug}` },
     openGraph: {
-      title: `${def.h1} | ${STORE_CONFIG.brandName}`,
+      title: `${def.h1} | ${STORE_CONFIG.name}`,
       description: def.metaDescription,
       url,
-      siteName: STORE_CONFIG.brandName,
+      siteName: STORE_CONFIG.name,
       locale: 'en_PK',
       type: 'website',
       images: opts.image
@@ -33,7 +33,7 @@ export function buildCategoryMetadata(
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${def.h1} | ${STORE_CONFIG.brandName}`,
+      title: `${def.h1} | ${STORE_CONFIG.name}`,
       description: def.metaDescription,
       images: opts.image ? [opts.image] : undefined,
     },

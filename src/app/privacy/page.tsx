@@ -3,9 +3,9 @@ import { ShieldCheck, Database, Cookie, Lock, Mail } from 'lucide-react';
 import { STORE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | WEARADORA',
+  title: 'Privacy Policy | Wear Adora',
   description:
-    'How WEARADORA collects, uses and protects your personal information.',
+    'How Wear Adora collects, uses and protects your personal information.',
 };
 
 export default function PrivacyPage() {

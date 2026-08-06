@@ -55,4 +55,4 @@ Storage is where most pieces are won or lost:
 
 With just a little care — last on, first off, kept dry, and stored separately — your artificial and zircon jewellery can stay beautiful for a very long time. That is the real value of well-made pieces: a small collection of sets that you can mix, match and wear again and again.
 
-Looking to add a new favourite to your collection? Explore the full handcrafted [WEARADORA jewellery collection](/jewelry) — quality finishes, elegant designs, free delivery on orders Rs 4,500+ across Pakistan, and easy ordering on WhatsApp.
+Looking to add a new favourite to your collection? Explore the full handcrafted [Wear Adora jewellery collection](/jewelry) — quality finishes, elegant designs, free delivery on orders Rs 4,500+ across Pakistan, and easy ordering on WhatsApp.

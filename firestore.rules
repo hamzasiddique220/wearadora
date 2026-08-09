@@ -1,0 +1,61 @@
+rules_version = '2';
+
+// Optional, hand-authored ruleset for the reviews feature. This file is NOT
+// deployed automatically — it only takes effect once you paste it into
+// Firebase Console → Firestore Database → Rules (or `firebase deploy
+// --only firestore:rules` if you set up the Firebase CLI) and Publish.
+//
+// `products`, `orders`, and `siteSettings` keep the exact same open
+// read/write behavior documented in FIREBASE-SETUP.md ("test mode") — this
+// file changes nothing for them. The new `reviews` collection additionally
+// validates shape/range on create (rating 1-5, comment length, required
+// fields) so a malformed or scripted payload can never reach the database
+// even if someone bypasses the frontend form. It can't validate WHO is
+// writing (customer vs admin) because this app has no real backend/auth —
+// `/admin` login is a client-side password check (src/lib/stores/auth.ts),
+// not a Firebase Auth session — so update/delete stay open, matching the
+// rest of this app's current security model.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    match /siteSettings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+
+      allow create: if request.resource.data.keys().hasAll(
+                        ['productId', 'reviewerName', 'rating', 'comment', 'status', 'source', 'createdAt']
+                      )
+                    && request.resource.data.productId is string
+                    && request.resource.data.productId.size() > 0
+                    && request.resource.data.reviewerName is string
+                    && request.resource.data.reviewerName.size() >= 2
+                    && request.resource.data.reviewerName.size() <= 80
+                    && request.resource.data.rating is int
+                    && request.resource.data.rating >= 1
+                    && request.resource.data.rating <= 5
+                    && request.resource.data.comment is string
+                    && request.resource.data.comment.size() >= 10
+                    && request.resource.data.comment.size() <= 2000
+                    && request.resource.data.status in ['pending', 'approved', 'rejected']
+                    && request.resource.data.source in ['customer', 'admin']
+                    && (!('reviewerEmail' in request.resource.data) || request.resource.data.reviewerEmail is string)
+                    && (!('images' in request.resource.data) || (request.resource.data.images is list && request.resource.data.images.size() <= 5));
+
+      allow update, delete: if true;
+    }
+
+    // Any collection added later without an explicit match above is denied
+    // by default (Firestore's secure-by-default behavior) — add a match
+    // block here if you introduce a new collection.
+  }
+}

@@ -68,6 +68,28 @@ export interface Order {
   dateDisplay: string;
 }
 
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Review {
+  id: string;
+  productId: string;
+  /** Snapshot of the product name at submission time, for admin display without a join. */
+  productName?: string;
+  reviewerName: string;
+  reviewerEmail?: string;
+  rating: number;
+  comment: string;
+  images?: string[];
+  status: ReviewStatus;
+  /** Admin-controlled — this app has no accounts/orders keyed by identity, so
+   *  "verified purchase" can't be auto-detected and is a manual admin toggle. */
+  verified?: boolean;
+  featured?: boolean;
+  source: 'customer' | 'admin';
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface ToastMessage {
   message: string;
   type?: 'success' | 'error';

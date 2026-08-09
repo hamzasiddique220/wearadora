@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Heart,
   ShoppingBag,
-  Star,
   Truck,
   RotateCcw,
   Award,
@@ -21,6 +20,9 @@ import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX, STORE_CONFIG } from '@/lib/constants';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
+import ProductReviews from '@/components/product/ProductReviews';
+import StarRating from '@/components/ui/StarRating';
+import { useProductReviews } from '@/hooks/useReviews';
 import { heartBurst } from '@/lib/heartBurst';
 import { trackViewContent, trackAddToCart } from '@/lib/analytics';
 import type { Product } from '@/types';
@@ -50,6 +52,18 @@ export default function ProductDetail({
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [qty, setQty] = useState(1);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  const { reviews: productReviews, loading: reviewsLoading } = useProductReviews(
+    product.id
+  );
+  const reviewSummary = useMemo(() => {
+    const approved = productReviews.filter((r) => r.status === 'approved');
+    const count = approved.length;
+    const average = count
+      ? Math.round((approved.reduce((s, r) => s + r.rating, 0) / count) * 10) / 10
+      : 0;
+    return { average, count };
+  }, [productReviews]);
 
   useEffect(() => {
     setSelectedSize(undefined);
@@ -171,12 +185,23 @@ export default function ProductDetail({
             </h1>
 
             <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-5 flex-wrap">
-              <div className="flex gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} size={13} fill="#8b6f47" color="#8b6f47" />
-                ))}
-              </div>
-              <span className="text-[11px] md:text-xs text-mocha">Premium Quality • Handcrafted</span>
+              <StarRating value={Math.round(reviewSummary.average)} size={13} />
+              {reviewSummary.count > 0 ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    document
+                      .getElementById('reviews')
+                      ?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                  className="text-[11px] md:text-xs text-mocha hover:text-bronze hover:underline underline-offset-2"
+                >
+                  {reviewSummary.average.toFixed(1)} ({reviewSummary.count} review
+                  {reviewSummary.count === 1 ? '' : 's'})
+                </button>
+              ) : (
+                <span className="text-[11px] md:text-xs text-mocha">Premium Quality • Handcrafted</span>
+              )}
             </div>
 
             <div className="flex items-baseline gap-2 md:gap-3 mb-5 md:mb-6 flex-wrap">
@@ -445,6 +470,13 @@ export default function ProductDetail({
             </div>
           </div>
         </div>
+
+        <ProductReviews
+          productId={product.id}
+          productName={product.name}
+          reviews={productReviews}
+          loading={reviewsLoading}
+        />
 
         {relatedProducts.length > 0 && (
           <section className="mt-16 md:mt-24">

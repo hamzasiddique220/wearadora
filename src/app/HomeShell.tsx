@@ -12,6 +12,7 @@ const StatsBar = dynamic(() => import('@/components/home/StatsBar'));
 const CategoriesGrid = dynamic(() => import('@/components/home/CategoriesGrid'));
 const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'));
 const StorySection = dynamic(() => import('@/components/home/StorySection'));
+const Testimonials = dynamic(() => import('@/components/home/Testimonials'));
 
 interface HomeShellProps {
   /**
@@ -75,6 +76,7 @@ export default function HomeShell({
       )}
 
       <StorySection />
+      <Testimonials />
     </>
   );
 }

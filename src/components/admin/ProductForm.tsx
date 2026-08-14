@@ -13,6 +13,7 @@ import {
   COLOR_HEX,
   getProductType,
 } from '@/lib/constants';
+import { variantKey, sizesForColor, totalVariantStock } from '@/lib/variants';
 import Modal from '@/components/ui/Modal';
 
 interface ProductFormProps {
@@ -57,6 +58,9 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
   const [colorImages, setColorImages] = useState<Record<string, string>>(
     () => product?.colorImages || {}
   );
+  const [variantStock, setVariantStock] = useState<Record<string, number>>(
+    () => ({ ...(product?.variantStock || {}) })
+  );
   const [newImageUrl, setNewImageUrl] = useState('');
   const [customColor, setCustomColor] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -70,6 +74,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     setImages(initialGallery);
     setSlideImages(product?.slideImages || []);
     setColorImages(product?.colorImages || {});
+    setVariantStock({ ...(product?.variantStock || {}) });
     setNewImageUrl('');
     setCustomColor('');
   }, [isOpen, product, initialGallery]);
@@ -114,6 +119,14 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
           delete next[color];
           return next;
         });
+        setVariantStock((map) => {
+          const prefix = `${color}__`;
+          const next: Record<string, number> = {};
+          for (const [k, v] of Object.entries(map)) {
+            if (!k.startsWith(prefix)) next[k] = v;
+          }
+          return next;
+        });
       }
       return {
         ...f,
@@ -123,6 +136,26 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
       };
     });
   };
+
+  const toggleVariantSize = (color: string, size: number) => {
+    const key = variantKey(color, size);
+    setVariantStock((map) => {
+      if (key in map) {
+        const next = { ...map };
+        delete next[key];
+        return next;
+      }
+      return { ...map, [key]: 0 };
+    });
+  };
+
+  const setVariantQty = (color: string, size: number, raw: string) => {
+    const key = variantKey(color, size);
+    const qty = Math.max(0, parseInt(raw) || 0);
+    setVariantStock((map) => ({ ...map, [key]: qty }));
+  };
+
+  const variantTotal = useMemo(() => totalVariantStock(variantStock), [variantStock]);
 
   const addCustomColor = () => {
     const c = customColor.trim();
@@ -186,9 +219,24 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
       return;
     }
 
-    if (isSlippers && form.sizes.length === 0) {
-      showToast('Select at least one size for slippers', 'error');
-      return;
+    const usesVariantStock = isSlippers && form.colors.length > 0;
+
+    if (isSlippers) {
+      if (usesVariantStock) {
+        const colorsWithNoSizes = form.colors.filter(
+          (c) => sizesForColor(variantStock, c).length === 0
+        );
+        if (colorsWithNoSizes.length > 0) {
+          showToast(
+            `Add at least one size for: ${colorsWithNoSizes.join(', ')}`,
+            'error'
+          );
+          return;
+        }
+      } else if (form.sizes.length === 0) {
+        showToast('Select at least one size for slippers', 'error');
+        return;
+      }
     }
 
     if (images.length === 0) {
@@ -220,15 +268,20 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         productType,
         price: priceNum,
         originalPrice: originalPriceNum > priceNum ? originalPriceNum : 0,
-        stock: form.stock ? parseInt(form.stock) || 0 : 0,
+        stock: usesVariantStock
+          ? totalVariantStock(variantStock)
+          : form.stock
+            ? parseInt(form.stock) || 0
+            : 0,
         image: primary,
         images: rest.length > 0 ? [primary, ...rest] : [primary],
         slideImages: validSlides,
         colorImages: validColorImages,
         description: form.description,
         isNew: form.isNew,
-        sizes: isSlippers ? form.sizes : [],
+        sizes: usesVariantStock ? [] : isSlippers ? form.sizes : [],
         colors: isSlippers ? form.colors : [],
+        variantStock: usesVariantStock ? variantStock : {},
       };
 
       if (product?.id) {
@@ -367,14 +420,21 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
               <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
                 Stock
               </label>
-              <input
-                type="number"
-                min="0"
-                value={form.stock}
-                onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                className="input-field"
-                placeholder="e.g. 10"
-              />
+              {isSlippers && form.colors.length > 0 ? (
+                <div className="input-field bg-sand/40 text-mocha cursor-not-allowed flex items-center justify-between">
+                  <span className="text-charcoal font-medium">{variantTotal}</span>
+                  <span className="text-[10px]">auto — from sizes below</span>
+                </div>
+              ) : (
+                <input
+                  type="number"
+                  min="0"
+                  value={form.stock}
+                  onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                  className="input-field"
+                  placeholder="e.g. 10"
+                />
+              )}
             </div>
           </div>
 
@@ -395,30 +455,35 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                 ✦ Slipper Variants
               </div>
 
-              <div>
-                <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
-                  Available Sizes *
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {SLIPPER_SIZES.map((size) => {
-                    const selected = form.sizes.includes(size);
-                    return (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => toggleSize(size)}
-                        className={`w-11 h-11 border text-sm font-medium transition-all ${
-                          selected
-                            ? 'bg-charcoal text-cream border-charcoal'
-                            : 'bg-white text-charcoal border-stone hover:border-charcoal'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
+              {form.colors.length === 0 && (
+                <div>
+                  <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                    Available Sizes *
+                  </label>
+                  <div className="text-[11px] text-mocha mb-2">
+                    Add a color below to set sizes + stock per color instead.
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {SLIPPER_SIZES.map((size) => {
+                      const selected = form.sizes.includes(size);
+                      return (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => toggleSize(size)}
+                          className={`w-11 h-11 border text-sm font-medium transition-all ${
+                            selected
+                              ? 'bg-charcoal text-cream border-charcoal'
+                              : 'bg-white text-charcoal border-stone hover:border-charcoal'
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div>
                 <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
@@ -492,6 +557,87 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                   </button>
                 </div>
               </div>
+
+              {form.colors.length > 0 && (
+                <div>
+                  <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                    Sizes &amp; Stock per Color *
+                  </label>
+                  <div className="text-[11px] text-mocha mb-3">
+                    Har color ke liye available sizes toggle karein aur unka stock
+                    number set karein. Customer ko sirf wahi sizes dikhengi jo
+                    yahan defined hain — total Stock upar automatically calculate
+                    hoga.
+                  </div>
+                  <div className="space-y-3">
+                    {form.colors.map((color) => {
+                      const colorSizes = sizesForColor(variantStock, color);
+                      const colorTotal = colorSizes.reduce(
+                        (sum, s) => sum + (variantStock[variantKey(color, s)] || 0),
+                        0
+                      );
+                      return (
+                        <div key={color} className="bg-white border border-stone p-3">
+                          <div className="flex items-center gap-2 mb-2.5">
+                            <span
+                              className="w-4 h-4 rounded-full border border-stone shrink-0"
+                              style={{ backgroundColor: COLOR_HEX[color] || '#ccc' }}
+                            />
+                            <span className="text-xs font-medium text-charcoal">
+                              {color}
+                            </span>
+                            <span className="text-[10px] text-mocha ml-auto">
+                              {colorSizes.length === 0
+                                ? 'No sizes yet'
+                                : `${colorSizes.length} size${colorSizes.length === 1 ? '' : 's'} • ${colorTotal} in stock`}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {SLIPPER_SIZES.map((size) => {
+                              const key = variantKey(color, size);
+                              const active = key in variantStock;
+                              return (
+                                <div
+                                  key={size}
+                                  className={`flex items-center border ${
+                                    active
+                                      ? 'border-bronze bg-bronze/5'
+                                      : 'border-stone bg-white'
+                                  }`}
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleVariantSize(color, size)}
+                                    className={`w-9 h-9 text-xs font-medium transition-colors ${
+                                      active
+                                        ? 'text-charcoal'
+                                        : 'text-mocha hover:text-charcoal'
+                                    }`}
+                                  >
+                                    {size}
+                                  </button>
+                                  {active && (
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={variantStock[key] ?? 0}
+                                      onChange={(e) =>
+                                        setVariantQty(color, size, e.target.value)
+                                      }
+                                      className="w-14 h-9 border-l border-bronze/40 text-xs px-1.5"
+                                      aria-label={`Stock for ${color} size ${size}`}
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {form.colors.length > 0 && (
                 <div>

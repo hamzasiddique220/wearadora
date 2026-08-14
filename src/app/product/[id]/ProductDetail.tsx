@@ -18,6 +18,7 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
 import { getProductType, COLOR_HEX, STORE_CONFIG } from '@/lib/constants';
+import { sizesForColor, stockForVariant, totalVariantStock } from '@/lib/variants';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductCard from '@/components/shop/ProductCard';
 import ProductReviews from '@/components/product/ProductReviews';
@@ -77,8 +78,37 @@ export default function ProductDetail({
   const productType =
     product.productType || getProductType(product.category as string);
   const isSlippers = productType === 'slippers';
-  const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
-  const hasColors = isSlippers && product.colors && product.colors.length > 0;
+  const hasColors = isSlippers && !!product.colors && product.colors.length > 0;
+
+  // Once a product has colors, size availability comes entirely from
+  // per-variant stock (color must be picked first); otherwise fall back to
+  // the legacy flat size list.
+  const availableSizes = useMemo(() => {
+    if (!isSlippers) return [];
+    if (hasColors) {
+      return selectedColor ? sizesForColor(product.variantStock, selectedColor) : [];
+    }
+    return product.sizes || [];
+  }, [isSlippers, hasColors, selectedColor, product.variantStock, product.sizes]);
+
+  const hasSizes = hasColors ? !!selectedColor : availableSizes.length > 0;
+
+  // Stock ceiling for the qty stepper / Add to Bag: once a specific
+  // color+size is chosen, use that exact variant's count; otherwise fall
+  // back to the product-wide total (sum of all variants for colored
+  // products, since a stale flat `stock` number can't be trusted once
+  // variants are in play).
+  const maxQty = hasColors
+    ? selectedColor && selectedSize
+      ? stockForVariant(product.variantStock, selectedColor, selectedSize)
+      : totalVariantStock(product.variantStock)
+    : product.stock;
+
+  // Picking a color/size can shrink the stock ceiling below whatever qty was
+  // already dialed in — clamp it back down so Add to Bag can't exceed it.
+  useEffect(() => {
+    setQty((q) => (maxQty > 0 ? Math.min(q, maxQty) : q));
+  }, [maxQty]);
 
   // Memoized so the reference is stable across renders (otherwise the gallery
   // keeps resetting to the first image). Color images are included so selecting
@@ -98,15 +128,28 @@ export default function ProductDetail({
       ? Math.round((1 - product.price / product.originalPrice) * 100)
       : null;
 
-  const handleAddToCart = () => {
-    if (hasSizes && !selectedSize) {
-      showToast('Please select a size', 'error');
-      return;
-    }
+  const validateVariantSelection = (): boolean => {
     if (hasColors && !selectedColor) {
       showToast('Please select a color', 'error');
-      return;
+      return false;
     }
+    if (hasColors && selectedColor && availableSizes.length === 0) {
+      showToast('This color has no sizes available right now', 'error');
+      return false;
+    }
+    if (hasSizes && !selectedSize) {
+      showToast('Please select a size', 'error');
+      return false;
+    }
+    if (hasColors && selectedColor && selectedSize && maxQty === 0) {
+      showToast('That size is out of stock', 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddToCart = () => {
+    if (!validateVariantSelection()) return;
     for (let i = 0; i < qty; i++) {
       addToCart(product, { selectedSize, selectedColor });
     }
@@ -120,14 +163,7 @@ export default function ProductDetail({
   };
 
   const handleBuyNow = () => {
-    if (hasSizes && !selectedSize) {
-      showToast('Please select a size', 'error');
-      return;
-    }
-    if (hasColors && !selectedColor) {
-      showToast('Please select a color', 'error');
-      return;
-    }
+    if (!validateVariantSelection()) return;
     for (let i = 0; i < qty; i++) {
       addToCart(product, { selectedSize, selectedColor });
     }
@@ -220,36 +256,6 @@ export default function ProductDetail({
               )}
             </div>
 
-            {hasSizes && (
-              <div className="mb-5 md:mb-6">
-                <div className="flex items-center justify-between mb-2.5 md:mb-3">
-                  <label className="text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-mocha">
-                    Select Size
-                  </label>
-                  {selectedSize && (
-                    <span className="text-xs text-charcoal">
-                      Size {selectedSize}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes!.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`w-11 h-11 md:w-12 md:h-12 border text-sm font-medium transition-all ${
-                        selectedSize === size
-                          ? 'bg-charcoal text-cream border-charcoal'
-                          : 'bg-white border-stone hover:border-charcoal'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {hasColors && (
               <div className="mb-5 md:mb-6">
                 <div className="flex items-center justify-between mb-2.5 md:mb-3">
@@ -274,7 +280,10 @@ export default function ProductDetail({
                     return (
                       <button
                         key={color}
-                        onClick={() => setSelectedColor(color)}
+                        onClick={() => {
+                          setSelectedColor(color);
+                          setSelectedSize(undefined);
+                        }}
                         className={`flex items-center gap-2 px-2.5 md:px-3 py-2 border text-xs transition-all ${
                           selected
                             ? 'bg-charcoal text-cream border-charcoal'
@@ -307,6 +316,52 @@ export default function ProductDetail({
               </div>
             )}
 
+            {isSlippers && (hasColors ? !!selectedColor : availableSizes.length > 0) && (
+              <div className="mb-5 md:mb-6">
+                <div className="flex items-center justify-between mb-2.5 md:mb-3">
+                  <label className="text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-mocha">
+                    Select Size
+                  </label>
+                  {selectedSize && (
+                    <span className="text-xs text-charcoal">
+                      Size {selectedSize}
+                    </span>
+                  )}
+                </div>
+                {availableSizes.length === 0 ? (
+                  <p className="text-xs text-mocha italic">
+                    No sizes available for {selectedColor} right now.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {availableSizes.map((size) => {
+                      const variantOutOfStock =
+                        hasColors &&
+                        selectedColor !== undefined &&
+                        stockForVariant(product.variantStock, selectedColor, size) === 0;
+                      return (
+                        <button
+                          key={size}
+                          type="button"
+                          disabled={variantOutOfStock}
+                          onClick={() => !variantOutOfStock && setSelectedSize(size)}
+                          className={`w-11 h-11 md:w-12 md:h-12 border text-sm font-medium transition-all ${
+                            variantOutOfStock
+                              ? 'opacity-35 cursor-not-allowed line-through bg-sand/40 border-stone'
+                              : selectedSize === size
+                                ? 'bg-charcoal text-cream border-charcoal'
+                                : 'bg-white border-stone hover:border-charcoal'
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mb-5 md:mb-6">
               <label className="text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-mocha mb-2.5 md:mb-3 block">
                 Quantity
@@ -324,9 +379,7 @@ export default function ProductDetail({
                 <button
                   type="button"
                   onClick={() =>
-                    setQty((q) =>
-                      product.stock ? Math.min(product.stock, q + 1) : q + 1
-                    )
+                    setQty((q) => (maxQty ? Math.min(maxQty, q + 1) : q + 1))
                   }
                   className="w-11 h-11 text-lg hover:bg-sand transition"
                   aria-label="Increase quantity"
@@ -340,11 +393,11 @@ export default function ProductDetail({
             <div className="flex items-center gap-2 mb-4 text-[13px]">
               <span
                 className={`${
-                  product.stock > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
+                  maxQty > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
                 }`}
               >
-                {product.stock > 0
-                  ? `✓ In Stock (${product.stock})`
+                {maxQty > 0
+                  ? `✓ In Stock (${maxQty})`
                   : '✗ Out of Stock'}
               </span>
               <span className="text-mocha/60">·</span>
@@ -359,7 +412,7 @@ export default function ProductDetail({
               <button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
+                disabled={maxQty === 0}
                 className="btn-primary flex-1 flex items-center justify-center gap-2"
               >
                 <ShoppingBag size={14} /> Add to Bag
@@ -381,7 +434,7 @@ export default function ProductDetail({
             <button
               type="button"
               onClick={handleBuyNow}
-              disabled={product.stock === 0}
+              disabled={maxQty === 0}
               className="btn-outline w-full mb-6 hidden md:block"
             >
               Buy It Now
@@ -527,7 +580,7 @@ export default function ProductDetail({
         <button
           type="button"
           onClick={handleBuyNow}
-          disabled={product.stock === 0}
+          disabled={maxQty === 0}
           className="btn-outline flex-1 !py-3 !px-2 !text-[10px] disabled:opacity-50"
         >
           Buy Now
@@ -535,7 +588,7 @@ export default function ProductDetail({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={product.stock === 0}
+          disabled={maxQty === 0}
           className="btn-primary flex-1 !py-3 !px-2 !text-[10px] flex items-center justify-center gap-1.5 disabled:opacity-50"
         >
           <ShoppingBag size={13} /> Add to Bag

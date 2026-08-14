@@ -25,8 +25,17 @@ export interface Product {
   /** Map of color name → image URL. Lets each color show its own image. */
   colorImages?: Record<string, string>;
   description: string;
+  /** Legacy flat size list — only used when `colors` is empty. Once a
+   *  product has colors, size availability comes from `variantStock`
+   *  instead (this field is ignored/cleared in that case). */
   sizes?: number[];
   colors?: string[];
+  /** Per (color, size) stock count, keyed by `variantKey(color, size)` — see
+   *  src/lib/variants.ts. Only populated for slipper products with colors.
+   *  A key present (even at 0) means that size is offered for that color;
+   *  no key means it isn't. `stock` is the auto-computed sum of this map
+   *  whenever it's in use. */
+  variantStock?: Record<string, number>;
   isNew?: boolean;
   tag?: string;
   createdAt: string;

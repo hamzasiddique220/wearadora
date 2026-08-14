@@ -5,15 +5,8 @@ import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight, BadgeCheck, Sparkles } from 'lucide-react';
 import StarRating from '@/components/ui/StarRating';
 import { formatDate } from '@/lib/utils';
+import { avatarColor } from '@/lib/avatarColor';
 import type { Review } from '@/types';
-
-const AVATAR_COLORS = ['#8b6f47', '#5a4e42', '#2d6a4f', '#7a5c8e', '#a45c40'];
-
-function avatarColor(name: string): string {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 export default function ReviewCard({ review }: { review: Review }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);

@@ -13,13 +13,26 @@ import {
   COLOR_HEX,
   getProductType,
 } from '@/lib/constants';
-import { variantKey, sizesForColor, totalVariantStock } from '@/lib/variants';
+import {
+  variantKey,
+  sizesForColor,
+  stockForVariant,
+  totalVariantStock,
+} from '@/lib/variants';
 import Modal from '@/components/ui/Modal';
 
 interface ProductFormProps {
   product?: Product | null;
   isOpen: boolean;
   onClose: () => void;
+}
+
+function toVariantStockStrings(
+  source: Record<string, number> | undefined
+): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(source || {})) out[k] = String(v);
+  return out;
 }
 
 export default function ProductForm({ product, isOpen, onClose }: ProductFormProps) {
@@ -58,8 +71,11 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
   const [colorImages, setColorImages] = useState<Record<string, string>>(
     () => product?.colorImages || {}
   );
-  const [variantStock, setVariantStock] = useState<Record<string, number>>(
-    () => ({ ...(product?.variantStock || {}) })
+  // Held as raw strings (not numbers) while editing, so the input can be
+  // cleared to empty without immediately snapping back to "0" — only
+  // coerced to numbers on submit.
+  const [variantStock, setVariantStock] = useState<Record<string, string>>(
+    () => toVariantStockStrings(product?.variantStock)
   );
   const [newImageUrl, setNewImageUrl] = useState('');
   const [customColor, setCustomColor] = useState('');
@@ -74,7 +90,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     setImages(initialGallery);
     setSlideImages(product?.slideImages || []);
     setColorImages(product?.colorImages || {});
-    setVariantStock({ ...(product?.variantStock || {}) });
+    setVariantStock(toVariantStockStrings(product?.variantStock));
     setNewImageUrl('');
     setCustomColor('');
   }, [isOpen, product, initialGallery]);
@@ -121,7 +137,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         });
         setVariantStock((map) => {
           const prefix = `${color}__`;
-          const next: Record<string, number> = {};
+          const next: Record<string, string> = {};
           for (const [k, v] of Object.entries(map)) {
             if (!k.startsWith(prefix)) next[k] = v;
           }
@@ -145,14 +161,18 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         delete next[key];
         return next;
       }
-      return { ...map, [key]: 0 };
+      return { ...map, [key]: '0' };
     });
   };
 
+  // Stores whatever was typed as-is (including a transient empty string) so
+  // the field can be cleared and retyped — coerced to a real number only on
+  // submit (see handleSubmit). Coercing on every keystroke was the bug:
+  // deleting "0" produced "", which immediately parsed back to 0 and the
+  // controlled input snapped back before a new digit could be typed.
   const setVariantQty = (color: string, size: number, raw: string) => {
     const key = variantKey(color, size);
-    const qty = Math.max(0, parseInt(raw) || 0);
-    setVariantStock((map) => ({ ...map, [key]: qty }));
+    setVariantStock((map) => ({ ...map, [key]: raw }));
   };
 
   const variantTotal = useMemo(() => totalVariantStock(variantStock), [variantStock]);
@@ -258,6 +278,13 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
           }
         }
       }
+      // Coerce the in-progress string values to real numbers only now —
+      // during editing they're kept as raw strings (see setVariantQty).
+      const finalVariantStock: Record<string, number> = {};
+      for (const [k, v] of Object.entries(variantStock)) {
+        finalVariantStock[k] = Math.max(0, parseInt(v, 10) || 0);
+      }
+
       const trimmedName = form.name.trim();
       const data = {
         name: trimmedName,
@@ -269,7 +296,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         price: priceNum,
         originalPrice: originalPriceNum > priceNum ? originalPriceNum : 0,
         stock: usesVariantStock
-          ? totalVariantStock(variantStock)
+          ? totalVariantStock(finalVariantStock)
           : form.stock
             ? parseInt(form.stock) || 0
             : 0,
@@ -281,7 +308,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         isNew: form.isNew,
         sizes: usesVariantStock ? [] : isSlippers ? form.sizes : [],
         colors: isSlippers ? form.colors : [],
-        variantStock: usesVariantStock ? variantStock : {},
+        variantStock: usesVariantStock ? finalVariantStock : {},
       };
 
       if (product?.id) {
@@ -573,7 +600,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                     {form.colors.map((color) => {
                       const colorSizes = sizesForColor(variantStock, color);
                       const colorTotal = colorSizes.reduce(
-                        (sum, s) => sum + (variantStock[variantKey(color, s)] || 0),
+                        (sum, s) => sum + stockForVariant(variantStock, color, s),
                         0
                       );
                       return (
@@ -620,10 +647,11 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
                                     <input
                                       type="number"
                                       min="0"
-                                      value={variantStock[key] ?? 0}
+                                      value={variantStock[key] ?? ''}
                                       onChange={(e) =>
                                         setVariantQty(color, size, e.target.value)
                                       }
+                                      onFocus={(e) => e.target.select()}
                                       className="w-14 h-9 border-l border-bronze/40 text-xs px-1.5"
                                       aria-label={`Stock for ${color} size ${size}`}
                                     />

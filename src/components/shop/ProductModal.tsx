@@ -43,10 +43,12 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
+    // Default to the first color so sizes are visible immediately, matching
+    // the full product page.
     setSelectedSize(undefined);
-    setSelectedColor(undefined);
+    setSelectedColor(product?.colors?.[0]);
     setActiveImage(0);
-  }, [product?.id]);
+  }, [product?.id, product?.colors]);
 
   const galleryImages = useMemo(() => {
     if (!product) return [];

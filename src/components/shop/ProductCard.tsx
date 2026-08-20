@@ -10,6 +10,7 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
+import { allVariantSizes } from '@/lib/variants';
 import { heartBurst } from '@/lib/heartBurst';
 import { trackAddToCart } from '@/lib/analytics';
 import { useRouter } from 'next/navigation';
@@ -36,6 +37,7 @@ export default function ProductCard({
   const showToast = useUIStore((state) => state.showToast);
   const [primaryError, setPrimaryError] = useState(false);
   const [hoverError, setHoverError] = useState(false);
+  const [cardColor, setCardColor] = useState<string | undefined>(undefined);
 
   const productType =
     product.productType || getProductType(product.category as string);
@@ -46,18 +48,36 @@ export default function ProductCard({
       (product.colors && product.colors.length > 0));
   const outOfStock = product.stock === 0;
 
+  const colorPreviewImage = cardColor ? product.colorImages?.[cardColor] : undefined;
   const primaryImage =
-    (product.images && product.images[0]) || product.image || '';
+    colorPreviewImage || (product.images && product.images[0]) || product.image || '';
   const hoverImage =
-    product.images && product.images.length > 1 ? product.images[1] : null;
+    !colorPreviewImage && product.images && product.images.length > 1
+      ? product.images[1]
+      : null;
   const showPlaceholder = primaryError || !primaryImage;
 
   const hasDiscount =
     typeof product.originalPrice === 'number' &&
     product.originalPrice > product.price;
   const hasLowStock = product.stock > 0 && product.stock <= 3;
+  const hasColors = isSlippers && !!product.colors && product.colors.length > 0;
+  // Per-color variant stock replaced the flat `sizes` list once a product
+  // has colors — fall back to the flat list only when it doesn't.
+  const cardSizes = hasColors ? allVariantSizes(product.variantStock) : product.sizes || [];
 
-  const detailHref = `/product/${productHandle(product)}`;
+  // Carry a color chosen right on the card into the product page, so sizes
+  // are visible immediately there without an extra click.
+  const detailHref = cardColor
+    ? `/product/${productHandle(product)}?color=${encodeURIComponent(cardColor)}`
+    : `/product/${productHandle(product)}`;
+
+  const handleColorSelect = (e: React.MouseEvent, color: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCardColor((c) => (c === color ? undefined : color));
+    setPrimaryError(false);
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -218,27 +238,37 @@ export default function ProductCard({
               </span>
             )}
           </div>
-          {isSlippers && product.colors && product.colors.length > 0 && (
-            <div className="flex gap-1">
-              {product.colors.slice(0, 4).map((c) => (
-                <span
-                  key={c}
-                  title={c}
-                  className="w-3 h-3 rounded-full border border-stone"
-                  style={{ backgroundColor: COLOR_HEX[c] || '#ccc' }}
-                />
-              ))}
-              {product.colors.length > 4 && (
-                <span className="text-[9px] text-mocha">
-                  +{product.colors.length - 4}
+          {hasColors && (
+            <div className="flex gap-1.5">
+              {product.colors!.slice(0, 5).map((c) => {
+                const selected = cardColor === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    title={c}
+                    aria-label={`Preview ${c}`}
+                    onClick={(e) => handleColorSelect(e, c)}
+                    className={`w-4 h-4 rounded-full border transition-all ${
+                      selected
+                        ? 'border-charcoal ring-1 ring-offset-1 ring-charcoal scale-110'
+                        : 'border-stone hover:scale-110'
+                    }`}
+                    style={{ backgroundColor: COLOR_HEX[c] || '#ccc' }}
+                  />
+                );
+              })}
+              {product.colors!.length > 5 && (
+                <span className="text-[9px] text-mocha self-center">
+                  +{product.colors!.length - 5}
                 </span>
               )}
             </div>
           )}
         </div>
-        {isSlippers && product.sizes && product.sizes.length > 0 && (
+        {cardSizes.length > 0 && (
           <div className="text-[9px] tracking-[0.2em] uppercase text-mocha mt-1.5">
-            Sizes: {product.sizes.join(', ')}
+            Sizes: {cardSizes.join(', ')}
           </div>
         )}
       </div>

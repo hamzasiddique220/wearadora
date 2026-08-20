@@ -67,8 +67,23 @@ export default function ProductDetail({
   }, [productReviews]);
 
   useEffect(() => {
+    // Default to a color right away (either the one carried over from a
+    // product card via ?color=, or just the first one) so sizes are visible
+    // without an extra click. Read straight from the URL instead of
+    // useSearchParams() so this stays a plain client-only effect and the
+    // page keeps its static/ISR rendering (useSearchParams forces a Suspense
+    // boundary to avoid de-opting the whole route to dynamic rendering).
+    const colorParam =
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('color')
+        : null;
+    const availableColors = product.colors || [];
+    const initialColor =
+      (colorParam && availableColors.includes(colorParam) ? colorParam : undefined) ??
+      availableColors[0];
+
     setSelectedSize(undefined);
-    setSelectedColor(undefined);
+    setSelectedColor(initialColor);
     setQty(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     trackViewContent(product);

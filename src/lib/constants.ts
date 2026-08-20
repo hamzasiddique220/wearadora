@@ -44,7 +44,7 @@ export const PRODUCT_CATEGORIES = [
   ...SLIPPERS_CATEGORIES,
 ] as const;
 
-export const SLIPPER_SIZES = [6, 7, 8, 9, 10, 11] as const;
+export const SLIPPER_SIZES = [5, 6, 7, 8, 9, 10, 11, 12] as const;
 
 export const DEFAULT_SLIPPER_COLORS = [
   'Black',

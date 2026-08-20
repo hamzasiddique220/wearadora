@@ -3,12 +3,12 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Phone, MapPin, Trash2, Bell, BellOff, Sparkles, Calendar, X, FileText } from 'lucide-react';
-import { OrderStatus } from '@/types';
+import { OrderStatus, ProductType } from '@/types';
 import { useOrders } from '@/hooks/useOrders';
 import { orderService } from '@/lib/services/orders';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice, cleanPhoneNumber } from '@/lib/utils';
-import { ORDER_STATUSES } from '@/lib/constants';
+import { ORDER_STATUSES, getProductType } from '@/lib/constants';
 import StatusBadge from '@/components/ui/StatusBadge';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
@@ -48,6 +48,7 @@ export default function AdminOrdersPage() {
   const { orders, loading } = useOrders();
   const showToast = useUIStore((state) => state.showToast);
   const [filter, setFilter] = useState<'all' | OrderStatus>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | ProductType>('all');
   const [datePreset, setDatePreset] = useState<
     'all' | 'today' | 'yesterday' | 'last7' | 'last30' | 'custom'
   >('all');
@@ -204,6 +205,16 @@ export default function AdminOrdersPage() {
   const filtered = useMemo(() => {
     return orders.filter((o) => {
       if (filter !== 'all' && o.status !== filter) return false;
+      if (
+        typeFilter !== 'all' &&
+        !o.items?.some(
+          (item) =>
+            (item.productType || getProductType(item.category as string)) ===
+            typeFilter
+        )
+      ) {
+        return false;
+      }
       if (dateRange.from || dateRange.to) {
         const orderTime = o.createdAt ? new Date(o.createdAt).getTime() : 0;
         if (!orderTime) return false;
@@ -212,7 +223,7 @@ export default function AdminOrdersPage() {
       }
       return true;
     });
-  }, [orders, filter, dateRange]);
+  }, [orders, filter, typeFilter, dateRange]);
 
   const clearDateFilter = () => {
     setDatePreset('all');
@@ -293,6 +304,33 @@ export default function AdminOrdersPage() {
               }`}
             >
               {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white border border-stone p-4 mb-4 flex flex-wrap items-center gap-3">
+        <div className="text-[10px] tracking-[0.3em] uppercase text-mocha">
+          Category
+        </div>
+        <div className="flex gap-1.5 flex-wrap">
+          {(
+            [
+              ['all', 'All'],
+              ['slippers', 'Footwear'],
+              ['jewelry', 'Jewelry'],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setTypeFilter(key)}
+              className={`px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase border transition ${
+                typeFilter === key
+                  ? 'bg-bronze text-white border-bronze'
+                  : 'bg-white border-stone hover:border-charcoal'
+              }`}
+            >
+              {label}
             </button>
           ))}
         </div>

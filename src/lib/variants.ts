@@ -42,3 +42,15 @@ export const totalVariantStock = (variantStock: StockMap): number => {
   if (!variantStock) return 0;
   return Object.values(variantStock).reduce<number>((sum, n) => sum + toNum(n), 0);
 };
+
+/** Every distinct size offered across all colors, ascending — for summary
+ *  displays (e.g. a product card) that don't have one specific color picked. */
+export const allVariantSizes = (variantStock: StockMap): number[] => {
+  if (!variantStock) return [];
+  const sizes = new Set<number>();
+  for (const k of Object.keys(variantStock)) {
+    const n = Number(k.slice(k.lastIndexOf(SEP) + SEP.length));
+    if (!Number.isNaN(n)) sizes.add(n);
+  }
+  return Array.from(sizes).sort((a, b) => a - b);
+};

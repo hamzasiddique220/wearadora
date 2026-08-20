@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Plus, Edit3, Trash2 } from 'lucide-react';
-import { Product } from '@/types';
+import { Product, ProductType } from '@/types';
 import { useProducts } from '@/hooks/useProducts';
 import { productService } from '@/lib/services/products';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice } from '@/lib/utils';
+import { getProductType } from '@/lib/constants';
 import ProductForm from '@/components/admin/ProductForm';
 import EmptyState from '@/components/ui/EmptyState';
 
@@ -17,6 +18,14 @@ export default function AdminProductsPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [typeFilter, setTypeFilter] = useState<'all' | ProductType>('all');
+
+  const filtered = useMemo(() => {
+    if (typeFilter === 'all') return products;
+    return products.filter(
+      (p) => (p.productType || getProductType(p.category as string)) === typeFilter
+    );
+  }, [products, typeFilter]);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
@@ -50,16 +59,43 @@ export default function AdminProductsPage() {
               Products ({products.length})
             </h1>
           </div>
-          <button onClick={handleNew} className="btn-primary flex items-center gap-2">
-            <Plus size={14} /> New Product
-          </button>
+          <div className="flex gap-2 flex-wrap items-center">
+            {(
+              [
+                ['all', 'All'],
+                ['slippers', 'Footwear'],
+                ['jewelry', 'Jewelry'],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTypeFilter(key)}
+                className={`px-3 py-1.5 text-[10px] tracking-[0.2em] uppercase border ${
+                  typeFilter === key
+                    ? 'bg-charcoal text-white border-charcoal'
+                    : 'bg-white border-stone'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <button onClick={handleNew} className="btn-primary flex items-center gap-2">
+              <Plus size={14} /> New Product
+            </button>
+          </div>
         </div>
 
-        {products.length === 0 ? (
-          <EmptyState message="No products yet. Click 'New Product' to add your first one." />
+        {filtered.length === 0 ? (
+          <EmptyState
+            message={
+              products.length === 0
+                ? "No products yet. Click 'New Product' to add your first one."
+                : 'No products match this filter.'
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {products.map((p) => (
+            {filtered.map((p) => (
               <div key={p.id} className="bg-white overflow-hidden">
                 <div className="relative aspect-[4/3] bg-sand">
                   <Image

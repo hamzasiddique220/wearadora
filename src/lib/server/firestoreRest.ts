@@ -1,5 +1,5 @@
 import 'server-only';
-import type { Product, SiteSettings } from '@/types';
+import type { Product, Review, SiteSettings } from '@/types';
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 const BASE = PROJECT_ID
@@ -178,6 +178,56 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
     return fromDocument<SiteSettings>(doc);
   } catch (err) {
     console.error('fetchSiteSettings error:', err);
+    return null;
+  }
+}
+
+/**
+ * Aggregate rating/review count for a product, computed from approved
+ * reviews only — used server-side for the Product JSON-LD `aggregateRating`
+ * (search-result stars). Queries with a single equality filter (`productId`)
+ * only, no `orderBy`, so it never needs a composite index; approval status is
+ * filtered client-side after the fetch, same as the realtime listener does.
+ */
+export async function fetchProductReviewSummary(
+  productId: string
+): Promise<{ average: number; count: number } | null> {
+  if (!BASE) return null;
+  try {
+    const rows = await fetchJson<Array<{ document?: FirestoreDocument }>>(
+      `${BASE}:runQuery`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId: 'reviews' }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: 'productId' },
+                op: 'EQUAL',
+                value: { stringValue: productId },
+              },
+            },
+            limit: 1000,
+          },
+        }),
+      }
+    );
+    const approved = (rows || [])
+      .filter((r) => r.document?.fields)
+      .map((r) => fromDocument<Review>(r.document!))
+      .filter((r) => r.status === 'approved' && typeof r.rating === 'number');
+
+    if (approved.length === 0) return { average: 0, count: 0 };
+    const sum = approved.reduce((s, r) => s + r.rating, 0);
+    return {
+      average: Math.round((sum / approved.length) * 10) / 10,
+      count: approved.length,
+    };
+  } catch (err) {
+    console.error('fetchProductReviewSummary error:', err);
     return null;
   }
 }

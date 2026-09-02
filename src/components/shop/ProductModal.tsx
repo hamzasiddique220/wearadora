@@ -20,6 +20,7 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
+import { sizesForColor, stockForVariant, totalVariantStock } from '@/lib/variants';
 import Modal from '@/components/ui/Modal';
 import { heartBurst } from '@/lib/heartBurst';
 import { trackAddToCart } from '@/lib/analytics';
@@ -42,10 +43,12 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
+    // Default to the first color so sizes are visible immediately, matching
+    // the full product page.
     setSelectedSize(undefined);
-    setSelectedColor(undefined);
+    setSelectedColor(product?.colors?.[0]);
     setActiveImage(0);
-  }, [product?.id]);
+  }, [product?.id, product?.colors]);
 
   const galleryImages = useMemo(() => {
     if (!product) return [];
@@ -74,18 +77,38 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const productType =
     product.productType || getProductType(product.category as string);
   const isSlippers = productType === 'slippers';
-  const hasSizes = isSlippers && product.sizes && product.sizes.length > 0;
-  const hasColors = isSlippers && product.colors && product.colors.length > 0;
+  const hasColors = isSlippers && !!product.colors && product.colors.length > 0;
+  const availableSizes = !isSlippers
+    ? []
+    : hasColors
+      ? selectedColor
+        ? sizesForColor(product.variantStock, selectedColor)
+        : []
+      : product.sizes || [];
+  const hasSizes = hasColors ? !!selectedColor : availableSizes.length > 0;
+  const maxQty = hasColors
+    ? selectedColor && selectedSize
+      ? stockForVariant(product.variantStock, selectedColor, selectedSize)
+      : totalVariantStock(product.variantStock)
+    : product.stock;
   const currentImage =
     colorImageUrl || galleryImages[activeImage] || product.image;
 
   const handleAddToCart = () => {
+    if (hasColors && !selectedColor) {
+      showToast('Please select a color', 'error');
+      return;
+    }
+    if (hasColors && selectedColor && availableSizes.length === 0) {
+      showToast('This color has no sizes available right now', 'error');
+      return;
+    }
     if (hasSizes && !selectedSize) {
       showToast('Please select a size', 'error');
       return;
     }
-    if (hasColors && !selectedColor) {
-      showToast('Please select a color', 'error');
+    if (hasColors && selectedColor && selectedSize && maxQty === 0) {
+      showToast('That size is out of stock', 'error');
       return;
     }
     addToCart(product, {
@@ -197,34 +220,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               'A beautiful handcrafted piece from the Wear Adora collection.'}
           </p>
 
-          {hasSizes && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-[10px] tracking-[0.3em] uppercase text-mocha">
-                  Select Size
-                </label>
-                {selectedSize && (
-                  <span className="text-xs text-charcoal">Size {selectedSize}</span>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes!.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-12 h-12 border text-sm font-medium transition-all ${
-                      selectedSize === size
-                        ? 'bg-charcoal text-cream border-charcoal'
-                        : 'bg-white border-stone hover:border-charcoal'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
           {hasColors && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
@@ -249,7 +244,10 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   return (
                     <button
                       key={color}
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => {
+                        setSelectedColor(color);
+                        setSelectedSize(undefined);
+                      }}
                       className={`flex items-center gap-2 px-3 py-2 border text-xs transition-all ${
                         selected
                           ? 'bg-charcoal text-cream border-charcoal'
@@ -283,17 +281,58 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
           )}
 
+          {isSlippers && (hasColors ? !!selectedColor : availableSizes.length > 0) && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-[10px] tracking-[0.3em] uppercase text-mocha">
+                  Select Size
+                </label>
+                {selectedSize && (
+                  <span className="text-xs text-charcoal">Size {selectedSize}</span>
+                )}
+              </div>
+              {availableSizes.length === 0 ? (
+                <p className="text-xs text-mocha italic">
+                  No sizes available for {selectedColor} right now.
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {availableSizes.map((size) => {
+                    const variantOutOfStock =
+                      hasColors &&
+                      selectedColor !== undefined &&
+                      stockForVariant(product.variantStock, selectedColor, size) === 0;
+                    return (
+                      <button
+                        key={size}
+                        disabled={variantOutOfStock}
+                        onClick={() => !variantOutOfStock && setSelectedSize(size)}
+                        className={`w-12 h-12 border text-sm font-medium transition-all ${
+                          variantOutOfStock
+                            ? 'opacity-35 cursor-not-allowed line-through bg-sand/40 border-stone'
+                            : selectedSize === size
+                              ? 'bg-charcoal text-cream border-charcoal'
+                              : 'bg-white border-stone hover:border-charcoal'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="space-y-3 mb-6 text-sm">
             <div className="flex items-center justify-between pb-3 border-b border-stone">
               <span className="text-mocha">Availability</span>
               <span
                 className={
-                  product.stock > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
+                  maxQty > 0 ? 'text-[#2d6a4f] font-medium' : 'text-[#c94b4b]'
                 }
               >
-                {product.stock > 0
-                  ? `✓ In Stock (${product.stock})`
-                  : '✗ Out of Stock'}
+                {maxQty > 0 ? `✓ In Stock (${maxQty})` : '✗ Out of Stock'}
               </span>
             </div>
             <div className="flex items-center justify-between pb-3 border-b border-stone">
@@ -305,7 +344,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           <div className="flex gap-3 mb-4">
             <button
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={maxQty === 0}
               className="btn-primary flex-1 flex items-center justify-center gap-2"
             >
               <ShoppingBag size={14} /> Add to Bag

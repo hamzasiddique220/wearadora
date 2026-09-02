@@ -4,9 +4,10 @@ import { productHandle } from '@/lib/utils';
 
 interface ProductJsonLdProps {
   product: Product;
+  reviewSummary?: { average: number; count: number } | null;
 }
 
-export default function ProductJsonLd({ product }: ProductJsonLdProps) {
+export default function ProductJsonLd({ product, reviewSummary }: ProductJsonLdProps) {
   const url = `${STORE_CONFIG.siteUrl}/product/${productHandle(product)}`;
   const images = (product.images && product.images.length > 0
     ? product.images
@@ -80,6 +81,15 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
     // Only set when the admin has explicitly confirmed it for this product —
     // never inferred from name/appearance. See ProductMaterial.
     ...(product.material ? { material: product.material } : {}),
+    ...(reviewSummary && reviewSummary.count > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: reviewSummary.average,
+            reviewCount: reviewSummary.count,
+          },
+        }
+      : {}),
     offers: {
       '@type': 'Offer',
       url,

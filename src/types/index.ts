@@ -34,8 +34,17 @@ export interface Product {
   /** Map of color name → image URL. Lets each color show its own image. */
   colorImages?: Record<string, string>;
   description: string;
+  /** Legacy flat size list — only used when `colors` is empty. Once a
+   *  product has colors, size availability comes from `variantStock`
+   *  instead (this field is ignored/cleared in that case). */
   sizes?: number[];
   colors?: string[];
+  /** Per (color, size) stock count, keyed by `variantKey(color, size)` — see
+   *  src/lib/variants.ts. Only populated for slipper products with colors.
+   *  A key present (even at 0) means that size is offered for that color;
+   *  no key means it isn't. `stock` is the auto-computed sum of this map
+   *  whenever it's in use. */
+  variantStock?: Record<string, number>;
   isNew?: boolean;
   tag?: string;
   /** Jewelry only. See ProductMaterial — unset/null if not confirmed. */
@@ -77,6 +86,28 @@ export interface Order {
   status: OrderStatus;
   createdAt: string;
   dateDisplay: string;
+}
+
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Review {
+  id: string;
+  productId: string;
+  /** Snapshot of the product name at submission time, for admin display without a join. */
+  productName?: string;
+  reviewerName: string;
+  reviewerEmail?: string;
+  rating: number;
+  comment: string;
+  images?: string[];
+  status: ReviewStatus;
+  /** Admin-controlled — this app has no accounts/orders keyed by identity, so
+   *  "verified purchase" can't be auto-detected and is a manual admin toggle. */
+  verified?: boolean;
+  featured?: boolean;
+  source: 'customer' | 'admin';
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ToastMessage {

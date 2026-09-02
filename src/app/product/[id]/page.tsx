@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import {
   fetchAllProducts,
   fetchProductByHandle,
+  fetchProductReviewSummary,
   fetchSiteSettings,
 } from '@/lib/server/firestoreRest';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
@@ -188,10 +189,11 @@ export default async function ProductPage({ params }: PageProps) {
     productType === 'jewelry'
       ? jewelryCategoryHref(product.category as string)
       : slippersCategoryHref(product.category as string);
+  const reviewSummary = await fetchProductReviewSummary(product.id);
 
   return (
     <>
-      <ProductJsonLd product={product} />
+      <ProductJsonLd product={product} reviewSummary={reviewSummary} />
       <ProductMeta product={product} />
       <DataInitializer
         initialProducts={visibleAll}

@@ -1,8 +1,9 @@
 'use client';
 
-import { DollarSign, ShoppingBag, TrendingUp, Package } from 'lucide-react';
+import { DollarSign, ShoppingBag, TrendingUp, Package, Star } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
 import { useProducts } from '@/hooks/useProducts';
+import { useReviews } from '@/hooks/useReviews';
 import { formatPrice } from '@/lib/utils';
 import StatCard from '@/components/admin/StatCard';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -10,12 +11,14 @@ import StatusBadge from '@/components/ui/StatusBadge';
 export default function DashboardPage() {
   const { orders } = useOrders();
   const { products } = useProducts();
+  const { reviews } = useReviews();
 
   const totalRevenue = orders
     .filter((o) => o.status !== 'cancelled')
     .reduce((sum, o) => sum + (o.total || 0), 0);
 
   const pendingOrders = orders.filter((o) => o.status === 'pending').length;
+  const pendingReviews = reviews.filter((r) => r.status === 'pending').length;
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-8">
@@ -47,6 +50,12 @@ export default function DashboardPage() {
           icon={<Package size={20} />}
           label="Products"
           value={products.length}
+        />
+        <StatCard
+          icon={<Star size={20} />}
+          label="Pending Reviews"
+          value={pendingReviews}
+          highlight={pendingReviews > 0}
         />
       </div>
 

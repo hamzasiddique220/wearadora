@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'About Us | Wear Adora',
   description:
     'Wear Adora is a Pakistani online store offering affordable handcrafted artificial jewellery (American diamond / zircon) and 40+ years of ladies footwear, shipping nationwide from Karachi.',
+  alternates: { canonical: '/about' },
 };
 
 export default async function AboutPage() {

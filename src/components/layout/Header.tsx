@@ -17,6 +17,8 @@ import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { jewelryCategoryHref } from '@/lib/categories';
+import { slippersCategoryHref } from '@/lib/footwearCategories';
 
 interface HeaderProps {
   /**
@@ -96,9 +98,21 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
     { href: '/about', label: 'About' },
   ];
 
-  const quickLinks = jewelryEnabled
-    ? ['Slides', 'Heels', 'Sandal', 'Necklace', 'Ring', 'Earring']
-    : ['Slides', 'Heels', 'Sandal'];
+  // Real links to the canonical /jewelry/[category] & /slippers/[category]
+  // SEO pages — not /shop?category=, which a crawler never sees since these
+  // used to render as onClick buttons rather than <Link>s.
+  const quickLinks = [
+    { label: 'Slides', href: slippersCategoryHref('Slides') },
+    { label: 'Heels', href: slippersCategoryHref('Heels') },
+    { label: 'Sandal', href: slippersCategoryHref('Sandal') },
+    ...(jewelryEnabled
+      ? [
+          { label: 'Necklace', href: jewelryCategoryHref('Necklace') },
+          { label: 'Ring', href: jewelryCategoryHref('Ring') },
+          { label: 'Earring', href: jewelryCategoryHref('Earring') },
+        ]
+      : []),
+  ];
 
   const closeAll = () => {
     setSearchOpen(false);
@@ -261,16 +275,14 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {quickLinks.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => {
-                          router.push(`/shop?category=${cat}`);
-                          closeAll();
-                        }}
+                      <Link
+                        key={cat.label}
+                        href={cat.href}
+                        onClick={closeAll}
                         className="px-4 py-2 border border-stone text-xs tracking-[0.15em] uppercase hover:border-charcoal hover:bg-white transition"
                       >
-                        {cat}
-                      </button>
+                        {cat.label}
+                      </Link>
                     ))}
                   </div>
                 </div>

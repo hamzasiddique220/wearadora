@@ -10,6 +10,8 @@ import { useWishlistStore } from '@/lib/stores/wishlist';
 import { useUIStore } from '@/lib/stores/ui';
 import { formatPrice, productHandle } from '@/lib/utils';
 import { getProductType, COLOR_HEX } from '@/lib/constants';
+import { jewelryCategoryHref } from '@/lib/categories';
+import { slippersCategoryHref } from '@/lib/footwearCategories';
 import { heartBurst } from '@/lib/heartBurst';
 import { trackAddToCart } from '@/lib/analytics';
 import { useRouter } from 'next/navigation';
@@ -20,6 +22,8 @@ interface ProductCardProps {
   delay?: number;
   /** Card sits on a dark (e.g. charcoal) background — swaps text colors that would otherwise fail contrast. */
   theme?: 'light' | 'dark';
+  /** Set on the first visible row of a grid so its image loads eagerly instead of lazily — avoids delaying LCP when this card, not the page hero, is the largest above-the-fold element. */
+  priority?: boolean;
 }
 
 export default function ProductCard({
@@ -27,6 +31,7 @@ export default function ProductCard({
   onClick,
   delay = 0,
   theme = 'light',
+  priority = false,
 }: ProductCardProps) {
   const isDark = theme === 'dark';
   const router = useRouter();
@@ -58,6 +63,9 @@ export default function ProductCard({
   const hasLowStock = product.stock > 0 && product.stock <= 3;
 
   const detailHref = `/product/${productHandle(product)}`;
+  const categoryHref = isSlippers
+    ? slippersCategoryHref(product.category as string)
+    : jewelryCategoryHref(product.category as string);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,7 +115,7 @@ export default function ProductCard({
               alt={`${product.name} — handcrafted ${product.category} by Wear Adora Pakistan`}
               fill
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              loading="lazy"
+              {...(priority ? { priority: true } : { loading: 'lazy' as const })}
               onError={() => setPrimaryError(true)}
               className={`z-10 object-contain object-center [mix-blend-mode:darken] transition-transform duration-[700ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-[1.04] ${
                 hoverImage && !hoverError ? 'group-hover:opacity-0 transition-opacity' : ''
@@ -184,13 +192,15 @@ export default function ProductCard({
       <div className="pt-3 md:pt-4 pb-2 px-0.5">
         <div className="flex items-start justify-between gap-2 md:gap-3 mb-1.5">
           <div className="flex items-baseline gap-2 flex-wrap min-w-0">
-            <div
-              className={`text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase truncate ${
+            <Link
+              href={categoryHref}
+              onClick={(e) => e.stopPropagation()}
+              className={`text-[9px] tracking-[0.25em] md:tracking-[0.3em] uppercase truncate hover:text-bronze transition-colors ${
                 isDark ? 'text-stone' : 'text-mocha'
               }`}
             >
               {product.category}
-            </div>
+            </Link>
             {product.sku && (
               <code className="text-[9px] font-mono text-mocha/70 hidden sm:inline">
                 {product.sku}

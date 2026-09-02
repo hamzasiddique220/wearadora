@@ -1,4 +1,9 @@
-// Canonical apex domain — must match STORE_CONFIG.siteUrl in src/lib/constants.ts.
+// Canonical apex domain. KEPT IN SYNC BY HAND with STORE_CONFIG.siteUrl in
+// src/lib/constants.ts — same env var, same fallback, same trailing-slash
+// strip. This file can't import that .ts module (it loads in plain Node
+// before the app's build pipeline exists), so if you change the fallback
+// domain or the env var name, change it in BOTH places or the www→apex
+// redirect below and the site's canonical URLs will silently disagree.
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://wearadora.com').replace(/\/$/, '');
 const SITE_HOST = new URL(SITE_URL).hostname;
 const WWW_HOST = `www.${SITE_HOST}`;

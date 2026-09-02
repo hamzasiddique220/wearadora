@@ -128,6 +128,12 @@ async function fetchProductBySlug(slug: string): Promise<Product | null> {
                 value: { stringValue: slug },
               },
             },
+            // Slugs are now enforced unique at write time (see
+            // productService.ensureUniqueSlug), but order deterministically
+            // by document id as a safety net for any pre-existing collision
+            // so a given slug always resolves to the same product instead of
+            // flipping between requests.
+            orderBy: [{ field: { fieldPath: '__name__' } }],
             limit: 1,
           },
         }),

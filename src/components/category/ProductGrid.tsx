@@ -50,6 +50,7 @@ export default function ProductGrid({
             product={p}
             onClick={() => setSelected(p)}
             delay={i * 0.03}
+            priority={currentPage === 1 && i < 4}
           />
         ))}
       </div>

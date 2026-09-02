@@ -22,8 +22,27 @@ export const metadata: Metadata = {
 export default function BlogIndexPage() {
   const posts = listBlogPosts();
 
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Wear Adora Style Journal',
+    url: `${STORE_CONFIG.siteUrl}/blog`,
+    blogPost: posts.map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.title.replace(/\s*\|.*$/, ''),
+      url: `${STORE_CONFIG.siteUrl}/blog/${p.slug}`,
+      ...(p.datePublished ? { datePublished: p.datePublished } : {}),
+      ...(p.dateModified ? { dateModified: p.dateModified } : {}),
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
         <Breadcrumbs items={[{ label: 'Journal' }]} />
       </div>

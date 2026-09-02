@@ -1,5 +1,14 @@
 export type ProductType = 'jewelry' | 'slippers';
 
+/**
+ * Jewelry material, set explicitly per product — never inferred from name or
+ * appearance. Drives the "is this real gold / is this zircon" answer in
+ * ProductFaq and the material claims allowed in SEO copy/keywords for that
+ * product. Unset means only the generic "artificial/fashion jewelry, gold-tone
+ * finish" claim is safe to make.
+ */
+export type ProductMaterial = 'Artificial' | 'Zircon' | 'Crystal';
+
 export type ProductCategory =
   | 'Necklace'
   | 'Ring'
@@ -29,6 +38,8 @@ export interface Product {
   colors?: string[];
   isNew?: boolean;
   tag?: string;
+  /** Jewelry only. See ProductMaterial — unset/null if not confirmed. */
+  material?: ProductMaterial | null;
   createdAt: string;
 }
 

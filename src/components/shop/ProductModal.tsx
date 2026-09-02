@@ -116,7 +116,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           <div className="relative aspect-[4/3] sm:aspect-square flex items-center justify-center">
             <Image
               src={currentImage}
-              alt={product.name}
+              alt={`${product.name} — handcrafted ${product.category} by Wear Adora`}
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-contain p-4 md:p-6 mix-blend-darken"

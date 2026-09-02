@@ -1,9 +1,11 @@
 <!--
 URL slug:        /blog/artificial-zircon-jewellery-care
-SEO Title:       How to Care for Artificial & Zircon Jewellery (Make It Last)
+SEO Title:       How to Care for Artificial & Zircon Jewellery | Wear Adora
 Meta description: Keep your artificial and zircon jewellery shiny and tarnish-free for longer. Simple storage, cleaning and wearing tips to protect gold-tone and stone jewellery.
 Target keywords: artificial jewellery care, how to keep artificial jewellery from tarnishing, zircon jewellery care
 Excerpt: Simple storage, cleaning and wearing tips to keep gold-tone and stone jewellery shiny and tarnish-free for longer.
+Published: 2026-06-28
+Updated: 2026-08-06
 -->
 
 # How to Care for Artificial & Zircon Jewellery (So It Lasts Longer)

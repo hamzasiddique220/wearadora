@@ -4,6 +4,8 @@ SEO Title:       Bridal Jewellery Guide: Barat, Walima & Mayun | Wear Adora
 Meta description: A simple guide to choosing bridal jewellery for every Pakistani wedding event — Mayun, Barat & Walima. Colours, styles & sets to help you shine on your big day.
 Target keywords: bridal jewellery Pakistan, barat jewellery, walima jewellery, necklace set for bride
 Excerpt: A simple guide to choosing bridal jewellery for every Pakistani wedding event — Mayun, Barat & Walima.
+Published: 2026-06-28
+Updated: 2026-08-06
 -->
 
 # Bridal Jewellery Guide: What to Wear for Mayun, Barat & Walima

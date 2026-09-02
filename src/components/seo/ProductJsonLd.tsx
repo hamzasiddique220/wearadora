@@ -77,6 +77,9 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
       name: STORE_CONFIG.name,
     },
     category: product.category,
+    // Only set when the admin has explicitly confirmed it for this product —
+    // never inferred from name/appearance. See ProductMaterial.
+    ...(product.material ? { material: product.material } : {}),
     offers: {
       '@type': 'Offer',
       url,

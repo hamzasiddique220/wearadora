@@ -5,6 +5,8 @@ import {
   deleteDoc,
   doc,
   query,
+  where,
+  getDocs,
   orderBy,
   onSnapshot,
   Unsubscribe,
@@ -30,6 +32,25 @@ function stripUndefined<T>(value: T): T {
 }
 
 export const productService = {
+  /**
+   * Every internal link prefers `slug` over the Firestore id (see
+   * productHandle() in lib/utils.ts), so two products sharing a slug would
+   * make one of them unreachable at its own URL. Suffix with -2, -3, ... until
+   * the candidate is free among every other product (excludeId lets an
+   * existing product keep matching itself while editing).
+   */
+  ensureUniqueSlug: async (baseSlug: string, excludeId?: string): Promise<string> => {
+    for (let attempt = 0; attempt < 50; attempt++) {
+      const candidate = attempt === 0 ? baseSlug : `${baseSlug}-${attempt + 1}`;
+      const snapshot = await getDocs(
+        query(collection(db, COLLECTION), where('slug', '==', candidate))
+      );
+      const collides = snapshot.docs.some((d) => d.id !== excludeId);
+      if (!collides) return candidate;
+    }
+    return `${baseSlug}-${Date.now().toString().slice(-6)}`;
+  },
+
   subscribe: (callback: (products: Product[]) => void): Unsubscribe => {
     const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snapshot) => {

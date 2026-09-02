@@ -2,7 +2,7 @@
 
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { X, Upload, Check, Plus, Trash2, Star, Sparkles } from 'lucide-react';
-import { Product } from '@/types';
+import { Product, ProductMaterial } from '@/types';
 import { sluggify } from '@/lib/utils';
 import { productService } from '@/lib/services/products';
 import { useUIStore } from '@/lib/stores/ui';
@@ -37,6 +37,7 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
     sku: p?.sku || '',
     tag: p?.tag || '',
     category: p?.category || 'Necklace',
+    material: (p?.material ?? '') as ProductMaterial | '',
     price: p?.price !== undefined ? String(p.price) : '',
     originalPrice:
       p?.originalPrice !== undefined && p.originalPrice > 0
@@ -211,13 +212,21 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
         }
       }
       const trimmedName = form.name.trim();
+      const slug =
+        product?.slug?.trim() ||
+        (await productService.ensureUniqueSlug(sluggify(trimmedName), product?.id));
       const data = {
         name: trimmedName,
-        slug: product?.slug?.trim() || sluggify(trimmedName),
+        slug,
         sku: form.sku.trim(),
         tag: form.tag.trim(),
         category: form.category,
         productType,
+        // null (not undefined) so clearing the dropdown actually clears a
+        // previously-saved value on update — stripUndefined only removes
+        // `undefined` keys, and a removed key would leave the old value in
+        // Firestore untouched.
+        material: !isSlippers && form.material ? form.material : null,
         price: priceNum,
         originalPrice: originalPriceNum > priceNum ? originalPriceNum : 0,
         stock: form.stock ? parseInt(form.stock) || 0 : 0,
@@ -347,6 +356,29 @@ export default function ProductForm({ product, isOpen, onClose }: ProductFormPro
               />
             </div>
           </div>
+
+          {!isSlippers && (
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase text-mocha mb-2 block">
+                Material (optional)
+              </label>
+              <select
+                value={form.material}
+                onChange={(e) =>
+                  setForm({ ...form, material: e.target.value as ProductMaterial | '' })
+                }
+                className="input-field"
+              >
+                <option value="">Unspecified — generic &quot;artificial jewelry&quot; only</option>
+                <option value="Artificial">Artificial / fashion (gold-tone, no stone claim)</option>
+                <option value="Zircon">Zircon (American diamond)</option>
+                <option value="Crystal">Crystal / stones</option>
+              </select>
+              <div className="text-[10px] text-mocha mt-1">
+                Only set this if it&apos;s actually true — it drives what SEO copy and FAQs are allowed to claim about this product.
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             <div>

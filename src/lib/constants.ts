@@ -14,6 +14,11 @@ export const STORE_CONFIG = {
   deliveryFee: 250,
   freeDeliveryMinTotal: 4500,
   deliveryDays: '4–5 days',
+  // KEPT IN SYNC BY HAND with the SITE_URL constant at the top of
+  // next.config.mjs (same env var, same fallback, same trailing-slash strip)
+  // — that file can't import this module, so a change here needs the same
+  // change there or the www→apex redirect and this site's canonical URLs
+  // will silently disagree.
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
     'https://wearadora.com',

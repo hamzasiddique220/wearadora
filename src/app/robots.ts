@@ -1,7 +1,17 @@
 import type { MetadataRoute } from 'next';
 import { STORE_CONFIG } from '@/lib/constants';
 
-const DISALLOW = ['/admin', '/admin/*', '/api', '/api/*', '/cart', '/wishlist'];
+const DISALLOW = [
+  '/admin',
+  '/admin/*',
+  '/api',
+  '/api/*',
+  '/cart',
+  '/wishlist',
+  // Internal reference doc, not a page — served from /public with no
+  // on-site link, but nothing stops it being indexed if found externally.
+  '/WEARADORA-Logo-Brand-Guide.md',
+];
 
 // AI assistants / answer engines. Explicitly listing them means Wear Adora
 // content is eligible to be surfaced when someone asks ChatGPT / Claude /

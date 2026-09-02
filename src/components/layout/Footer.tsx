@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
+import { JEWELRY_CATEGORY_DEFS } from '@/lib/categories';
 import { useSiteSettingsData } from '@/lib/stores/data';
 import { trackContact } from '@/lib/analytics';
 
@@ -94,20 +95,14 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
                 Sandals
               </Link>
             </li>
-            {jewelryEnabled && (
-              <>
-                <li>
-                  <Link href="/jewelry/necklace" className="hover:text-bronze">
-                    Necklaces
+            {jewelryEnabled &&
+              JEWELRY_CATEGORY_DEFS.map((def) => (
+                <li key={def.slug}>
+                  <Link href={`/jewelry/${def.slug}`} className="hover:text-bronze">
+                    {def.plural}
                   </Link>
                 </li>
-                <li>
-                  <Link href="/jewelry/rings" className="hover:text-bronze">
-                    Rings
-                  </Link>
-                </li>
-              </>
-            )}
+              ))}
           </ul>
         </div>
 

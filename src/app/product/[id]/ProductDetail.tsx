@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  ChevronRight,
   Heart,
   ShoppingBag,
   Star,
@@ -133,22 +132,8 @@ export default function ProductDetail({
   return (
     <>
       <div className="max-w-[1400px] mx-auto px-3 sm:px-5 md:px-10 py-4 md:py-6 pb-[calc(env(safe-area-inset-bottom)+7rem)] md:pb-6 overflow-x-hidden">
-        <nav className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase text-mocha mb-4 md:mb-6 flex-wrap">
-          <Link href="/" className="hover:text-bronze">
-            Home
-          </Link>
-          <ChevronRight size={11} className="text-stone" />
-          <Link href={collectionHref} className="hover:text-bronze">
-            {collectionLabel}
-          </Link>
-          <ChevronRight size={11} className="text-stone" />
-          <span className="text-bronze">{product.category}</span>
-          <ChevronRight size={11} className="text-stone hidden sm:inline" />
-          <span className="text-charcoal truncate max-w-[140px] sm:max-w-[200px] md:max-w-xs hidden sm:inline">
-            {product.name}
-          </span>
-        </nav>
-
+        {/* Breadcrumb trail (with matching BreadcrumbList JSON-LD) is rendered
+            once, above this component, by <Breadcrumbs> in page.tsx. */}
         <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 md:gap-14">
           <div className="min-w-0">
             <ProductGallery

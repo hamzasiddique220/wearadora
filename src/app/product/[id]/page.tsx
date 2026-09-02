@@ -7,11 +7,14 @@ import {
 } from '@/lib/server/firestoreRest';
 import { STORE_CONFIG, getProductType } from '@/lib/constants';
 import { productHandle, formatPrice } from '@/lib/utils';
+import { jewelryCategoryHref } from '@/lib/categories';
+import { slippersCategoryHref } from '@/lib/footwearCategories';
 import DataInitializer from '@/components/DataInitializer';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import ProductDetail from './ProductDetail';
 import ProductJsonLd from '@/components/seo/ProductJsonLd';
 import ProductMeta from '@/components/seo/ProductMeta';
+import ProductFaq from '@/components/seo/ProductFaq';
 
 interface PageProps {
   params: { id: string };
@@ -51,12 +54,16 @@ export async function generateMetadata({
   const url = `${STORE_CONFIG.siteUrl}/product/${handle}`;
   const image = product.images?.[0] || product.image;
 
-  // Customer-facing <title> uses honest, high-search "artificial jewellery"
-  // wording; the "American diamond / zircon" search intent is preserved in the
-  // invisible `keywords` meta below instead of being shown to customers.
-  const categoryPart = isJewelry
-    ? `Artificial ${product.category} Online in Pakistan`
-    : product.category;
+  // Product titles stay product-specific — the "{Category} Online in
+  // Pakistan" head term is owned by the category page (/jewelry/[category],
+  // /slippers/[category]) so every SKU in a category doesn't compete with its
+  // own parent page and every other product in it for the same phrase. Only
+  // append the category when the product name doesn't already say it.
+  const categorySuffix = product.name
+    .toLowerCase()
+    .includes(String(product.category).toLowerCase())
+    ? ''
+    : ` – ${product.category}`;
   const trustSuffix = ' Free delivery on Rs 4,500+ orders & 7-day returns across Pakistan.';
   const baseDescription =
     product.description?.slice(0, 155) ||
@@ -65,20 +72,26 @@ export async function generateMetadata({
     baseDescription.endsWith('.') ? '' : '.'
   }${trustSuffix}`;
 
-  // Invisible-to-customer SEO keywords per product type. For jewellery this
-  // also keeps the "American diamond / zircon" search intent alive now that the
-  // visible title reads "artificial jewellery"; footwear gets its own set.
+  // Invisible-to-customer SEO keywords per product type. Material-specific
+  // terms (zircon, American diamond) only appear when product.material
+  // confirms it for this exact SKU — never assumed from category alone.
   const keywords = isJewelry
     ? [
         `${product.category} online Pakistan`,
         'artificial jewellery',
         'artificial jewellery Pakistan',
-        'american diamond jewellery',
-        'zircon jewellery',
         'wedding jewellery Pakistan',
         'party wear jewellery',
         'jewellery set online',
         'best artificial jewellery online',
+        ...(product.material === 'Zircon'
+          ? [
+              'zircon jewellery',
+              'zircon jewellery Pakistan',
+              `zircon ${product.category.toString().toLowerCase()} Pakistan`,
+              'american diamond jewellery',
+            ]
+          : []),
       ]
     : [
         `${product.category} online Pakistan`,
@@ -97,7 +110,7 @@ export async function generateMetadata({
   const shareTitle = `${product.name} – ${formatPrice(product.price)}`;
 
   return {
-    title: `${product.name} – ${categoryPart}`,
+    title: `${product.name}${categorySuffix}`,
     description,
     keywords,
     alternates: { canonical: `/product/${handle}` },
@@ -171,6 +184,10 @@ export default async function ProductPage({ params }: PageProps) {
 
   const categoryLabel = productType === 'jewelry' ? 'Jewelry' : 'Shoes';
   const categoryHref = productType === 'jewelry' ? '/jewelry' : '/slippers';
+  const subcategoryHref =
+    productType === 'jewelry'
+      ? jewelryCategoryHref(product.category as string)
+      : slippersCategoryHref(product.category as string);
 
   return (
     <>
@@ -185,11 +202,13 @@ export default async function ProductPage({ params }: PageProps) {
         <Breadcrumbs
           items={[
             { label: categoryLabel, href: categoryHref },
+            { label: String(product.category), href: subcategoryHref },
             { label: product.name },
           ]}
         />
       </div>
       <ProductDetail product={product} relatedProducts={related} />
+      <ProductFaq product={product} isJewelry={isJewelry} />
     </>
   );
 }

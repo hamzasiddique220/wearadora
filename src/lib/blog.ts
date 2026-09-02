@@ -9,6 +9,9 @@ export interface BlogPostMeta {
   description: string;
   excerpt: string;
   keywords: string[];
+  /** ISO date (YYYY-MM-DD), from frontmatter. Falls back to dateModified, then undefined. */
+  datePublished?: string;
+  dateModified?: string;
 }
 
 export interface BlogPost extends BlogPostMeta {
@@ -40,6 +43,8 @@ function parseFrontmatter(raw: string): { meta: Partial<BlogPostMeta>; body: str
   meta.excerpt = grab(/Excerpt:\s*(.+)/);
   const kw = grab(/Target keywords:\s*(.+)/);
   meta.keywords = kw ? kw.split(',').map((s) => s.trim()).filter(Boolean) : [];
+  meta.datePublished = grab(/Published:\s*(.+)/);
+  meta.dateModified = grab(/Updated:\s*(.+)/) || meta.datePublished;
 
   return { meta, body };
 }
@@ -64,6 +69,8 @@ export function getBlogPost(slug: string): BlogPost | null {
     description: meta.description || '',
     excerpt: meta.excerpt || meta.description || '',
     keywords: meta.keywords || [],
+    datePublished: meta.datePublished,
+    dateModified: meta.dateModified,
     html,
   };
 }
@@ -80,6 +87,8 @@ export function listBlogPosts(): BlogPostMeta[] {
         description: meta.description || '',
         excerpt: meta.excerpt || meta.description || '',
         keywords: meta.keywords || [],
+        datePublished: meta.datePublished,
+        dateModified: meta.dateModified,
       };
     })
     .sort((a, b) => a.slug.localeCompare(b.slug));

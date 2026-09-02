@@ -332,6 +332,7 @@ function CategoryContent({
                 product={p}
                 onClick={() => setSelected(p)}
                 delay={i * 0.03}
+                priority={i < 4}
               />
             ))}
           </div>

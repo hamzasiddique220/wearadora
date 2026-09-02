@@ -35,6 +35,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
       url,
       type: 'article',
       siteName: STORE_CONFIG.name,
+      ...(post.datePublished ? { publishedTime: post.datePublished } : {}),
+      ...(post.dateModified ? { modifiedTime: post.dateModified } : {}),
     },
     twitter: {
       card: 'summary_large_image',
@@ -53,6 +55,9 @@ export default function BlogPostPage({ params }: PageProps) {
     '@type': 'Article',
     headline: post.title.replace(/\s*\|.*$/, ''),
     description: post.description,
+    image: `${STORE_CONFIG.siteUrl}/opengraph-image`,
+    ...(post.datePublished ? { datePublished: post.datePublished } : {}),
+    ...(post.dateModified ? { dateModified: post.dateModified } : {}),
     author: { '@type': 'Organization', name: STORE_CONFIG.name },
     publisher: {
       '@type': 'Organization',

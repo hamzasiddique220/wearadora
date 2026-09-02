@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Shipping & Returns | Wear Adora',
   description:
     'Delivery times across Pakistan and our 7-day refund & exchange policy.',
+  alternates: { canonical: '/shipping' },
 };
 
 export default function ShippingPage() {

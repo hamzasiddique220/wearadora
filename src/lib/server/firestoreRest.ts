@@ -106,8 +106,10 @@ export async function fetchProduct(id: string): Promise<Product | null> {
 
 /**
  * Look up a product whose `slug` field equals the given value using a
- * Firestore structured query — direct, indexed, and not cached so a freshly
- * saved product is found immediately.
+ * Firestore structured query — direct and indexed. Cached briefly (60s) so a
+ * shared Node host with only 2 worker threads (see next.config.mjs) isn't
+ * doing a live Firestore round trip on every single product page view; a
+ * freshly saved product shows up within a minute instead of instantly.
  */
 async function fetchProductBySlug(slug: string): Promise<Product | null> {
   if (!BASE) return null;
@@ -117,7 +119,7 @@ async function fetchProductBySlug(slug: string): Promise<Product | null> {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
+        next: { revalidate: 60 },
         body: JSON.stringify({
           structuredQuery: {
             from: [{ collectionId: 'products' }],
@@ -188,6 +190,8 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
  * (search-result stars). Queries with a single equality filter (`productId`)
  * only, no `orderBy`, so it never needs a composite index; approval status is
  * filtered client-side after the fetch, same as the realtime listener does.
+ * Cached for 60s — this only feeds SEO structured data, not visible UI, so it
+ * doesn't need a live Firestore hit on every page view.
  */
 export async function fetchProductReviewSummary(
   productId: string
@@ -199,7 +203,7 @@ export async function fetchProductReviewSummary(
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
+        next: { revalidate: 60 },
         body: JSON.stringify({
           structuredQuery: {
             from: [{ collectionId: 'reviews' }],

@@ -207,11 +207,14 @@ export async function fetchProductReviewSummary(
         body: JSON.stringify({
           structuredQuery: {
             from: [{ collectionId: 'reviews' }],
+            // status filter is required by the Firestore rules.
             where: {
-              fieldFilter: {
-                field: { fieldPath: 'productId' },
-                op: 'EQUAL',
-                value: { stringValue: productId },
+              compositeFilter: {
+                op: 'AND',
+                filters: [
+                  { fieldFilter: { field: { fieldPath: 'productId' }, op: 'EQUAL', value: { stringValue: productId } } },
+                  { fieldFilter: { field: { fieldPath: 'status' }, op: 'EQUAL', value: { stringValue: 'approved' } } },
+                ],
               },
             },
             limit: 1000,

@@ -6,6 +6,7 @@ import { CustomerInfo } from '@/types';
 import { useCartStore } from '@/lib/stores/cart';
 import { useUIStore } from '@/lib/stores/ui';
 import { orderService } from '@/lib/services/orders';
+import { productService } from '@/lib/services/products';
 import { generateOrderId, formatDate, formatPrice } from '@/lib/utils';
 import { STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
 import { trackPurchase } from '@/lib/analytics';
@@ -21,6 +22,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const subtotal = useCartStore((state) => state.getTotal());
   const itemCount = useCartStore((state) => state.getCount());
   const clearCart = useCartStore((state) => state.clearCart);
+  const syncPrices = useCartStore((state) => state.syncPrices);
   const showToast = useUIStore((state) => state.showToast);
 
   const deliveryFee = getDeliveryFee(subtotal);
@@ -106,28 +108,47 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const handleSubmit = async () => {
     if (!validate()) return;
 
+    // The Firestore rules check every line against the catalog with one
+    // lookup each, capped at 10 lines per order.
+    if (items.length > 10) {
+      showToast('For more than 10 different items, please order on WhatsApp.', 'error');
+      return;
+    }
+
     setSubmitting(true);
     const orderId = generateOrderId();
     const dateDisplay = formatDate(new Date());
 
     try {
+      // Cart lines are price snapshots from add-to-cart; the rules reject
+      // orders whose prices no longer match the catalog. Re-price first and
+      // let the customer confirm the new total if anything changed.
+      const prices = await productService.getCurrentPrices(items.map((i) => i.id));
+      if (syncPrices(prices)) {
+        showToast('Some prices or items in your cart changed. Please review your total and place the order again.', 'error');
+        return;
+      }
+      // Recompute from the (unchanged) cart so the totals are exact.
+      const liveSubtotal = useCartStore.getState().getTotal();
+      const liveFee = getDeliveryFee(liveSubtotal);
+
       await orderService.create({
         orderId,
         customer: info,
-        items,
-        subtotal,
-        deliveryFee,
-        total: grandTotal,
+        items: useCartStore.getState().items,
+        subtotal: liveSubtotal,
+        deliveryFee: liveFee,
+        total: liveSubtotal + liveFee,
         status: 'pending',
         createdAt: new Date().toISOString(),
         dateDisplay,
       });
 
-      trackPurchase({ orderId, items, value: grandTotal });
+      trackPurchase({ orderId, items, value: liveSubtotal + liveFee });
       setPlacedOrder({
         orderId,
         phone: info.phone,
-        total: grandTotal,
+        total: liveSubtotal + liveFee,
       });
       clearCart();
       showToast('Order placed successfully!');

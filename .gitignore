@@ -36,3 +36,12 @@ serviceAccountKey.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Firestore backups (contain customer PII) — NEVER commit
+/backups/
+
+# Local-only scripts that read backups (PII)
+*.local.ts
+
+# Firebase emulator logs
+*-debug.log

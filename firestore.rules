@@ -1,61 +1,155 @@
 rules_version = '2';
 
-// Optional, hand-authored ruleset for the reviews feature. This file is NOT
-// deployed automatically — it only takes effect once you paste it into
-// Firebase Console → Firestore Database → Rules (or `firebase deploy
-// --only firestore:rules` if you set up the Firebase CLI) and Publish.
+// Least-privilege rules for Wear Adora. Deployed from the repo:
+//   npx firebase deploy --only firestore:rules   (see firebase.json)
+// Tested by tests/rules/firestore.test.ts (npm run test:rules).
 //
-// `products`, `orders`, and `siteSettings` keep the exact same open
-// read/write behavior documented in FIREBASE-SETUP.md ("test mode") — this
-// file changes nothing for them. The new `reviews` collection additionally
-// validates shape/range on create (rating 1-5, comment length, required
-// fields) so a malformed or scripted payload can never reach the database
-// even if someone bypasses the frontend form. It can't validate WHO is
-// writing (customer vs admin) because this app has no real backend/auth —
-// `/admin` login is a client-side password check (src/lib/stores/auth.ts),
-// not a Firebase Auth session — so update/delete stay open, matching the
-// rest of this app's current security model.
+// Model:
+//   - Catalog (products, siteSettings, approved reviews): public read.
+//   - Orders: public CREATE only, strictly validated, prices checked against
+//     the catalog. No public read/update/delete. There is no order-tracking
+//     page; the confirmation screen uses local state only.
+//   - Customer reviews: public CREATE only, forced to pending/customer.
+//   - Every admin read/write: Firebase Auth user with custom claim admin=true.
+//   - Anything not matched below is denied (Firestore default + explicit
+//     catch-all at the bottom).
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /products/{productId} {
-      allow read, write: if true;
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
     }
 
-    match /orders/{orderId} {
-      allow read, write: if true;
+    function str(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    function optStr(m, key, max) {
+      return !(key in m) || str(m[key], 0, max);
+    }
+
+    // ---------------------------------------------------------------- catalog
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /siteSettings/{settingId} {
-      allow read, write: if true;
-    }
-
-    match /reviews/{reviewId} {
       allow read: if true;
-
-      allow create: if request.resource.data.keys().hasAll(
-                        ['productId', 'reviewerName', 'rating', 'comment', 'status', 'source', 'createdAt']
-                      )
-                    && request.resource.data.productId is string
-                    && request.resource.data.productId.size() > 0
-                    && request.resource.data.reviewerName is string
-                    && request.resource.data.reviewerName.size() >= 2
-                    && request.resource.data.reviewerName.size() <= 80
-                    && request.resource.data.rating is int
-                    && request.resource.data.rating >= 1
-                    && request.resource.data.rating <= 5
-                    && request.resource.data.comment is string
-                    && request.resource.data.comment.size() >= 10
-                    && request.resource.data.comment.size() <= 2000
-                    && request.resource.data.status in ['pending', 'approved', 'rejected']
-                    && request.resource.data.source in ['customer', 'admin']
-                    && (!('reviewerEmail' in request.resource.data) || request.resource.data.reviewerEmail is string)
-                    && (!('images' in request.resource.data) || (request.resource.data.images is list && request.resource.data.images.size() <= 5));
-
-      allow update, delete: if true;
+      allow write: if isAdmin();
     }
 
-    // Any collection added later without an explicit match above is denied
-    // by default (Firestore's secure-by-default behavior) — add a match
-    // block here if you introduce a new collection.
+    // ---------------------------------------------------------------- reviews
+    match /reviews/{reviewId} {
+      // Rules are not filters: public queries MUST include
+      // where('status', '==', 'approved') or they are rejected.
+      allow read: if resource.data.status == 'approved' || isAdmin();
+
+      allow create: if isAdmin() || isValidCustomerReview(request.resource.data);
+      allow update, delete: if isAdmin();
+
+      function isValidCustomerReview(r) {
+        return r.keys().hasAll(['productId', 'reviewerName', 'rating', 'comment', 'status', 'source', 'createdAt'])
+          && r.keys().hasOnly(['productId', 'productName', 'reviewerName', 'reviewerEmail', 'rating',
+                               'comment', 'images', 'status', 'source', 'createdAt'])
+          // A customer can never self-approve, mark verified/featured, or pose as admin.
+          && r.status == 'pending'
+          && r.source == 'customer'
+          && str(r.productId, 1, 128)
+          && exists(/databases/$(database)/documents/products/$(r.productId))
+          && optStr(r, 'productName', 200)
+          && str(r.reviewerName, 2, 80)
+          && optStr(r, 'reviewerEmail', 200)
+          && r.rating is int && r.rating >= 1 && r.rating <= 5
+          && str(r.comment, 10, 2000)
+          && str(r.createdAt, 10, 40)
+          && (!('images' in r) || (r.images is list && r.images.size() <= 5));
+      }
+    }
+
+    // ----------------------------------------------------------------- orders
+    match /orders/{orderId} {
+      allow create: if isValidOrder(request.resource.data);
+      allow read, update, delete: if isAdmin();
+
+      // Line item i must match the live catalog price (client prices are
+      // never trusted). Each check is one get(); Firestore allows 10 per
+      // request, hence the 10-line cap. `||` short-circuits, so indexes past
+      // the end of the list are never evaluated.
+      // Kept deliberately cheap: Firestore stops evaluating after 1,000
+      // expressions per request, and a 10-line order runs this 10 times.
+      // A missing id/price/quantity makes the expression error → denied.
+      function itemOk(it) {
+        let q = it.quantity;
+        return q is int && q >= 1 && q <= 20
+          && it.price == get(/databases/$(database)/documents/products/$(it.id)).data.price;
+      }
+
+      function line(items, n, i) {
+        return i < n ? items[i].price * items[i].quantity : 0;
+      }
+
+      function itemsSubtotal(items) {
+        let n = items.size();
+        return line(items, n, 0) + line(items, n, 1) + line(items, n, 2) + line(items, n, 3)
+             + line(items, n, 4) + line(items, n, 5) + line(items, n, 6) + line(items, n, 7)
+             + line(items, n, 8) + line(items, n, 9);
+      }
+
+      function allItemsOk(items) {
+        let n = items.size();
+        return n >= 1 && n <= 10
+          && itemOk(items[0])
+          && (n < 2 || itemOk(items[1]))
+          && (n < 3 || itemOk(items[2]))
+          && (n < 4 || itemOk(items[3]))
+          && (n < 5 || itemOk(items[4]))
+          && (n < 6 || itemOk(items[5]))
+          && (n < 7 || itemOk(items[6]))
+          && (n < 8 || itemOk(items[7]))
+          && (n < 9 || itemOk(items[8]))
+          && (n < 10 || itemOk(items[9]));
+      }
+
+      function isValidCustomer(c) {
+        return c is map
+          && c.keys().hasAll(['name', 'phone', 'address', 'city'])
+          && c.keys().hasOnly(['name', 'phone', 'address', 'city', 'notes', 'mapLink'])
+          && str(c.name, 2, 100)
+          && c.phone is string && c.phone.matches('^[0-9+ ()-]{10,20}$')
+          && str(c.address, 3, 500)
+          && str(c.city, 2, 80)
+          && optStr(c, 'notes', 1000)
+          // Checkout sends mapLink: '' when the customer skips "share location".
+          && (!('mapLink' in c) || c.mapLink == ''
+              || (str(c.mapLink, 0, 300) && c.mapLink.matches('^https://maps\\.google\\.com/.*')));
+      }
+
+      // Mirrors STORE_CONFIG: Rs 250 delivery, free at Rs 4,500+.
+      function feeOk(subtotal, fee) {
+        return (subtotal >= 4500 && fee == 0) || (subtotal < 4500 && fee == 250);
+      }
+
+      function isValidOrder(o) {
+        return o.keys().hasAll(['orderId', 'customer', 'items', 'subtotal', 'deliveryFee', 'total',
+                                'status', 'createdAt', 'dateDisplay'])
+          && o.keys().hasOnly(['orderId', 'customer', 'items', 'subtotal', 'deliveryFee', 'total',
+                               'status', 'createdAt', 'dateDisplay'])
+          && o.orderId is string && o.orderId.matches('^WA-[0-9]{6,12}$')
+          && o.status == 'pending'
+          && str(o.createdAt, 10, 40)
+          && str(o.dateDisplay, 1, 80)
+          && isValidCustomer(o.customer)
+          && o.items is list && allItemsOk(o.items)
+          && o.subtotal is number && o.subtotal == itemsSubtotal(o.items)
+          && o.deliveryFee is number && feeOk(o.subtotal, o.deliveryFee)
+          && o.total is number && o.total == o.subtotal + o.deliveryFee;
+      }
+    }
+
+    // ---------------------------------------------------------- default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }

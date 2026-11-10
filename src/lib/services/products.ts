@@ -7,6 +7,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   orderBy,
   onSnapshot,
   Unsubscribe,
@@ -78,6 +79,23 @@ export const productService = {
 
   delete: async (id: string): Promise<void> => {
     await deleteDoc(doc(db, COLLECTION, id));
+  },
+
+  /**
+   * Live catalog prices for the given product ids (null = product deleted).
+   * Checkout calls this right before writing an order, because the
+   * Firestore rules reject any order whose item prices don't match the
+   * current catalog — and cart items are price snapshots from add-to-cart.
+   */
+  getCurrentPrices: async (ids: string[]): Promise<Record<string, number | null>> => {
+    const unique = Array.from(new Set(ids));
+    const snaps = await Promise.all(unique.map((id) => getDoc(doc(db, COLLECTION, id))));
+    const out: Record<string, number | null> = {};
+    snaps.forEach((s, i) => {
+      const price = s.exists() ? Number(s.data().price) : NaN;
+      out[unique[i]] = Number.isFinite(price) ? price : null;
+    });
+    return out;
   },
 
   uploadImage: async (file: File): Promise<string> => {

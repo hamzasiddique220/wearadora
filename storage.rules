@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Firebase Storage is NOT currently used by the app — product, review and
+// settings images are uploaded to Cloudinary (src/lib/services/products.ts).
+// These rules lock the bucket down and allow product images under
+// /products/** if Storage is ever adopted:
+//   - public read
+//   - write only for admins (custom claim admin=true)
+//   - images only (jpeg/png/webp/avif), max 5 MB
+// Everything else is denied.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    function isValidImage() {
+      return request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp|avif)');
+    }
+
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

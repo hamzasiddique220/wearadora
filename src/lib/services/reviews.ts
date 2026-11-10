@@ -32,17 +32,21 @@ function stripUndefined<T>(value: T): T {
 
 export const reviewService = {
   /**
-   * All reviews for one product, any status. Filtered by `where(productId==)`
-   * only — no `orderBy` combined with it, so this never needs a Firestore
+   * Approved reviews for one product (public product page). Equality
+   * filters only — no `orderBy` — so this never needs a Firestore
    * composite index. Sorted client-side instead.
    */
   subscribeForProduct: (
     productId: string,
     callback: (reviews: Review[]) => void
   ): Unsubscribe => {
+    // status=='approved' is REQUIRED by the Firestore rules (rules are not
+    // filters — an unfiltered query is rejected outright). Two equality
+    // filters need no composite index.
     const q = query(
       collection(db, COLLECTION),
-      where('productId', '==', productId)
+      where('productId', '==', productId),
+      where('status', '==', 'approved')
     );
     return onSnapshot(q, (snapshot) => {
       const items = snapshot.docs

@@ -26,6 +26,9 @@ interface CartState {
   removeItem: (cartLineId: string) => void;
   updateQuantity: (cartLineId: string, delta: number) => void;
   clearCart: () => void;
+  /** Re-price lines from live catalog prices; drop lines whose product is
+   *  gone. Returns true if anything changed. */
+  syncPrices: (prices: Record<string, number | null>) => boolean;
   getTotal: () => number;
   getCount: () => number;
 }
@@ -90,6 +93,24 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => set({ items: [] }),
+
+      syncPrices: (prices) => {
+        let changed = false;
+        const items = get()
+          .items.filter((item) => {
+            const keep = prices[item.id] !== null && prices[item.id] !== undefined;
+            if (!keep) changed = true;
+            return keep;
+          })
+          .map((item) => {
+            const live = prices[item.id] as number;
+            if (live === item.price) return item;
+            changed = true;
+            return { ...item, price: live };
+          });
+        if (changed) set({ items });
+        return changed;
+      },
 
       getTotal: () =>
         get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),

@@ -98,30 +98,10 @@ export const productService = {
     return out;
   },
 
+  /** Admin-only signed upload (see services/cloudinaryUpload.ts). */
   uploadImage: async (file: File): Promise<string> => {
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-    if (!cloudName || !preset) {
-      throw new Error('Cloudinary env vars missing');
-    }
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', preset);
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: 'POST', body: formData }
-    );
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Cloudinary upload failed: ${err}`);
-    }
-    const data = await res.json();
-    const url = data.secure_url as string;
-    // Inject f_auto,q_auto so Cloudinary serves AVIF/WebP at the right quality
-    // even when the URL is rendered through a raw <img> (e.g. admin previews).
-    return url.includes('/upload/')
-      ? url.replace('/upload/', '/upload/f_auto,q_auto/')
-      : url;
+    const { uploadAdminImage } = await import('./cloudinaryUpload');
+    return uploadAdminImage(file, 'products');
   },
 
   deleteImage: async (_imageUrl: string): Promise<void> => {

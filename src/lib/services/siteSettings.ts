@@ -5,7 +5,6 @@ import {
   type Unsubscribe,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { productService } from '@/lib/services/products';
 import type { SiteSettings } from '@/types';
 
 const COLLECTION = 'siteSettings';
@@ -38,6 +37,9 @@ export const siteSettingsService = {
     );
   },
 
-  /** Reuse productService Cloudinary upload */
-  uploadImage: (file: File) => productService.uploadImage(file),
+  /** Admin-only signed upload into the site/ folder. */
+  uploadImage: async (file: File): Promise<string> => {
+    const { uploadAdminImage } = await import('./cloudinaryUpload');
+    return uploadAdminImage(file, 'site');
+  },
 };

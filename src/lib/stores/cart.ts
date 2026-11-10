@@ -3,6 +3,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { CartItem, Product } from '@/types';
+import { ORDER_LIMITS } from '@/lib/constants';
+
+const clampQty = (q: number) => Math.min(ORDER_LIMITS.maxQtyPerLine, q);
 
 export const makeCartLineId = (
   productId: string,
@@ -49,7 +52,7 @@ export const useCartStore = create<CartState>()(
           set({
             items: get().items.map((item) =>
               item.cartLineId === cartLineId
-                ? { ...item, quantity: item.quantity + 1 }
+                ? { ...item, quantity: clampQty(item.quantity + 1) }
                 : item
             ),
           });
@@ -83,7 +86,7 @@ export const useCartStore = create<CartState>()(
           items: get()
             .items.map((item) => {
               if (item.cartLineId === cartLineId) {
-                const newQty = item.quantity + delta;
+                const newQty = clampQty(item.quantity + delta);
                 return newQty > 0 ? { ...item, quantity: newQty } : item;
               }
               return item;

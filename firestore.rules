@@ -50,7 +50,9 @@ service cloud.firestore {
 
       function isValidCustomerReview(r) {
         return r.keys().hasAll(['productId', 'reviewerName', 'rating', 'comment', 'status', 'source', 'createdAt'])
-          && r.keys().hasOnly(['productId', 'productName', 'reviewerName', 'reviewerEmail', 'rating',
+          // No reviewerEmail here: reviews are publicly readable once
+          // approved, so the email lives in reviewPrivate/{reviewId}.
+          && r.keys().hasOnly(['productId', 'productName', 'reviewerName', 'rating',
                                'comment', 'images', 'status', 'source', 'createdAt'])
           // A customer can never self-approve, mark verified/featured, or pose as admin.
           && r.status == 'pending'
@@ -59,12 +61,30 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/products/$(r.productId))
           && optStr(r, 'productName', 200)
           && str(r.reviewerName, 2, 80)
-          && optStr(r, 'reviewerEmail', 200)
           && r.rating is int && r.rating >= 1 && r.rating <= 5
           && str(r.comment, 10, 2000)
           && str(r.createdAt, 10, 40)
           && (!('images' in r) || (r.images is list && r.images.size() <= 5));
       }
+    }
+
+    // Admin-only companion doc for a review: the reviewer's email. A customer
+    // may create it only in the SAME batch as their new pending review (the
+    // review must not exist before the write and must exist after it), so
+    // emails can't be attached to someone else's review or overwritten.
+    match /reviewPrivate/{reviewId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAdmin() || (
+        request.resource.data.keys().hasOnly(['reviewerEmail', 'createdAt'])
+        && request.resource.data.keys().hasAll(['reviewerEmail'])
+        && str(request.resource.data.reviewerEmail, 3, 200)
+        && request.resource.data.reviewerEmail.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && (!('createdAt' in request.resource.data) || str(request.resource.data.createdAt, 10, 40))
+        && !exists(/databases/$(database)/documents/reviews/$(reviewId))
+        && existsAfter(/databases/$(database)/documents/reviews/$(reviewId))
+        && getAfter(/databases/$(database)/documents/reviews/$(reviewId)).data.source == 'customer'
+        && getAfter(/databases/$(database)/documents/reviews/$(reviewId)).data.status == 'pending'
+      );
     }
 
     // ----------------------------------------------------------------- orders
@@ -81,7 +101,8 @@ service cloud.firestore {
       // A missing id/price/quantity makes the expression error → denied.
       function itemOk(it) {
         let q = it.quantity;
-        return q is int && q >= 1 && q <= 20
+        // 99 = ORDER_LIMITS.maxQtyPerLine (the cart clamps to the same).
+        return q is int && q >= 1 && q <= 99
           && it.price == get(/databases/$(database)/documents/products/$(it.id)).data.price;
       }
 

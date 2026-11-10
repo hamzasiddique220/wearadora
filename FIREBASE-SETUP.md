@@ -48,7 +48,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
 NEXT_PUBLIC_STORE_NAME=WEARADORA
 NEXT_PUBLIC_STORE_TAGLINE=Adorned in Artistry
 
-NEXT_PUBLIC_ADMIN_PASSWORD=wearRUHAAFIDAZ321!@#
+# Admin login uses Firebase Auth + an admin custom claim (see README → Admin Access). No password env var.
 ```
 
 Firebase config ke values apni wali dalein.

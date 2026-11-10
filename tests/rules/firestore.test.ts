@@ -11,11 +11,34 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
+import { STORE_CONFIG, ORDER_LIMITS, getDeliveryFee, sanitizePhone } from '../../src/lib/constants';
 
 let env: RulesTestEnvironment;
 
 const PRODUCT_A = { name: 'Black Pearl Flats', category: 'Slides', price: 2750, stock: 5, createdAt: '2026-10-01T00:00:00.000Z' };
 const PRODUCT_B = { name: 'Ruby Necklace Set', category: 'Necklace', price: 1249, stock: 3, createdAt: '2026-10-01T00:00:00.000Z' };
+const FREE_MIN = STORE_CONFIG.freeDeliveryMinTotal;
+// Edge-case catalog: on sale, decimal price, exactly at / just under the free-delivery line.
+const EDGE_PRODUCTS: Record<string, Record<string, unknown>> = {
+  pSale: { name: 'Sale Heels', category: 'Heels', price: 1999, originalPrice: 2999, stock: 9 },
+  pDecimal: { name: 'Decimal Ring', category: 'Ring', price: 1999.5, stock: 9 },
+  pAtFree: { name: 'At Threshold', category: 'Bridal', price: FREE_MIN, stock: 9 },
+  pUnderFree: { name: 'Just Under', category: 'Bridal', price: FREE_MIN - 1, stock: 9 },
+  pCheap: { name: 'Cheap Anklet', category: 'Anklet', price: 100, stock: 999 },
+};
+
+/** Build an order exactly the way CheckoutModal does (fee from getDeliveryFee). */
+function checkoutOrder(lines: { id: string; price: number; quantity: number; [k: string]: unknown }[], customer: Record<string, string> = {}) {
+  const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
+  const deliveryFee = getDeliveryFee(subtotal);
+  return validOrder({
+    items: lines.map((l, i) => ({ name: `Item ${i}`, cartLineId: `${l.id}-${i}`, ...l })),
+    subtotal,
+    deliveryFee,
+    total: subtotal + deliveryFee,
+    customer: { ...validOrder().customer, ...customer },
+  });
+}
 
 function validOrder(overrides: Record<string, unknown> = {}) {
   const items = [
@@ -56,6 +79,7 @@ beforeEach(async () => {
     const db = ctx.firestore();
     await db.doc('products/pA').set(PRODUCT_A);
     await db.doc('products/pB').set(PRODUCT_B);
+    for (const [id, p] of Object.entries(EDGE_PRODUCTS)) await db.doc(`products/${id}`).set(p);
     await db.doc('siteSettings/main').set({ jewelryEnabled: true });
     await db.doc('orders/existing').set(validOrder());
     await db.doc('reviews/approved1').set({ productId: 'pA', status: 'approved', rating: 5 });
@@ -218,6 +242,141 @@ describe('reviews', () => {
     await assertFails(publicDb().doc('reviews/approved1').delete());
     await assertSucceeds(adminDb().doc('reviews/pending1').update({ status: 'approved' }));
     await assertSucceeds(adminDb().collection('reviews').orderBy('createdAt', 'desc').get());
+  });
+});
+
+describe('order pricing edge cases (a valid cart must never be blocked)', () => {
+  it('rules hardcode the same delivery fee, threshold and limits as src/lib/constants.ts', () => {
+    const rules = readFileSync('firestore.rules', 'utf8');
+    const fee = rules.match(/subtotal >= (\d+) && fee == 0\) \|\| \(subtotal < (\d+) && fee == (\d+)/);
+    if (!fee) throw new Error('feeOk() not found in firestore.rules');
+    const [, a, b, c] = fee.map(Number);
+    if (a !== FREE_MIN || b !== FREE_MIN || c !== STORE_CONFIG.deliveryFee) {
+      throw new Error(`rules fee ${a}/${b}/${c} ≠ STORE_CONFIG ${FREE_MIN}/${STORE_CONFIG.deliveryFee}`);
+    }
+    if (!rules.includes(`q <= ${ORDER_LIMITS.maxQtyPerLine}`)) throw new Error('qty cap mismatch');
+    if (!rules.includes(`n <= ${ORDER_LIMITS.maxLines}`)) throw new Error('line cap mismatch');
+  });
+
+  it('sale price: the discounted price is accepted, the original (strike-through) price is not', async () => {
+    await assertSucceeds(publicDb().collection('orders').add(checkoutOrder([{ id: 'pSale', price: 1999, quantity: 1 }])));
+    await assertFails(publicDb().collection('orders').add(checkoutOrder([{ id: 'pSale', price: 2999, quantity: 1 }])));
+  });
+
+  it('variants: same product in different sizes/colours as separate lines is accepted', async () => {
+    await assertSucceeds(
+      publicDb().collection('orders').add(
+        checkoutOrder([
+          { id: 'pA', price: 2750, quantity: 1, selectedSize: 6, selectedColor: 'Black' },
+          { id: 'pA', price: 2750, quantity: 2, selectedSize: 8, selectedColor: 'Gold' },
+        ])
+      )
+    );
+  });
+
+  it(`free delivery is inclusive: exactly Rs ${FREE_MIN} ships free`, async () => {
+    const at = checkoutOrder([{ id: 'pAtFree', price: FREE_MIN, quantity: 1 }]);
+    if (at.deliveryFee !== 0) throw new Error('getDeliveryFee should be 0 at the threshold');
+    await assertSucceeds(publicDb().collection('orders').add(at));
+    // Charging the fee at exactly the threshold is rejected (customer would be overcharged).
+    await assertFails(publicDb().collection('orders').add({ ...at, deliveryFee: STORE_CONFIG.deliveryFee, total: FREE_MIN + STORE_CONFIG.deliveryFee }));
+  });
+
+  it(`Rs ${FREE_MIN - 1} pays the Rs ${STORE_CONFIG.deliveryFee} fee; free delivery there is rejected`, async () => {
+    const under = checkoutOrder([{ id: 'pUnderFree', price: FREE_MIN - 1, quantity: 1 }]);
+    if (under.deliveryFee !== STORE_CONFIG.deliveryFee) throw new Error('fee expected below threshold');
+    await assertSucceeds(publicDb().collection('orders').add(under));
+    await assertFails(publicDb().collection('orders').add({ ...under, deliveryFee: 0, total: FREE_MIN - 1 }));
+  });
+
+  it('threshold reached through quantity (2 × 2250 = 4500) ships free', async () => {
+    await env.withSecurityRulesDisabled((ctx) => ctx.firestore().doc('products/p2250').set({ name: 'x', price: 2250 }));
+    const o = checkoutOrder([{ id: 'p2250', price: 2250, quantity: 2 }]);
+    if (o.deliveryFee !== 0) throw new Error('expected free delivery');
+    await assertSucceeds(publicDb().collection('orders').add(o));
+  });
+
+  it('decimal prices are accepted', async () => {
+    await assertSucceeds(publicDb().collection('orders').add(checkoutOrder([{ id: 'pDecimal', price: 1999.5, quantity: 3 }])));
+  });
+
+  it(`max cart: ${ORDER_LIMITS.maxLines} lines and qty ${ORDER_LIMITS.maxQtyPerLine} are accepted`, async () => {
+    const lines = Array.from({ length: ORDER_LIMITS.maxLines }, (_, i) => ({
+      id: i % 2 ? 'pCheap' : 'pB',
+      price: i % 2 ? 100 : 1249,
+      quantity: i === 0 ? ORDER_LIMITS.maxQtyPerLine : 1,
+    }));
+    await assertSucceeds(publicDb().collection('orders').add(checkoutOrder(lines)));
+  });
+
+  it(`qty ${ORDER_LIMITS.maxQtyPerLine + 1} is rejected (the cart clamps to ${ORDER_LIMITS.maxQtyPerLine})`, async () => {
+    await assertFails(
+      publicDb().collection('orders').add(checkoutOrder([{ id: 'pCheap', price: 100, quantity: ORDER_LIMITS.maxQtyPerLine + 1 }]))
+    );
+  });
+
+  it('shortest customer details checkout allows are accepted; messy phone input is sanitised', async () => {
+    const L = ORDER_LIMITS;
+    const customer = {
+      name: 'A'.repeat(L.name.min),
+      address: 'B'.repeat(L.address.min),
+      city: 'C'.repeat(L.city.min),
+      phone: sanitizePhone('0313.216-6431 ext'),
+      notes: 'N'.repeat(L.notes.max),
+    };
+    await assertSucceeds(publicDb().collection('orders').add(checkoutOrder([{ id: 'pB', price: 1249, quantity: 1 }], customer)));
+    for (const phone of ['+92 313 2166431', '(0313) 216-6431', '923132166431']) {
+      await assertSucceeds(
+        publicDb().collection('orders').add(checkoutOrder([{ id: 'pB', price: 1249, quantity: 1 }], { phone: sanitizePhone(phone) }))
+      );
+    }
+  });
+
+  it('a stale cart price (catalog changed) is rejected — checkout re-prices before submitting', async () => {
+    await assertFails(publicDb().collection('orders').add(checkoutOrder([{ id: 'pB', price: 999, quantity: 1 }])));
+  });
+});
+
+describe('reviewPrivate (reviewer emails)', () => {
+  const pendingReview = {
+    productId: 'pA',
+    reviewerName: 'Sana',
+    rating: 5,
+    comment: 'Very comfortable and well made.',
+    status: 'pending',
+    source: 'customer',
+    createdAt: new Date().toISOString(),
+  };
+
+  it('customer can write review + email in one batch', async () => {
+    const db = publicDb();
+    const ref = db.collection('reviews').doc();
+    const batch = db.batch();
+    batch.set(ref, pendingReview);
+    batch.set(db.doc(`reviewPrivate/${ref.id}`), { reviewerEmail: 'sana@example.com', createdAt: pendingReview.createdAt });
+    await assertSucceeds(batch.commit());
+  });
+
+  it('email on the public review doc is rejected', async () => {
+    await assertFails(publicDb().collection('reviews').add({ ...pendingReview, reviewerEmail: 'sana@example.com' }));
+  });
+
+  it("can't attach or overwrite an email on an existing review, or use a bad email", async () => {
+    await assertFails(publicDb().doc('reviewPrivate/approved1').set({ reviewerEmail: 'evil@example.com' }));
+    const db = publicDb();
+    const ref = db.collection('reviews').doc();
+    const batch = db.batch();
+    batch.set(ref, pendingReview);
+    batch.set(db.doc(`reviewPrivate/${ref.id}`), { reviewerEmail: 'not-an-email' });
+    await assertFails(batch.commit());
+  });
+
+  it('public cannot read emails; admin can read and delete them', async () => {
+    await env.withSecurityRulesDisabled((ctx) => ctx.firestore().doc('reviewPrivate/approved1').set({ reviewerEmail: 'a@b.co' }));
+    await assertFails(publicDb().doc('reviewPrivate/approved1').get());
+    await assertFails(publicDb().collection('reviewPrivate').get());
+    await assertSucceeds(adminDb().collection('reviewPrivate').get());
+    await assertSucceeds(adminDb().doc('reviewPrivate/approved1').delete());
   });
 });
 

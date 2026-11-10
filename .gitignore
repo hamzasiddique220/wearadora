@@ -29,9 +29,18 @@ yarn-error.log*
 # vercel
 .vercel
 
-# Firebase Admin SDK service account keys — NEVER commit
+# Firebase Admin SDK / Google service-account keys — NEVER commit
 *firebase-adminsdk*.json
 serviceAccountKey.json
+*serviceAccount*.json
+*service-account*.json
+*service_account*.json
+*-key.json
+*_key.json
+*credentials*.json
+gcloud-*.json
+/secrets/
+/keys/
 
 # typescript
 *.tsbuildinfo

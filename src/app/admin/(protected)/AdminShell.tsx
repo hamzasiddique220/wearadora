@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BarChart3, Package, ShoppingBag, LogOut, Home, Settings, Star } from 'lucide-react';
-import { useAuthStore } from '@/lib/stores/auth';
+import { adminSignOut, startAdminAuthListener, useAdminSession } from '@/lib/adminAuth';
 import { STORE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
@@ -16,25 +16,27 @@ export default function AdminShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const hasHydrated = useAuthStore((state) => state.hasHydrated);
-  const logout = useAuthStore((state) => state.logout);
-
-  const isLoginPage = pathname === '/admin/login';
+  const status = useAdminSession((s) => s.status);
+  const email = useAdminSession((s) => s.email);
 
   useEffect(() => {
-    // Wait for the persisted session to load before deciding to redirect,
-    // otherwise a fresh load / refresh bounces a logged-in admin to login.
-    if (hasHydrated && !isLoggedIn && !isLoginPage) {
-      router.push('/admin/login');
+    startAdminAuthListener();
+  }, []);
+
+  useEffect(() => {
+    // The server layout already verified the cookie; this covers the client
+    // side (signed out in another tab, claim removed, token revoked).
+    if (status === 'signedOut' || status === 'notAdmin') {
+      router.replace(
+        `/admin/login?reason=${status}&next=${encodeURIComponent(pathname || '/admin/dashboard')}`
+      );
     }
-  }, [hasHydrated, isLoggedIn, isLoginPage, router]);
+  }, [status, router, pathname]);
 
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
-
-  if (!hasHydrated) {
+  // Don't mount admin pages (and their Firestore listeners) until Firebase
+  // Auth has restored an admin user — otherwise the first reads go out
+  // unauthenticated and are denied by the rules.
+  if (status === 'loading') {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="text-bronze text-[11px] tracking-[0.3em] uppercase animate-pulse">
@@ -44,7 +46,7 @@ export default function AdminShell({
     );
   }
 
-  if (!isLoggedIn) {
+  if (status !== 'admin') {
     return null;
   }
 
@@ -101,13 +103,17 @@ export default function AdminShell({
             >
               <Home size={18} />
             </Link>
+            {email && (
+              <span className="hidden lg:inline text-[11px] text-stone">{email}</span>
+            )}
             <button
-              onClick={() => {
-                logout();
-                router.push('/admin/login');
+              onClick={async () => {
+                await adminSignOut();
+                router.replace('/admin/login?reason=signedOut');
               }}
               className="p-2 text-stone hover:text-white"
-              title="Logout"
+              title="Sign out"
+              aria-label="Sign out"
             >
               <LogOut size={18} />
             </button>

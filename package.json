@@ -9,10 +9,13 @@
     "lint": "next lint",
     "convert:images": "python3 scripts/convert-images-webp.py",
     "backup:firestore": "tsx scripts/backup-firestore.ts",
+    "admin:claim": "tsx scripts/set-admin-claim.ts",
+    "orders:delete-google-tests": "tsx scripts/delete-google-test-orders.ts",
     "test:rules": "firebase emulators:exec --only firestore,storage --project demo-wearadora \"tsx --test tests/rules/*.test.ts\""
   },
   "dependencies": {
     "firebase": "^10.14.1",
+    "firebase-admin": "^13.0.2",
     "lucide-react": "^0.453.0",
     "marked": "^18.0.5",
     "next": "14.2.15",

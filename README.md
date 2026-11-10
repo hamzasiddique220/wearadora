@@ -123,8 +123,29 @@ This needs Python 3 with Pillow (`pip install Pillow`). It writes a `.webp` next
 
 ## Admin Access
 
-- **URL:** `/admin/login`
-- **Default Password:** `wearRUHAAFIDAZ321!@#` (change in `.env.local`)
+- **URL:** `/admin/login`. Sign in with a Firebase Auth email/password account.
+- Admin access needs the custom claim `admin: true` on that account. Set it with:
+
+  ```bash
+  GOOGLE_APPLICATION_CREDENTIALS=/path/outside/repo/service-account.json \
+    npm run admin:claim -- someone@example.com
+  # remove access: npm run admin:claim -- someone@example.com --revoke
+  ```
+
+  The user must sign out and back in (or wait up to an hour) for a change to take effect.
+- Firestore rules check `request.auth.token.admin == true` on every admin read and write. The `/admin` pages are also gated by middleware and a server-side token check.
+- Never commit service-account keys. `.gitignore` blocks the common key filenames.
+
+## Security rules
+
+`firestore.rules` and `storage.rules` are deployed from the repo (`firebase.json`):
+
+```bash
+npm run test:rules                                 # emulator tests (needs Java)
+npx firebase deploy --only firestore:rules         # add ,storage if Storage is enabled
+```
+
+`npm run backup:firestore` dumps every collection to `/backups` (gitignored; contains customer data).
 
 ## Architecture Decisions
 

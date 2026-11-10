@@ -96,6 +96,8 @@ export interface Review {
   /** Snapshot of the product name at submission time, for admin display without a join. */
   productName?: string;
   reviewerName: string;
+  /** ADMIN-ONLY, joined from reviewPrivate/{id} by reviewService.subscribeAll.
+   *  Never stored on the public review doc (approved reviews are public). */
   reviewerEmail?: string;
   rating: number;
   comment: string;

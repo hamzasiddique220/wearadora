@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { X, Upload, Trash2, Loader2 } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import StarRating from '@/components/ui/StarRating';
-import { productService } from '@/lib/services/products';
+import { uploadReviewImage } from '@/lib/services/cloudinaryUpload';
 import { reviewService } from '@/lib/services/reviews';
 import { useUIStore } from '@/lib/stores/ui';
 import { storage } from '@/lib/utils';
@@ -92,7 +92,7 @@ export default function ReviewForm({
     await Promise.all(
       newSlots.map(async (slot) => {
         try {
-          const url = await productService.uploadImage(slot.file);
+          const url = await uploadReviewImage(slot.file);
           setSlots((s) =>
             s.map((x) =>
               x.previewUrl === slot.previewUrl

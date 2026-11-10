@@ -8,7 +8,7 @@ import { useUIStore } from '@/lib/stores/ui';
 import { orderService } from '@/lib/services/orders';
 import { productService } from '@/lib/services/products';
 import { generateOrderId, formatDate, formatPrice } from '@/lib/utils';
-import { STORE_CONFIG, getDeliveryFee } from '@/lib/constants';
+import { STORE_CONFIG, getDeliveryFee, ORDER_LIMITS, sanitizePhone } from '@/lib/constants';
 import { trackPurchase } from '@/lib/analytics';
 import Modal from '@/components/ui/Modal';
 
@@ -65,13 +65,25 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   };
 
   const validate = (): boolean => {
+    // Same limits the Firestore order rule enforces (ORDER_LIMITS), so a
+    // customer is told here instead of hitting a silent permission error.
     const newErrors: typeof errors = {};
-    if (!info.name.trim()) newErrors.name = 'Required';
+    const L = ORDER_LIMITS;
+    const len = (v: string | undefined) => (v || '').trim().length;
+    if (!len(info.name)) newErrors.name = 'Required';
+    else if (len(info.name) < L.name.min) newErrors.name = 'Please enter your full name';
+    else if (len(info.name) > L.name.max) newErrors.name = `Max ${L.name.max} characters`;
+    const phone = sanitizePhone(info.phone);
     if (!info.phone.trim()) newErrors.phone = 'Required';
-    else if (info.phone.replace(/\D/g, '').length < 10)
+    else if (phone.replace(/\D/g, '').length < 10 || phone.length < L.phone.min)
       newErrors.phone = 'Invalid phone number';
-    if (!info.address.trim()) newErrors.address = 'Required';
-    if (!info.city.trim()) newErrors.city = 'Required';
+    if (!len(info.address)) newErrors.address = 'Required';
+    else if (len(info.address) < L.address.min) newErrors.address = 'Please enter your full address';
+    else if (len(info.address) > L.address.max) newErrors.address = `Max ${L.address.max} characters`;
+    if (!len(info.city)) newErrors.city = 'Required';
+    else if (len(info.city) < L.city.min) newErrors.city = 'Please enter your city';
+    else if (len(info.city) > L.city.max) newErrors.city = `Max ${L.city.max} characters`;
+    if (len(info.notes) > L.notes.max) newErrors.notes = `Max ${L.notes.max} characters`;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -110,7 +122,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
     // The Firestore rules check every line against the catalog with one
     // lookup each, capped at 10 lines per order.
-    if (items.length > 10) {
+    if (items.length > ORDER_LIMITS.maxLines) {
       showToast('For more than 10 different items, please order on WhatsApp.', 'error');
       return;
     }
@@ -134,7 +146,14 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
       await orderService.create({
         orderId,
-        customer: info,
+        customer: {
+          name: info.name.trim(),
+          phone: sanitizePhone(info.phone),
+          address: info.address.trim(),
+          city: info.city.trim(),
+          notes: (info.notes || '').trim(),
+          mapLink: info.mapLink || '',
+        },
         items: useCartStore.getState().items,
         subtotal: liveSubtotal,
         deliveryFee: liveFee,
@@ -324,6 +343,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             label="Order Notes (Optional)"
             value={info.notes || ''}
             onChange={(v) => setInfo({ ...info, notes: v })}
+            error={errors.notes}
             placeholder="Any special instructions..."
             multiline
           />

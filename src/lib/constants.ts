@@ -75,8 +75,31 @@ export const SOCIAL_LINKS = {
   tiktok: 'https://www.tiktok.com/@wearadora',
 } as const;
 
+/** Free delivery is INCLUSIVE: a subtotal of exactly Rs 4,500 ships free.
+ *  firestore.rules (feeOk) hardcodes the same 4500 / 250 — the rules tests
+ *  import STORE_CONFIG and fail if the two ever drift apart. */
 export const getDeliveryFee = (subtotal: number): number =>
   subtotal >= STORE_CONFIG.freeDeliveryMinTotal ? 0 : STORE_CONFIG.deliveryFee;
+
+/**
+ * Order limits enforced by firestore.rules (isValidOrder). Checkout and the
+ * cart use the same numbers so a valid customer is never blocked by a rule
+ * the UI didn't warn about. Change both together; tests cover each limit.
+ */
+export const ORDER_LIMITS = {
+  /** One catalog price lookup per line; Firestore allows 10 per request. */
+  maxLines: 10,
+  maxQtyPerLine: 99,
+  name: { min: 2, max: 100 },
+  address: { min: 3, max: 500 },
+  city: { min: 2, max: 80 },
+  notes: { max: 1000 },
+  phone: { min: 10, max: 20 },
+} as const;
+
+/** Keep only the characters the order rule accepts in a phone number. */
+export const sanitizePhone = (phone: string): string =>
+  phone.replace(/[^0-9+ ()-]/g, '').replace(/\s+/g, ' ').trim().slice(0, ORDER_LIMITS.phone.max);
 
 export const JEWELRY_CATEGORIES = [
   'Necklace',

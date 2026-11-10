@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { X, Upload, Trash2, Check } from 'lucide-react';
 import { Review, ReviewStatus } from '@/types';
 import { reviewService } from '@/lib/services/reviews';
-import { productService } from '@/lib/services/products';
+import { uploadAdminImage } from '@/lib/services/cloudinaryUpload';
 import { useProducts } from '@/hooks/useProducts';
 import { useUIStore } from '@/lib/stores/ui';
 import StarRating from '@/components/ui/StarRating';
@@ -57,7 +57,7 @@ export default function AdminReviewForm({ review, isOpen, onClose }: AdminReview
           showToast(`${file.name} is over 5MB`, 'error');
           continue;
         }
-        uploaded.push(await productService.uploadImage(file));
+        uploaded.push(await uploadAdminImage(file, 'reviews'));
       }
       setImages((list) => [...list, ...uploaded]);
     } catch (error) {
@@ -98,7 +98,8 @@ export default function AdminReviewForm({ review, isOpen, onClose }: AdminReview
         productId: product.id,
         productName: product.name,
         reviewerName: form.reviewerName.trim(),
-        reviewerEmail: form.reviewerEmail.trim() || undefined,
+        // '' clears it; reviewService writes it to reviewPrivate, not the review.
+        reviewerEmail: form.reviewerEmail.trim(),
         rating: form.rating,
         comment: trimmedComment,
         images,

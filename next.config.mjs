@@ -39,6 +39,8 @@ const nextConfig = {
     imageSizes: [16, 32, 64, 88, 128, 256, 384],
   },
   experimental: {
+    // src/instrumentation.ts — logs the Firebase Admin self-test on startup.
+    instrumentationHook: true,
     optimizePackageImports: ['lucide-react', 'firebase', 'firebase/firestore'],
   },
   async redirects() {

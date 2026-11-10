@@ -59,10 +59,23 @@ export function rateLimited(key: string, max: number, windowMs: number): boolean
   return recent.length > max;
 }
 
+/**
+ * Real client IP behind Hostinger's LiteSpeed proxy.
+ *
+ * X-Forwarded-For is "client, proxy1, proxy2…" and every proxy APPENDS the
+ * address it received the request from. The LEFTMOST entries are whatever
+ * the client sent (spoofable — taking [0] would let anyone dodge the rate
+ * limit by sending a random X-Forwarded-For). So count TRUSTED_PROXY_HOPS
+ * from the right: with one trusted proxy (LiteSpeed) the real client is the
+ * LAST entry. Verify on production with /api/admin/diagnostics and raise
+ * TRUSTED_PROXY_HOPS only if another proxy/CDN is added in front.
+ */
 export function clientIp(req: Request): string {
-  return (
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-    req.headers.get('x-real-ip') ||
-    'unknown'
-  );
+  const hops = Math.max(1, Number(process.env.TRUSTED_PROXY_HOPS) || 1);
+  const chain = (req.headers.get('x-forwarded-for') || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (chain.length > 0) return chain[Math.max(0, chain.length - hops)];
+  return req.headers.get('x-real-ip')?.trim() || 'unknown';
 }

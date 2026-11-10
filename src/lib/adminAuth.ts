@@ -90,9 +90,19 @@ export async function adminSignIn(email: string, password: string): Promise<void
     await signOut(auth());
     throw new NotAdminError('This account does not have admin access.');
   }
-  if (!(await syncServerSession(cred.user))) {
+  const sync = await fetch('/api/admin/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idToken: await cred.user.getIdToken() }),
+  });
+  if (!sync.ok) {
     await signOut(auth());
-    throw new NotAdminError('Could not start an admin session. Please try again.');
+    const code = (await sync.json().catch(() => ({})))?.error;
+    throw new NotAdminError(
+      code === 'admin_sdk_not_configured'
+        ? 'Server is missing its Firebase Admin credentials (see hosting env vars / server log).'
+        : 'Could not start an admin session. Please try again.'
+    );
   }
   useAdminSession.setState({ status: 'admin', email: cred.user.email });
 }

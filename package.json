@@ -11,9 +11,11 @@
     "backup:firestore": "tsx scripts/backup-firestore.ts",
     "admin:claim": "tsx scripts/set-admin-claim.ts",
     "orders:delete-google-tests": "tsx scripts/delete-google-test-orders.ts",
+    "test-data:delete": "tsx scripts/delete-test-data.ts",
     "test:rules": "firebase emulators:exec --only firestore,storage --project demo-wearadora \"tsx --test tests/rules/*.test.ts\""
   },
   "dependencies": {
+    "cross-env": "^10.1.0",
     "firebase": "^10.14.1",
     "firebase-admin": "^13.0.2",
     "lucide-react": "^0.453.0",
@@ -30,7 +32,6 @@
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
-    "cross-env": "^10.1.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.15",
     "firebase-tools": "^13.35.1",
@@ -38,5 +39,8 @@
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

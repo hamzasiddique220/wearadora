@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { verifyAdminRequest } from '@/lib/server/firebaseAdmin';
+import { adminSdkConfigProblem, verifyAdminRequest } from '@/lib/server/firebaseAdmin';
 import { cloudinaryConfigured, signUpload } from '@/lib/server/cloudinarySign';
 
 export const runtime = 'nodejs';
@@ -13,6 +13,9 @@ const FOLDERS = { products: 'wearadora/products', site: 'wearadora/site', review
  * Body: { folder: 'products' | 'site' | 'reviews' }
  */
 export async function POST(req: Request) {
+  if (adminSdkConfigProblem()) {
+    return NextResponse.json({ error: 'admin_sdk_not_configured' }, { status: 500 });
+  }
   if (!(await verifyAdminRequest(req))) {
     return NextResponse.json({ error: 'not_admin' }, { status: 403 });
   }

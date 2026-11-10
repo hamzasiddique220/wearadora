@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ADMIN_COOKIE, verifyAdminToken } from '@/lib/server/firebaseAdmin';
+import { ADMIN_COOKIE, adminSdkConfigProblem, verifyAdminToken } from '@/lib/server/firebaseAdmin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,6 +11,9 @@ export const dynamic = 'force-dynamic';
  * DELETE → clears the cookie (sign-out).
  */
 export async function POST(req: Request) {
+  if (adminSdkConfigProblem()) {
+    return NextResponse.json({ error: 'admin_sdk_not_configured' }, { status: 500 });
+  }
   let idToken: string | undefined;
   try {
     idToken = (await req.json())?.idToken;

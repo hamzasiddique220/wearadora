@@ -48,7 +48,8 @@ export const reviewService = {
    */
   subscribeForProduct: (
     productId: string,
-    callback: (reviews: Review[]) => void
+    callback: (reviews: Review[]) => void,
+    onError?: (error: Error) => void
   ): Unsubscribe => {
     // status=='approved' is REQUIRED by the Firestore rules (rules are not
     // filters — an unfiltered query is rejected outright). Two equality
@@ -58,14 +59,23 @@ export const reviewService = {
       where('productId', '==', productId),
       where('status', '==', 'approved')
     );
-    return onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs
-        .map((d) => ({ id: d.id, ...d.data() }) as Review)
-        .sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      callback(items);
-    });
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs
+          .map((d) => ({ id: d.id, ...d.data() }) as Review)
+          .sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        callback(items);
+      },
+      (error) => {
+        // e.g. failed-precondition (missing composite index) or
+        // permission-denied. Firestore's message includes the index link.
+        console.error(`[reviews] product ${productId} query failed:`, error.code || '', error.message);
+        onError?.(error);
+      }
+    );
   },
 
   /** All reviews across all products — admin management view. */

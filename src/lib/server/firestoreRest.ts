@@ -75,7 +75,19 @@ async function fetchJson<T>(
     try {
       const res = await fetch(url, { ...init, signal: controller.signal });
       clearTimeout(timer);
-      if (!res.ok) return null;
+      if (!res.ok) {
+        // 404 = "no such document", a normal outcome for lookups. Anything
+        // else (e.g. 400 FAILED_PRECONDITION "The query requires an index",
+        // 403 from the rules) is logged with Firestore's message — which
+        // for a missing index includes the console link to create it.
+        if (res.status !== 404) {
+          const body = await res.text().catch(() => '');
+          console.error(
+            `[firestoreRest] HTTP ${res.status} for ${new URL(url).pathname.split('/documents')[1] || url}: ${body.slice(0, 500)}`
+          );
+        }
+        return null;
+      }
       return (await res.json()) as T;
     } catch (err) {
       clearTimeout(timer);
@@ -222,7 +234,10 @@ export async function fetchProductReviewSummary(
         }),
       }
     );
-    const approved = (rows || [])
+    // null = the request failed (already logged by fetchJson) — return null
+    // so the page renders without a rating instead of claiming "0 reviews".
+    if (rows === null) return null;
+    const approved = rows
       .filter((r) => r.document?.fields)
       .map((r) => fromDocument<Review>(r.document!))
       .filter((r) => r.status === 'approved' && typeof r.rating === 'number');

@@ -21,21 +21,32 @@ export const useReviews = () => {
   return { reviews, loading };
 };
 
-/** Realtime, storefront-facing — every review for one product, any status
- *  (callers filter to `status === 'approved'` before rendering). */
+/** Realtime, storefront-facing — approved reviews for one product. */
 export const useProductReviews = (productId: string) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  /** true if the query failed (missing index, rules, network) — callers
+   *  hide the reviews UI instead of spinning forever. Already logged. */
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = reviewService.subscribeForProduct(productId, (items) => {
-      setReviews(items);
-      setLoading(false);
-    });
+    setFailed(false);
+    const unsubscribe = reviewService.subscribeForProduct(
+      productId,
+      (items) => {
+        setReviews(items);
+        setLoading(false);
+      },
+      () => {
+        setReviews([]);
+        setFailed(true);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [productId]);
 
-  return { reviews, loading };
+  return { reviews, loading, failed };
 };

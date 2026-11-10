@@ -53,7 +53,11 @@ export default function ProductDetail({
   const [qty, setQty] = useState(1);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  const { reviews: productReviews, loading: reviewsLoading } = useProductReviews(
+  const {
+    reviews: productReviews,
+    loading: reviewsLoading,
+    failed: reviewsFailed,
+  } = useProductReviews(
     product.id
   );
   const reviewSummary = useMemo(() => {
@@ -532,12 +536,17 @@ export default function ProductDetail({
           </div>
         </div>
 
-        <ProductReviews
-          productId={product.id}
-          productName={product.name}
-          reviews={productReviews}
-          loading={reviewsLoading}
-        />
+        {/* If the reviews query fails (e.g. a missing index) the error is
+            logged and the whole section is hidden — the product page itself
+            keeps working. */}
+        {!reviewsFailed && (
+          <ProductReviews
+            productId={product.id}
+            productName={product.name}
+            reviews={productReviews}
+            loading={reviewsLoading}
+          />
+        )}
 
         {relatedProducts.length > 0 && (
           <section className="mt-16 md:mt-24">

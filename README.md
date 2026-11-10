@@ -142,8 +142,11 @@ This needs Python 3 with Pillow (`pip install Pillow`). It writes a `.webp` next
 
 ```bash
 npm run test:rules                                 # emulator tests (needs Java)
+npx firebase deploy --only firestore:indexes       # composite indexes (firestore.indexes.json)
 npx firebase deploy --only firestore:rules         # add ,storage if Storage is enabled
 ```
+
+The emulator does NOT enforce composite indexes. Any new query that combines `where()` with another `where()` or with `orderBy()` on a different field needs an entry in `firestore.indexes.json`, deployed and showing **Enabled** (Firebase Console → Firestore → Indexes) before the code that uses it ships.
 
 `npm run backup:firestore` dumps every collection to `/backups` (gitignored; contains customer data).
 

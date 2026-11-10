@@ -27,6 +27,8 @@ interface FeaturedProductsProps {
   viewAllLabel?: string;
   limit?: number;
   theme?: 'light' | 'dark';
+  /** id on the section heading so it can be deep-linked (#footwear). */
+  headingId?: string;
 }
 
 export default function FeaturedProducts({
@@ -40,6 +42,7 @@ export default function FeaturedProducts({
   viewAllLabel = 'View All',
   limit = 8,
   theme = 'light',
+  headingId,
 }: FeaturedProductsProps) {
   const [selected, setSelected] = useState<Product | null>(null);
 
@@ -70,9 +73,8 @@ export default function FeaturedProducts({
                   {eyebrow}
                 </span>
                 <h2
-                  className={`font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 leading-tight ${
-                    isDark ? '' : ''
-                  }`}
+                  id={headingId}
+                  className="scroll-mt-28 font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 leading-tight"
                 >
                   {title}
                 </h2>

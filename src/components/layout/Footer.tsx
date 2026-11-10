@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
-import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
+import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE, DELIVERY_TEXT } from '@/lib/constants';
 import { JEWELRY_CATEGORY_DEFS } from '@/lib/categories';
 import { useSiteSettingsData } from '@/lib/stores/data';
 import { trackContact } from '@/lib/analytics';
@@ -132,8 +132,18 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
               </Link>
             </li>
             <li>
+              <Link href="/contact" className="hover:text-bronze">
+                Contact Us
+              </Link>
+            </li>
+            <li>
               <Link href="/privacy" className="hover:text-bronze">
                 Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-bronze">
+                Terms &amp; Conditions
               </Link>
             </li>
           </ul>
@@ -147,7 +157,7 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
             <li className="flex items-center gap-2">
               <Phone size={14} />
               <a
-                href={`tel:+92${STORE_CONFIG.whatsappNumber.slice(2)}`}
+                href={`tel:${CONTACT_PHONE.e164}`}
                 className="hover:text-bronze"
               >
                 {STORE_CONFIG.phoneDisplay}
@@ -160,7 +170,7 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
               <MapPin size={14} /> {STORE_CONFIG.location}
             </li>
             <li className="text-xs text-stone/80 pt-1 leading-relaxed">
-              Delivery in {STORE_CONFIG.deliveryDays} · FREE on orders Rs{' '}
+              Delivery {DELIVERY_TEXT.summary} · FREE on orders Rs{' '}
               {STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')}+,
               otherwise Rs. {STORE_CONFIG.deliveryFee} · 7-day exchange &amp;
               refund

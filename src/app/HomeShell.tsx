@@ -1,8 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useVisibleProductsData } from '@/lib/stores/data';
 import Hero from '@/components/home/Hero';
+import HomeIntro from '@/components/home/HomeIntro';
+import { getFootwearSizeRange } from '@/lib/sizeRange';
 import type { Product } from '@/types';
 
 // Below-fold sections are dynamic-imported so the initial JS payload only
@@ -13,6 +16,7 @@ const CategoriesGrid = dynamic(() => import('@/components/home/CategoriesGrid'))
 const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'));
 const StorySection = dynamic(() => import('@/components/home/StorySection'));
 const Testimonials = dynamic(() => import('@/components/home/Testimonials'));
+const HomeFaq = dynamic(() => import('@/components/home/HomeFaq'));
 
 interface HomeShellProps {
   /**
@@ -42,8 +46,11 @@ export default function HomeShell({
     ? initialJewelryEnabled
     : storeJewelryEnabled;
 
+  const sizeRange = useMemo(() => getFootwearSizeRange(products), [products]);
+
   return (
     <>
+      <HomeIntro jewelryEnabled={jewelryEnabled} />
       <Hero />
       <StatsBar />
       <CategoriesGrid />
@@ -58,6 +65,7 @@ export default function HomeShell({
         viewAllHref="/slippers"
         viewAllLabel="Shop Ladies Shoes"
         limit={8}
+        headingId="footwear"
       />
 
       {jewelryEnabled && (
@@ -66,17 +74,19 @@ export default function HomeShell({
           loading={loading}
           productType="jewelry"
           eyebrow="✦ Jewelry Collection"
-          title="Handcrafted Jewelry"
-          description="Timeless pieces crafted for those who appreciate refined elegance and heritage craftsmanship."
+          title="Handcrafted American Diamond Jewelry"
+          description="Handcrafted American diamond jewelry in polished gold-, silver- and rose-tone finishes."
           viewAllHref="/jewelry"
           viewAllLabel="Shop Jewellery"
           limit={8}
           theme="dark"
+          headingId="jewelry"
         />
       )}
 
       <StorySection />
       <Testimonials />
+      <HomeFaq jewelryEnabled={jewelryEnabled} sizeRange={sizeRange} />
     </>
   );
 }

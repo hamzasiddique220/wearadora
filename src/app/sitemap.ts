@@ -51,7 +51,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/shipping`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/return-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
     { url: `${base}/faq`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
     { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    // TODO: add `${base}/terms` here once the real Terms text replaces the
+    // placeholder and its `robots: noindex` is removed (a noindexed URL in the
+    // sitemap is a Search Console error).
     { url: `${base}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
   ];
 

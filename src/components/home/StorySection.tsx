@@ -19,7 +19,7 @@ export default function StorySection() {
           <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
             ✦ Our Story
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 mb-4 md:mb-6 leading-tight">
+          <h2 id="story" className="scroll-mt-28 font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 mb-4 md:mb-6 leading-tight">
             Crafted with{' '}
             <span className="font-italic-serif text-bronze">passion</span>, worn with
             pride

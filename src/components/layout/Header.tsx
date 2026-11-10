@@ -144,7 +144,10 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
                 alt={STORE_CONFIG.name}
                 width={2600}
                 height={760}
-                priority
+                // Eager (above the fold) but NOT priority — priority preloads it
+                // with fetchpriority=high, competing with the hero LCP image.
+                loading="eager"
+                sizes="(min-width: 768px) 330px, (min-width: 640px) 220px, 140px"
                 className="h-10 sm:h-16 md:h-24 w-auto object-contain"
               />
             </Link>

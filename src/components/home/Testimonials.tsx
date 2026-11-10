@@ -49,7 +49,7 @@ export default function Testimonials() {
         <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
           ✦ Customer Reviews
         </span>
-        <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 mb-4 md:mb-5 leading-tight">
+        <h2 id="reviews" className="scroll-mt-28 font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2 mb-4 md:mb-5 leading-tight">
           Loved by Customers Across Pakistan
         </h2>
         <div className="flex items-center justify-center gap-3 flex-wrap">

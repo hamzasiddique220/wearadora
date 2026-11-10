@@ -44,7 +44,7 @@ export default async function AboutPage() {
     {
       icon: <MapPin size={22} />,
       title: 'Made in Karachi',
-      desc: `Our workshop and branch are both in Karachi, Pakistan — shipping nationwide in ${STORE_CONFIG.deliveryDays}.`,
+      desc: 'Our workshop and warehouse are in Karachi; we sell online only and deliver across Pakistan.',
     },
   ];
 

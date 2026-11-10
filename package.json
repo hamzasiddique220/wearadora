@@ -6,7 +6,8 @@
     "dev": "cross-env NODE_OPTIONS=--dns-result-order=ipv4first next dev",
     "build": "cross-env NODE_OPTIONS=--dns-result-order=ipv4first next build",
     "start": "cross-env NODE_OPTIONS=--dns-result-order=ipv4first next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "convert:images": "python3 scripts/convert-images-webp.py"
   },
   "dependencies": {
     "firebase": "^10.14.1",

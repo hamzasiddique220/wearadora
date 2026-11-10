@@ -83,7 +83,7 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 
 # Business config (already set, user can change)
-NEXT_PUBLIC_WHATSAPP_NUMBER=923112032415
+# WhatsApp/phone number is no longer an env var — it lives in CONTACT_PHONE (src/lib/constants.ts)
 NEXT_PUBLIC_STORE_NAME=WEARADORA
 NEXT_PUBLIC_STORE_TAGLINE=Adorned in Artistry
 NEXT_PUBLIC_ADMIN_PASSWORD=wearRUHAAFIDAZ321!@#

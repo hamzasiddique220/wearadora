@@ -218,7 +218,9 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-serif text-[32px] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-3 md:mb-6">
+          {/* H2, not H1 — the page H1 is the brand heading in HomeIntro;
+              this is the featured product/slide title. */}
+          <h2 className="font-serif text-[32px] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] font-light mb-3 md:mb-6">
             {slide.title}{' '}
             <span className="font-italic-serif text-bronze">{slide.italic}</span>
             {slide.tail && (
@@ -227,7 +229,7 @@ export default function Hero() {
                 {slide.tail}
               </>
             )}
-          </h1>
+          </h2>
 
           <p
             className={`text-[13px] sm:text-base md:text-lg leading-relaxed mb-5 md:mb-10 max-w-lg line-clamp-3 md:line-clamp-4 ${

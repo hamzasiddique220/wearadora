@@ -36,7 +36,7 @@ export default function CategoriesGrid() {
             <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze">
               ✦ Explore
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2">
+            <h2 id="categories" className="scroll-mt-28 font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-2">
               Shop by Category
             </h2>
           </div>

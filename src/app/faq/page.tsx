@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { STORE_CONFIG } from '@/lib/constants';
+import { STORE_CONFIG, CONTACT_PHONE, DELIVERY_TEXT } from '@/lib/constants';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
@@ -45,7 +45,7 @@ const faqs: Faq[] = [
   },
   {
     q: 'How much does delivery cost across Pakistan?',
-    a: `Delivery is FREE on orders of Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and above. For smaller orders, a flat delivery charge of Rs ${STORE_CONFIG.deliveryFee} applies. Estimated delivery time is ${STORE_CONFIG.deliveryDays} nationwide.`,
+    a: `Delivery is FREE on orders of Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and above. For smaller orders, a flat delivery charge of Rs ${STORE_CONFIG.deliveryFee} applies. Estimated delivery time is ${DELIVERY_TEXT.summary}.`,
   },
   {
     q: 'Do you offer Cash on Delivery (COD)?',
@@ -69,7 +69,7 @@ const faqs: Faq[] = [
   },
   {
     q: 'How can I contact you?',
-    a: `You can reach us on WhatsApp at ${STORE_CONFIG.phoneDisplay} or email ${STORE_CONFIG.email}. Our team usually replies within a few hours during business days.`,
+    a: `Call or WhatsApp us on ${CONTACT_PHONE.display} (${CONTACT_PHONE.international}), available 24/7, or email ${STORE_CONFIG.email}.`,
   },
 ];
 

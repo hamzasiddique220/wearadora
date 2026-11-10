@@ -1,4 +1,4 @@
-import { STORE_CONFIG } from '@/lib/constants';
+import { STORE_CONFIG, DELIVERY_TEXT } from '@/lib/constants';
 import { buildFaqPageSchema } from '@/lib/schema';
 import type { CategoryFaq } from '@/lib/categories';
 import type { Product } from '@/types';
@@ -46,7 +46,7 @@ export default function ProductFaq({ product, isJewelry }: ProductFaqProps) {
 
   faqs.push({
     question: 'What are the delivery charges and timeline?',
-    answer: `Free delivery on orders over Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')}; otherwise a flat Rs ${STORE_CONFIG.deliveryFee} charge applies. Estimated delivery is ${STORE_CONFIG.deliveryDays} nationwide, with cash on delivery available.`,
+    answer: `Free delivery on orders over Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')}; otherwise a flat Rs ${STORE_CONFIG.deliveryFee} charge applies. Estimated delivery is ${DELIVERY_TEXT.summary}, with cash on delivery available.`,
   });
   faqs.push({
     question: 'Can I return or exchange this item?',

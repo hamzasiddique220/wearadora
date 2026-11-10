@@ -1,73 +1,131 @@
-import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
+import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE } from '@/lib/constants';
+import type { PriceRange } from '@/lib/priceRange';
 
-export default function OrganizationJsonLd() {
-  const orgId = `${STORE_CONFIG.siteUrl}/#organization`;
+interface OrganizationJsonLdProps {
+  jewelryEnabled: boolean;
+  /** Live min/max from the catalog — see getPriceRange(). */
+  priceRange: PriceRange | null;
+}
+
+export default function OrganizationJsonLd({
+  jewelryEnabled,
+  priceRange,
+}: OrganizationJsonLdProps) {
+  const base = STORE_CONFIG.siteUrl;
+  const orgId = `${base}/#organization`;
   const address = {
     '@type': 'PostalAddress',
     addressLocality: 'Karachi',
     addressRegion: 'Sindh',
     addressCountry: 'PK',
   } as const;
+  const areaServed = { '@type': 'Country', name: 'Pakistan' } as const;
 
   const sameAs = [
     SOCIAL_LINKS.instagram,
     SOCIAL_LINKS.facebook,
     SOCIAL_LINKS.tiktok,
+    `https://wa.me/${CONTACT_PHONE.digits}`,
   ];
 
+  // Both are handcrafted; the jewelry is American diamond (artificial).
+  const description = jewelryEnabled
+    ? 'Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi, and handcrafted American diamond (artificial) jewelry. Cash on delivery and nationwide delivery across Pakistan.'
+    : 'Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi. Cash on delivery and nationwide delivery across Pakistan.';
+
   // Organization = brand-level entity. The @id lets other schema (Product,
-  // Article, LocalBusiness) reference the same entity across pages so AI
-  // and Google merge the signals into one knowledge-graph entry.
+  // Article) reference the same entity across pages so AI and Google merge
+  // the signals into one knowledge-graph entry.
   const organization = {
-    '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': orgId,
-    // Proper brand name for Google's Knowledge Graph / SERP site name.
     name: STORE_CONFIG.name,
     slogan: STORE_CONFIG.tagline,
-    description:
-      'Pakistani online store offering handcrafted artificial jewellery (American diamond / zircon necklace sets, bridal chokers, earrings, bracelets) and ladies footwear, based in Karachi.',
-    url: STORE_CONFIG.siteUrl,
-    logo: `${STORE_CONFIG.siteUrl}/wearadora-profile-cream.png`,
-    image: `${STORE_CONFIG.siteUrl}/opengraph-image`,
+    description,
+    url: base,
+    logo: `${base}/wearadora-profile-cream.png`,
+    image: `${base}/opengraph-image`,
     email: STORE_CONFIG.email,
     address,
+    areaServed,
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      telephone: `+${STORE_CONFIG.whatsappNumber}`,
+      telephone: CONTACT_PHONE.dashed,
+      email: STORE_CONFIG.email,
       areaServed: 'PK',
-      availableLanguage: ['English', 'Urdu'],
+      availableLanguage: ['en', 'ur'],
+      // Calls + WhatsApp, 24/7.
+      hoursAvailable: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'https://schema.org/Monday',
+          'https://schema.org/Tuesday',
+          'https://schema.org/Wednesday',
+          'https://schema.org/Thursday',
+          'https://schema.org/Friday',
+          'https://schema.org/Saturday',
+          'https://schema.org/Sunday',
+        ],
+        opens: '00:00',
+        closes: '23:59',
+      },
     },
     sameAs,
   };
 
-  // Store schema (subclass of LocalBusiness) — surfaces Wear Adora for
-  // "jewellery store in Pakistan / Karachi" style questions in AI answers
-  // and Google's local pack.
+  // OnlineStore (schema.org: OnlineStore → OnlineBusiness → Organization).
+  // Not Store/LocalBusiness — there is no walk-in shop. LocalBusiness-only
+  // properties (priceRange, paymentAccepted, currenciesAccepted) aren't valid
+  // here, so the live price range is expressed as an AggregateOffer instead.
   const store = {
-    '@context': 'https://schema.org',
-    '@type': 'Store',
-    '@id': `${STORE_CONFIG.siteUrl}/#store`,
+    '@type': 'OnlineStore',
+    '@id': `${base}/#store`,
     name: STORE_CONFIG.name,
-    description:
-      'Affordable artificial jewellery (American diamond / zircon) and handcrafted ladies footwear, shipping nationwide across Pakistan.',
-    url: STORE_CONFIG.siteUrl,
-    telephone: `+${STORE_CONFIG.whatsappNumber}`,
+    description,
+    url: base,
+    telephone: CONTACT_PHONE.e164,
     email: STORE_CONFIG.email,
-    image: `${STORE_CONFIG.siteUrl}/opengraph-image`,
+    image: `${base}/opengraph-image`,
+    logo: `${base}/wearadora-profile-cream.png`,
     address,
-    areaServed: { '@type': 'Country', name: 'Pakistan' },
-    priceRange: 'Rs. 499 – Rs. 3,999',
-    paymentAccepted: 'Cash on Delivery, Bank Transfer, Easypaisa, JazzCash',
-    currenciesAccepted: 'PKR',
+    areaServed,
     parentOrganization: { '@id': orgId },
     sameAs,
+    ...(priceRange
+      ? {
+          makesOffer: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'PKR',
+            lowPrice: priceRange.min,
+            highPrice: priceRange.max,
+            offerCount: priceRange.count,
+            areaServed,
+            acceptedPaymentMethod: [
+              'Cash on Delivery',
+              'Bank Transfer',
+              'Easypaisa',
+              'JazzCash',
+            ].map((name) => ({ '@type': 'PaymentMethod', name })),
+          },
+        }
+      : {}),
+  };
+
+  // No SearchAction: site search is a client-side overlay with no
+  // crawlable ?q= results URL for Google to call.
+  const website = {
+    '@type': 'WebSite',
+    '@id': `${base}/#website`,
+    name: STORE_CONFIG.name,
+    url: base,
+    inLanguage: 'en-PK',
+    publisher: { '@id': orgId },
   };
 
   const graph = {
     '@context': 'https://schema.org',
-    '@graph': [organization, store],
+    '@graph': [organization, store, website],
   };
 
   return (

@@ -17,7 +17,8 @@ import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd';
 import Analytics from '@/components/analytics/Analytics';
 import StorageHydrator from '@/components/StorageHydrator';
 import { STORE_CONFIG, SOCIAL_LINKS } from '@/lib/constants';
-import { fetchSiteSettings } from '@/lib/server/firestoreRest';
+import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
+import { getPriceRange, visibleProducts } from '@/lib/priceRange';
 
 // Only the weights actually used on first paint are preloaded — fewer
 // font files = much smaller LCP. Other weights are inlined via system
@@ -69,13 +70,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSiteSettings();
   const jewelryEnabled = settings?.jewelryEnabled === true;
 
+  // Both footwear and jewelry are handcrafted; jewelry is American diamond.
   const headline = jewelryEnabled
-    ? 'Handcrafted Shoes & Jewelry'
+    ? 'Handcrafted Shoes & American Diamond Jewelry'
     : 'Handcrafted Ladies Footwear';
+  const defaultTitle = jewelryEnabled
+    ? `${STORE_CONFIG.name} | ${headline}`
+    : `${STORE_CONFIG.name} — ${headline} in Pakistan`;
 
   const description = jewelryEnabled
-    ? `Wear Adora — handcrafted ladies footwear and jewelry, made in Karachi. Slides, heels, sandals and jewelry sets, cash on delivery, free delivery on Rs 4,500+.`
-    : `Wear Adora — 40+ years of handcrafted ladies footwear. Slides, heels and sandals made in Karachi. Free delivery on orders Rs 4,500+, nationwide in ${STORE_CONFIG.deliveryDays}.`;
+    ? `Wear Adora — handcrafted heels, sandals and slides made in Karachi, and handcrafted American diamond jewelry. Cash on delivery across Pakistan, free delivery on Rs 4,500+.`
+    : `Wear Adora — 40+ years of handcrafted ladies footwear. Heels, sandals and slides made in Karachi. Cash on delivery across Pakistan, free delivery on Rs 4,500+.`;
 
   const baseKeywords = [
     'wearadora',
@@ -99,13 +104,13 @@ export async function generateMetadata(): Promise<Metadata> {
     : baseKeywords;
 
   const twitterDescription = jewelryEnabled
-    ? 'Handcrafted ladies shoes and jewelry. 40+ years of artisan experience.'
+    ? 'Handcrafted ladies shoes (40+ years of craft) and handcrafted American diamond jewelry.'
     : 'Handcrafted ladies shoes. 40+ years of artisan experience.';
 
   return {
     metadataBase: new URL(STORE_CONFIG.siteUrl),
     title: {
-      default: `${STORE_CONFIG.name} — ${headline} in Pakistan`,
+      default: defaultTitle,
       template: `%s | ${STORE_CONFIG.name}`,
     },
     description,
@@ -188,8 +193,14 @@ export default async function RootLayout({
   // Fetched on the server so nav/footer can render the correct set of
   // links in the initial HTML — otherwise the /jewelry link only appears
   // after client-side store hydration, which loses SEO + first-paint UX.
-  const settings = await fetchSiteSettings();
+  // fetchAllProducts is a cached fetch (revalidate 600), deduped with the
+  // page's own call — used only for the schema's live price range.
+  const [settings, products] = await Promise.all([
+    fetchSiteSettings(),
+    fetchAllProducts(),
+  ]);
   const initialJewelryEnabled = settings?.jewelryEnabled === true;
+  const priceRange = getPriceRange(visibleProducts(products, initialJewelryEnabled));
 
   return (
     <html
@@ -207,13 +218,24 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
       </head>
       <body>
-        <OrganizationJsonLd />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-charcoal focus:text-cream focus:px-4 focus:py-2 focus:text-sm"
+        >
+          Skip to content
+        </a>
+        <OrganizationJsonLd
+          jewelryEnabled={initialJewelryEnabled}
+          priceRange={priceRange}
+        />
         <Analytics />
         <StorageHydrator />
         <ScrollProgress />
         <AnnouncementBar />
         <Header initialJewelryEnabled={initialJewelryEnabled} />
-        <main className="min-h-screen">{children}</main>
+        <main id="main-content" tabIndex={-1} className="min-h-screen focus:outline-none">
+          {children}
+        </main>
         <Footer initialJewelryEnabled={initialJewelryEnabled} />
         <Toast />
         <WhatsAppFloat />

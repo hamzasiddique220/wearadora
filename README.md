@@ -111,6 +111,16 @@ npm run build
 npm start
 ```
 
+## Images in /public (WebP)
+
+Local images in `/public` are served as WebP. After adding or replacing a PNG/JPG there, run:
+
+```bash
+npm run convert:images
+```
+
+This needs Python 3 with Pillow (`pip install Pillow`). It writes a `.webp` next to each image (originals are kept), caps the size (wordmarks at 1300px, everything else at 1600px on the long edge), and regenerates `src/lib/localWebp.json`. The image loader (`src/lib/cloudinaryLoader.ts`) only swaps to the `.webp` for paths listed in that file, so an image you haven't converted yet still loads from the original. Cloudinary images don't need this; the loader already adds `f_auto,q_auto`.
+
 ## Admin Access
 
 - **URL:** `/admin/login`

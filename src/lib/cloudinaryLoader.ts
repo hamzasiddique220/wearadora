@@ -7,9 +7,14 @@
  * 2 worker threads, no reliable `sharp`) that optimizer is the bottleneck that
  * makes images load slowly — this offloads all of it to Cloudinary's CDN.
  *
- * Non-Cloudinary URLs (local /public assets, Firebase, Unsplash) are returned
- * untouched so they load directly without going through the slow optimizer.
+ * Non-Cloudinary URLs (local /public assets, Firebase, Unsplash) skip the slow
+ * optimizer. Local PNG/JPGs that have a pre-generated .webp sibling (listed in
+ * localWebp.json by scripts/convert-images-webp.py) are swapped to the WebP.
  */
+import localWebp from './localWebp.json';
+
+const LOCAL_WEBP = new Set<string>(localWebp);
+
 interface LoaderArgs {
   src: string;
   width: number;
@@ -27,7 +32,11 @@ export default function cloudinaryLoader({
     // distinct URL (silences `next-image-missing-loader-width`). Hash is
     // stripped by the browser before the network request, so the underlying
     // file/asset still resolves the same and caching isn't duplicated.
-    return `${src}#w=${width}`;
+    const path = src.split(/[?#]/)[0];
+    const resolved = LOCAL_WEBP.has(path)
+      ? path.replace(/\.(png|jpe?g)$/i, '.webp')
+      : src;
+    return `${resolved}#w=${width}`;
   }
 
   const q = quality ?? 'auto';

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Truck, RefreshCw, Mail, Phone, MapPin } from 'lucide-react';
-import { STORE_CONFIG } from '@/lib/constants';
+import { STORE_CONFIG, CONTACT_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Shipping & Returns | Wear Adora',
@@ -15,19 +15,19 @@ export default function ShippingPage() {
     {
       icon: <MapPin size={22} />,
       city: 'Karachi',
-      cod: '4–5 working days',
-      urgent: '1 working day (with online payment)',
+      cod: DELIVERY_TEXT.karachi,
+      urgent: `${DELIVERY_TIMES.urgent.karachi} working day (with online payment)`,
     },
     {
       icon: <MapPin size={22} />,
       city: 'Punjab',
-      cod: '6–7 working days',
-      urgent: '2 working days (with online payment)',
+      cod: DELIVERY_TEXT.restOfPakistan,
+      urgent: `${DELIVERY_TIMES.urgent.punjab} working days (with online payment)`,
     },
     {
       icon: <MapPin size={22} />,
       city: 'KPK & Baluchistan',
-      cod: '6–7 working days',
+      cod: DELIVERY_TEXT.restOfPakistan,
       urgent: null,
     },
   ];
@@ -154,7 +154,7 @@ export default function ShippingPage() {
       <div className="mt-10 text-center text-sm text-mocha">
         Karachi-based · Free delivery on orders Rs 4,500+ · WhatsApp orders on{' '}
         <Link
-          href={`tel:+92${STORE_CONFIG.whatsappNumber.slice(2)}`}
+          href={`tel:${CONTACT_PHONE.e164}`}
           className="text-bronze hover:text-charcoal"
         >
           {STORE_CONFIG.phoneDisplay}

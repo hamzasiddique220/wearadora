@@ -1,5 +1,5 @@
 import type { Product } from '@/types';
-import { STORE_CONFIG } from '@/lib/constants';
+import { STORE_CONFIG, DELIVERY_TIMES } from '@/lib/constants';
 import { productHandle } from '@/lib/utils';
 
 interface ProductJsonLdProps {
@@ -25,8 +25,10 @@ export default function ProductJsonLd({ product, reviewSummary }: ProductJsonLdP
 
   // Shipping + return policy in the offer are what qualify a product for
   // Google's free Shopping listings. Values mirror the on-site policy:
-  // Rs 250 flat delivery nationwide (free over Rs 4,500), 4–5 day transit,
-  // 7-day returns with the customer covering return postage.
+  // Rs 250 flat delivery nationwide (free over Rs 4,500), 7-day returns with
+  // the customer covering return postage. Transit spans Karachi (4–5 working
+  // days) to the rest of Pakistan (6–7) — one nationwide range, because
+  // DefinedRegion can't target a city (addressRegion is a province code).
   const shippingDetails = {
     '@type': 'OfferShippingDetails',
     shippingRate: {
@@ -48,8 +50,8 @@ export default function ProductJsonLd({ product, reviewSummary }: ProductJsonLdP
       },
       transitTime: {
         '@type': 'QuantitativeValue',
-        minValue: 4,
-        maxValue: 5,
+        minValue: DELIVERY_TIMES.karachi.min,
+        maxValue: DELIVERY_TIMES.restOfPakistan.max,
         unitCode: 'DAY',
       },
     },

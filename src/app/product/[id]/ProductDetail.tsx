@@ -322,11 +322,19 @@ export default function ProductDetail({
                   <label className="text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase text-mocha">
                     Select Size
                   </label>
-                  {selectedSize && (
-                    <span className="text-xs text-charcoal">
-                      Size {selectedSize}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-3">
+                    {selectedSize && (
+                      <span className="text-xs text-charcoal">
+                        Size {selectedSize}
+                      </span>
+                    )}
+                    <Link
+                      href="/#faq"
+                      className="text-[11px] text-mocha underline underline-offset-4 hover:text-bronze"
+                    >
+                      Size guide
+                    </Link>
+                  </div>
                 </div>
                 {availableSizes.length === 0 ? (
                   <p className="text-xs text-mocha italic">

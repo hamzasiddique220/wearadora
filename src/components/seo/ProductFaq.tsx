@@ -21,7 +21,7 @@ export default function ProductFaq({ product, isJewelry }: ProductFaqProps) {
     faqs.push({
       question: 'Is this real gold or artificial?',
       answer:
-        'This is artificial (fashion) jewelry with a polished gold-, silver- or rose-tone finish over a base metal — not solid gold.',
+        'This is artificial (fashion) jewellery with a polished gold-, silver- or rose-tone finish over a base metal — not solid gold.',
     });
     if (product.material === 'Zircon') {
       faqs.push({
@@ -39,7 +39,7 @@ export default function ProductFaq({ product, isJewelry }: ProductFaqProps) {
     if (String(product.category) === 'Bridal') {
       faqs.push({
         question: 'Is this suitable for bridal wear?',
-        answer: `Yes — ${product.name} is from our bridal jewelry collection, designed for weddings and bridal occasions.`,
+        answer: `Yes — ${product.name} is from our bridal jewellery collection, designed for weddings and bridal occasions.`,
       });
     }
   }

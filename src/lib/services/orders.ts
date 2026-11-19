@@ -17,7 +17,7 @@ const COLLECTION = 'orders';
 /**
  * Recursively strip `undefined` values from an object/array before sending
  * to Firestore — addDoc rejects undefined and crashes the checkout. Common
- * source: jewelry products lack `sizes`/`colors`/`selectedSize`/etc., and
+ * source: jewellery products lack `sizes`/`colors`/`selectedSize`/etc., and
  * optional customer fields like `notes`/`mapLink`.
  */
 function stripUndefined<T>(value: T): T {

@@ -43,12 +43,12 @@ export default function CartPage() {
         <h2 className="font-serif text-2xl sm:text-3xl mb-3">Your bag is empty</h2>
         <p className="text-mocha mb-8 text-sm md:text-base">Start adding treasures to your collection</p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Link href="/slippers" className="btn-primary inline-block">
+          <Link href="/shoes" className="btn-primary inline-block">
             Shop Shoes
           </Link>
           {jewelryEnabled && (
             <Link href="/jewelry" className="btn-outline inline-block">
-              Shop Jewelry
+              Shop Jewellery
             </Link>
           )}
         </div>

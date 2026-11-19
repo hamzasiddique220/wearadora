@@ -1,10 +1,10 @@
 export type ProductType = 'jewelry' | 'slippers';
 
 /**
- * Jewelry material, set explicitly per product — never inferred from name or
+ * Jewellery material, set explicitly per product — never inferred from name or
  * appearance. Drives the "is this real gold / is this zircon" answer in
  * ProductFaq and the material claims allowed in SEO copy/keywords for that
- * product. Unset means only the generic "artificial/fashion jewelry, gold-tone
+ * product. Unset means only the generic "artificial/fashion jewellery, gold-tone
  * finish" claim is safe to make.
  */
 export type ProductMaterial = 'Artificial' | 'Zircon' | 'Crystal';
@@ -47,7 +47,7 @@ export interface Product {
   variantStock?: Record<string, number>;
   isNew?: boolean;
   tag?: string;
-  /** Jewelry only. See ProductMaterial — unset/null if not confirmed. */
+  /** Jewellery only. See ProductMaterial — unset/null if not confirmed. */
   material?: ProductMaterial | null;
   createdAt: string;
 }
@@ -137,13 +137,27 @@ export interface CategoryHeroOverride {
   kind?: 'photo' | 'product';
 }
 
+/**
+ * A real, time-boxed sale. The announcement bar only mentions a sale when
+ * this is set with active: true and (if given) endsAt is still in the future.
+ * Edit in Firestore → siteSettings/main → sale (no admin UI yet).
+ */
+export interface SiteSale {
+  active?: boolean;
+  /** Shown as-is, e.g. "Eid sale: 20% off bridal sets". Keep it short. */
+  text?: string;
+  /** ISO date-time; the sale message disappears after this. */
+  endsAt?: string;
+}
+
 export interface SiteSettings {
   heroSlides?: HeroSlideOverride[];
   categoryImages?: Record<string, string>;
   storyImage?: string;
   jewelryHero?: CategoryHeroOverride;
   slippersHero?: CategoryHeroOverride;
-  /** Master switch — when false, all jewelry pages, links, and products are hidden from the public site. */
+  /** Master switch — when false, all jewellery pages, links, and products are hidden from the public site. */
   jewelryEnabled?: boolean;
+  sale?: SiteSale;
   updatedAt?: string;
 }

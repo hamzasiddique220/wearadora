@@ -40,9 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           })),
         ]
       : []),
-    { url: `${base}/slippers`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${base}/shoes`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     ...SLIPPERS_CATEGORY_DEFS.map((d) => ({
-      url: `${base}/slippers/${d.slug}`,
+      url: `${base}/shoes/${d.slug}`,
       lastModified: now,
       changeFrequency: 'weekly' as const,
       priority: 0.85,

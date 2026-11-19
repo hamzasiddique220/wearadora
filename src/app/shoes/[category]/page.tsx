@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const settings = await fetchSiteSettings();
   const image = settings?.categoryImages?.[def.category] || DEFAULT_CATEGORY_IMAGES[def.category];
-  return buildCategoryMetadata(def, { image, basePath: '/slippers' });
+  return buildCategoryMetadata(def, { image, basePath: '/shoes' });
 }
 
 export default async function SlippersCategoryPage({ params, searchParams }: PageProps) {
@@ -79,7 +79,7 @@ export default async function SlippersCategoryPage({ params, searchParams }: Pag
   const collectionSchema = buildCollectionPageSchema({
     name: def.h1,
     description: def.metaDescription,
-    url: `${STORE_CONFIG.siteUrl}/slippers/${def.slug}`,
+    url: `${STORE_CONFIG.siteUrl}/shoes/${def.slug}`,
     products: categoryProducts,
   });
 
@@ -97,7 +97,7 @@ export default async function SlippersCategoryPage({ params, searchParams }: Pag
       />
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
         <Breadcrumbs
-          items={[{ label: 'Shoes', href: '/slippers' }, { label: def.plural }]}
+          items={[{ label: 'Shoes', href: '/shoes' }, { label: def.plural }]}
         />
       </div>
       <CategoryBanner def={def} image={bannerImage} eyebrow="✦ The Footwear Collection" />
@@ -105,15 +105,15 @@ export default async function SlippersCategoryPage({ params, searchParams }: Pag
         products={pagedProducts}
         currentPage={currentPage}
         totalPages={totalPages}
-        basePath={`/slippers/${def.slug}`}
+        basePath={`/shoes/${def.slug}`}
         emptyMessage={`No ${def.plural.toLowerCase()} in stock right now — check back soon or browse the full footwear collection.`}
       />
       <CategoryDescription def={def} />
       <CategoryFAQ def={def} products={categoryProducts} />
       <CategoryNavigation
         others={relatedSlippersCategoryDefs(def.slug)}
-        basePath="/slippers"
-        viewAll={{ href: '/slippers', label: 'View All Footwear' }}
+        basePath="/shoes"
+        viewAll={{ href: '/shoes', label: 'View All Footwear' }}
       />
     </>
   );

@@ -55,8 +55,8 @@ export default function TermsPage() {
         // stated anywhere on the site.
         <p>
           We sell handcrafted ladies footwear (heels, sandals and slides) and
-          handcrafted American diamond jewelry. Our jewelry is artificial
-          (fashion) jewelry with a gold-, silver- or rose-tone finish over a
+          handcrafted American diamond jewellery. Our jewellery is artificial
+          (fashion) jewellery with a gold-, silver- or rose-tone finish over a
           base metal; it is not solid gold and the stones are not real
           diamonds. Shoes use standard Pakistani/UK sizes and fit true to size.
         </p>

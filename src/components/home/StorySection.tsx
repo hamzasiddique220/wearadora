@@ -26,7 +26,7 @@ export default function StorySection() {
           </h2>
           <p className="text-stone leading-relaxed mb-5 md:mb-6 text-[13px] sm:text-sm md:text-base">
             {jewelryEnabled
-              ? 'Every piece at Wear Adora is born from the hands of skilled artisans who pour their soul into every detail. From delicate jewelry that whispers stories of heritage to handcrafted footwear that embraces every step, we celebrate the beauty of artistry.'
+              ? 'Every piece at Wear Adora is born from the hands of skilled artisans who pour their soul into every detail. From delicate jewellery that whispers stories of heritage to handcrafted footwear that embraces every step, we celebrate the beauty of artistry.'
               : 'Every pair at Wear Adora is born from the hands of skilled artisans who pour their soul into every stitch and last. From the cushioned footbed to the final embellishment, each step is shaped by four decades of cobbler craft — built to look effortless and feel like home.'}
           </p>
           <Link

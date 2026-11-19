@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData } from '@/lib/stores/data';
+import { STORE_CONFIG } from '@/lib/constants';
+import { jewelryCategoryHref } from '@/lib/categories';
 import type { Product } from '@/types';
 
 interface JewelryClientProps {
   /** Server-fetched flag — used until the client store hydrates. */
   initialJewelryEnabled?: boolean;
-  /** Pre-filtered jewelry products fetched on the server for SSR grid. */
+  /** Pre-filtered jewellery products fetched on the server for SSR grid. */
   initialProducts?: Product[];
 }
 
@@ -32,14 +34,14 @@ export default function JewelryClient({
           ✦ Coming Soon
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light mt-3 mb-4">
-          Our jewelry collection is{' '}
+          Our jewellery collection is{' '}
           <span className="font-italic-serif text-bronze">on its way</span>
         </h1>
         <p className="text-mocha leading-relaxed mb-8 text-sm md:text-base">
-          We&rsquo;re putting the final touches on a handcrafted jewelry line.
+          We&rsquo;re putting the final touches on a handcrafted jewellery line.
           In the meantime, explore our signature footwear collection.
         </p>
-        <Link href="/slippers" className="btn-primary inline-flex items-center gap-2">
+        <Link href="/shoes" className="btn-primary inline-flex items-center gap-2">
           <ArrowLeft size={14} /> Shop Footwear
         </Link>
       </div>
@@ -53,7 +55,10 @@ export default function JewelryClient({
       title="Artificial Jewellery Online in Pakistan"
       heroImage={settings.jewelryHero.image}
       heroKind={settings.jewelryHero.kind}
-      description="Shop the best artificial jewellery online in Pakistan — premium necklace sets, bridal chokers, earrings, bracelets and rings that sparkle like the real thing. Free delivery over Rs. 4,500, cash on delivery nationwide across Pakistan."
+      description={`Handcrafted American diamond necklace sets, bridal chokers, earrings, bracelets and rings. Free delivery from Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and cash on delivery nationwide.`}
+      cta={{ label: 'Shop Necklace Sets', href: jewelryCategoryHref('Necklace') }}
+      searchPlaceholder="Search necklaces, earrings, rings…"
+      itemNoun="jewellery"
       initialProducts={initialProducts}
     />
   );

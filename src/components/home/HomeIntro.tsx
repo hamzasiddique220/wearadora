@@ -10,7 +10,9 @@ interface HomeIntroProps {
  * than whichever featured product happens to be on the first slide.
  */
 export default function HomeIntro({ jewelryEnabled }: HomeIntroProps) {
+  // No-break space keeps "Rs 4,500" together (never a lone "4,500." line).
   const free = STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK');
+  const freeRs = `Rs\u00A0${free}`;
 
   return (
     <section
@@ -19,26 +21,30 @@ export default function HomeIntro({ jewelryEnabled }: HomeIntroProps) {
     >
       <h1
         id="home-heading"
-        className="font-serif text-2xl sm:text-3xl md:text-4xl font-light leading-tight max-w-3xl mx-auto"
+        // text-balance evens out the lines (no single orphan word). Fallback
+        // for browsers without text-wrap: balance: the last two words are
+        // joined with a no-break space, so the shortest possible last line is
+        // "in Pakistan", never a lone "Pakistan".
+        className="font-serif text-2xl sm:text-3xl md:text-4xl font-light leading-tight max-w-3xl mx-auto text-balance"
       >
         {jewelryEnabled ? (
           <>
             Handcrafted Footwear &amp;{' '}
-            <span className="font-italic-serif text-bronze">American Diamond Jewelry</span>{' '}
-            in Pakistan
+            <span className="font-italic-serif text-bronze">American Diamond Jewellery</span>{' '}
+            in{'\u00A0'}Pakistan
           </>
         ) : (
           <>
             Handcrafted{' '}
             <span className="font-italic-serif text-bronze">Heels, Sandals &amp; Slides</span>{' '}
-            in Pakistan
+            in{'\u00A0'}Pakistan
           </>
         )}
       </h1>
-      <p className="text-mocha text-[13px] sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto mt-3 md:mt-4">
+      <p className="text-mocha text-[13px] sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto mt-3 md:mt-4 text-pretty">
         {jewelryEnabled
-          ? `${STORE_CONFIG.name} is a Karachi-based online store for handcrafted women's footwear and jewelry. Our heels, sandals and slides are handcrafted in Karachi with 40+ years of shoemaking behind them, alongside handcrafted American diamond jewelry. Pay cash on delivery anywhere in Pakistan, with free delivery on orders of Rs ${free} and above.`
-          : `${STORE_CONFIG.name} is a Karachi-based online store for women's footwear. Our heels, sandals and slides are handcrafted in Karachi, backed by 40+ years of shoemaking, and delivered across Pakistan. Pay cash on delivery anywhere in the country, with free delivery on orders of Rs ${free} and above.`}
+          ? `${STORE_CONFIG.name} is an online store for handcrafted heels, sandals and slides, made in our Karachi workshop with 40+ years of shoemaking experience, and handcrafted American diamond jewellery. Pay cash on delivery nationwide, with free delivery on orders from ${freeRs}.`
+          : `${STORE_CONFIG.name} is an online store for handcrafted heels, sandals and slides, made in our Karachi workshop with 40+ years of shoemaking experience and delivered across Pakistan. Pay cash on delivery nationwide, with free delivery on orders from ${freeRs}.`}
       </p>
     </section>
   );

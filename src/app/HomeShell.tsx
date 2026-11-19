@@ -62,7 +62,7 @@ export default function HomeShell({
         eyebrow="✦ Signature Footwear"
         title="Slides & Heels"
         description="Handcrafted footwear with embellished detailing — where contemporary design meets lasting comfort."
-        viewAllHref="/slippers"
+        viewAllHref="/shoes"
         viewAllLabel="Shop Ladies Shoes"
         limit={8}
         headingId="footwear"
@@ -73,9 +73,9 @@ export default function HomeShell({
           products={products}
           loading={loading}
           productType="jewelry"
-          eyebrow="✦ Jewelry Collection"
-          title="Handcrafted American Diamond Jewelry"
-          description="Handcrafted American diamond jewelry in polished gold-, silver- and rose-tone finishes."
+          eyebrow="✦ Jewellery Collection"
+          title="Handcrafted American Diamond Jewellery"
+          description="Handcrafted American diamond jewellery in polished gold-, silver- and rose-tone finishes."
           viewAllHref="/jewelry"
           viewAllLabel="Shop Jewellery"
           limit={8}

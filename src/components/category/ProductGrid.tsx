@@ -33,7 +33,7 @@ export default function ProductGrid({
 
   if (products.length === 0) {
     return (
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 pt-5 md:pt-6 pb-8 md:pb-12">
         <EmptyState message={emptyMessage} />
       </div>
     );
@@ -42,7 +42,7 @@ export default function ProductGrid({
   const pageHref = (page: number) => (page <= 1 ? basePath : `${basePath}?page=${page}`);
 
   return (
-    <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
+    <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 pt-5 md:pt-6 pb-8 md:pb-12">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4">
         {products.map((p, i) => (
           <ProductCard
@@ -50,7 +50,8 @@ export default function ProductGrid({
             product={p}
             onClick={() => setSelected(p)}
             delay={i * 0.03}
-            priority={currentPage === 1 && i < 4}
+            // The banner image is the page's only `priority` image (LCP).
+            priority={false}
           />
         ))}
       </div>

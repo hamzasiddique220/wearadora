@@ -12,7 +12,7 @@ export default async function ShopPage() {
     fetchSiteSettings(),
   ]);
 
-  // /shop shows the merged catalog; hide jewelry unless the admin toggle
+  // /shop shows the merged catalog; hide jewellery unless the admin toggle
   // is on (matches the store's `useVisibleProductsData` filter).
   const visibleProducts = settings?.jewelryEnabled
     ? products

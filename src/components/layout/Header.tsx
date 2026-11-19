@@ -85,12 +85,14 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/slippers', label: 'Shoes' },
+    { href: '/shoes', label: 'Shoes' },
     ...(jewelryEnabled
       ? [
           {
+            // Short label keeps the nav on one line from 768px up; the SEO
+            // phrase "artificial jewellery" lives in the /jewelry H1.
             href: '/jewelry',
-            label: 'Artificial Jewellery',
+            label: 'Jewellery',
           },
         ]
       : []),
@@ -98,7 +100,7 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
     { href: '/about', label: 'About' },
   ];
 
-  // Real links to the canonical /jewelry/[category] & /slippers/[category]
+  // Real links to the canonical /jewelry/[category] & /shoes/[category]
   // SEO pages — not /shop?category=, which a crawler never sees since these
   // used to render as onClick buttons rather than <Link>s.
   const quickLinks = [
@@ -123,11 +125,12 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
   return (
     <>
       <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-stone">
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 grid grid-cols-[auto_1fr_auto] md:grid-cols-3 items-center gap-2 sm:gap-4">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 py-3 md:py-4 grid grid-cols-[auto_1fr_auto] lg:grid-cols-3 items-center gap-2 sm:gap-4">
           {/* LEFT — menu toggle (mobile) + brand logo */}
           <div className="flex items-center gap-2 sm:gap-3 justify-self-start min-w-0">
             <button
-              className="md:hidden p-1 -ml-1 shrink-0"
+              // Hamburger up to 1023px; the full nav only fits on one line from 1024px.
+              className="lg:hidden p-1 -ml-1 shrink-0"
               onClick={() => setMobileMenu(!mobileMenu)}
               aria-label="Toggle menu"
             >
@@ -136,32 +139,42 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
 
             <Link
               href="/"
-              className="flex items-center min-w-0 shrink-0"
+              className="flex flex-col items-center min-w-0 shrink-0"
               aria-label={`${STORE_CONFIG.name} — ${STORE_CONFIG.tagline}`}
             >
+              {/* Wordmark without the baked-in tagline (it was ~4px tall
+                  when scaled down); the tagline is real text below. Fixed
+                  heights on both → no layout shift. */}
               <Image
-                src="/wearadora-wordmark-dark.png"
+                src="/wearadora-wordmark-dark-notag.png"
                 alt={STORE_CONFIG.name}
-                width={2600}
-                height={760}
+                width={1446}
+                height={372}
                 // Eager (above the fold) but NOT priority — priority preloads it
                 // with fetchpriority=high, competing with the hero LCP image.
                 loading="eager"
-                sizes="(min-width: 768px) 330px, (min-width: 640px) 220px, 140px"
-                className="h-10 sm:h-16 md:h-24 w-auto object-contain"
+                sizes="(min-width: 768px) 210px, (min-width: 640px) 170px, 124px"
+                className="h-8 sm:h-11 md:h-[54px] w-auto object-contain"
               />
+              <span
+                aria-hidden="true"
+                className="hidden sm:block font-tagline text-[10px] md:text-[11px] leading-[14px] tracking-[0.32em] uppercase text-bronze-ink mt-1 whitespace-nowrap"
+              >
+                {STORE_CONFIG.tagline}
+              </span>
             </Link>
           </div>
 
           {/* CENTER — primary navigation */}
-          <nav className="hide-mobile justify-self-center flex gap-8 text-xs tracking-[0.15em] uppercase">
+          <nav className="hidden lg:flex justify-self-center gap-8 text-xs tracking-[0.15em] uppercase">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'hover:text-bronze transition-colors relative py-1',
-                  pathname === link.href &&
+                  'hover:text-bronze transition-colors relative py-1 whitespace-nowrap',
+                  (pathname === link.href ||
+                    (link.href !== '/' && pathname?.startsWith(link.href + '/'))) &&
                     'text-bronze after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-bronze'
                 )}
               >
@@ -223,7 +236,7 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
         </div>
 
         {mobileMenu && (
-          <div className="md:hidden bg-cream border-t border-stone py-4 px-6 space-y-3">
+          <div className="lg:hidden bg-cream border-t border-stone py-4 px-6 space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -231,7 +244,8 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
                 onClick={() => setMobileMenu(false)}
                 className={cn(
                   'block text-xs tracking-[0.2em] uppercase py-2 border-b border-stone',
-                  pathname === link.href && 'text-bronze'
+                  (pathname === link.href ||
+                    (link.href !== '/' && pathname?.startsWith(link.href + '/'))) && 'text-bronze'
                 )}
               >
                 {link.label}
@@ -258,7 +272,7 @@ export default function Header({ initialJewelryEnabled = false }: HeaderProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={jewelryEnabled ? 'Search jewelry, shoes...' : 'Search shoes...'}
+                placeholder={jewelryEnabled ? 'Search jewellery, shoes...' : 'Search shoes...'}
                 className="flex-1 bg-transparent outline-none text-base md:text-lg font-serif"
               />
               <button

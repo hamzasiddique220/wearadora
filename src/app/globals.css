@@ -224,7 +224,9 @@ select:focus {
   scrollbar-width: none;
 }
 
-@media (max-width: 768px) {
+/* 767px, not 768px: the hamburger is `md:hidden` (≥768px), so at exactly
+   768px both the nav and the menu button used to be hidden. */
+@media (max-width: 767px) {
   .hide-mobile {
     display: none !important;
   }

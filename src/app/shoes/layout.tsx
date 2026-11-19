@@ -25,12 +25,12 @@ export const metadata: Metadata = {
     'khussa online Pakistan',
     'handmade shoes Karachi',
   ],
-  alternates: { canonical: '/slippers' },
+  alternates: { canonical: '/shoes' },
   openGraph: {
     title: `Ladies Shoes Online in Pakistan | ${STORE_CONFIG.name}`,
     description:
       'Handcrafted heels, slides, sandals and flats made in Karachi. Cash on delivery nationwide, free delivery over Rs. 4,500, 7-day exchange.',
-    url: `${STORE_CONFIG.siteUrl}/slippers`,
+    url: `${STORE_CONFIG.siteUrl}/shoes`,
     type: 'website',
   },
 };

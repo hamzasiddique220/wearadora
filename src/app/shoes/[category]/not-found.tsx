@@ -23,14 +23,14 @@ export default function CategoryNotFound() {
         {SLIPPERS_CATEGORY_DEFS.map((d) => (
           <Link
             key={d.slug}
-            href={`/slippers/${d.slug}`}
+            href={`/shoes/${d.slug}`}
             className="px-4 py-2 text-[10px] tracking-[0.2em] uppercase border border-stone hover:border-charcoal transition-colors"
           >
             {d.plural}
           </Link>
         ))}
       </div>
-      <Link href="/slippers" className="btn-primary inline-flex items-center gap-2">
+      <Link href="/shoes" className="btn-primary inline-flex items-center gap-2">
         <ArrowLeft size={14} /> View All Footwear
       </Link>
     </div>

@@ -4,7 +4,7 @@ import { SLIPPERS_CATEGORY_DEFS } from '@/lib/footwearCategories';
 import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
 import { formatPriceRange, getPriceRange, visibleProducts } from '@/lib/priceRange';
 
-// Generated (not a static /public file) so the price range and jewelry
+// Generated (not a static /public file) so the price range and jewellery
 // section always match the live catalog and the Organization schema.
 export const revalidate = 3600;
 
@@ -20,7 +20,7 @@ export async function GET() {
   const link = (label: string, path: string) => `- [${label}](${base}${path})`;
 
   const summary = jewelryEnabled
-    ? `Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi with 40+ years of shoemaking experience, and handcrafted American diamond (artificial) jewelry. Cash on delivery, nationwide delivery across Pakistan.`
+    ? `Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi with 40+ years of shoemaking experience, and handcrafted American diamond (artificial) jewellery. Cash on delivery, nationwide delivery across Pakistan.`
     : `Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi with 40+ years of shoemaking experience. Cash on delivery, nationwide delivery across Pakistan.`;
 
   const lines = [
@@ -38,7 +38,7 @@ export async function GET() {
     '- **Ladies footwear (handcrafted in Karachi)**: heels, sandals and slides.',
     ...(jewelryEnabled
       ? [
-          '- **Handcrafted American diamond (artificial) jewelry**: necklace sets, bridal sets, earrings, rings, bangles/bracelets and anklets, in gold-tone, silver-tone or rose-tone finishes over base metal. Not real gold and not real diamonds.',
+          '- **Handcrafted American diamond (artificial) jewellery**: necklace sets, bridal sets, earrings, rings, bangles/bracelets and anklets, in gold-tone, silver-tone or rose-tone finishes over base metal. Not real gold and not real diamonds.',
         ]
       : []),
     ...(range ? [`- Price range: ${formatPriceRange(range)} (PKR, live catalog)`] : []),
@@ -52,11 +52,11 @@ export async function GET() {
     '- Ordering: website checkout (confirmed by call/WhatsApp before shipping) or directly on WhatsApp.',
     '',
     '## Categories',
-    link('Shoes / footwear', '/slippers'),
-    ...SLIPPERS_CATEGORY_DEFS.map((d) => link(d.plural, `/slippers/${d.slug}`)),
+    link('Shoes / footwear', '/shoes'),
+    ...SLIPPERS_CATEGORY_DEFS.map((d) => link(d.plural, `/shoes/${d.slug}`)),
     ...(jewelryEnabled
       ? [
-          link('Jewelry', '/jewelry'),
+          link('Jewellery', '/jewelry'),
           ...JEWELRY_CATEGORY_DEFS.map((d) => link(d.plural, `/jewelry/${d.slug}`)),
         ]
       : []),

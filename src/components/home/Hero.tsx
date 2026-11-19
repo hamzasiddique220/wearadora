@@ -7,7 +7,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useVisibleProductsData, useSiteSettingsData } from '@/lib/stores/data';
 import { getProductType } from '@/lib/constants';
 import { jewelryCategoryHref } from '@/lib/categories';
-import { slippersCategoryHref } from '@/lib/footwearCategories';
+import { canonicalHref, slippersCategoryHref } from '@/lib/footwearCategories';
 import { productHandle } from '@/lib/utils';
 import {
   JEWELRY_BG,
@@ -40,8 +40,9 @@ function overrideToSlide(o: HeroSlideOverride): Slide {
     italic: o.italic,
     tail: o.tail || '',
     description: o.description,
-    primary: { label: o.primaryLabel, href: o.primaryHref },
-    secondary: { label: o.secondaryLabel, href: o.secondaryHref },
+    // Slides saved in Firestore may still point at the old /slippers path.
+    primary: { label: o.primaryLabel, href: canonicalHref(o.primaryHref) },
+    secondary: { label: o.secondaryLabel, href: canonicalHref(o.secondaryHref) },
     kind: o.kind,
   };
 }

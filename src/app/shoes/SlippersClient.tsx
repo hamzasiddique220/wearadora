@@ -3,7 +3,8 @@
 import { useMemo } from 'react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData, useVisibleProductsData } from '@/lib/stores/data';
-import { getProductType } from '@/lib/constants';
+import { getProductType, STORE_CONFIG } from '@/lib/constants';
+import { slippersCategoryHref } from '@/lib/footwearCategories';
 import type { Product } from '@/types';
 
 interface SlippersClientProps {
@@ -34,12 +35,17 @@ export default function SlippersClient({
   return (
     <CategoryPage
       productType="slippers"
-      eyebrow="✦ 40+ Years of Craft"
+      // "40+ years" appears ONCE on this screen (in the paragraph) — the
+      // announcement bar no longer repeats it and the old chips are gone.
+      eyebrow="✦ The Footwear Collection"
       title="Ladies Shoes Online in Pakistan"
       heroImage={settings.slippersHero.image}
       heroImages={heroImages}
       heroKind={settings.slippersHero.kind}
-      description="Handcrafted heels, slides, sandals and flats — four decades of cobbling experience, made in Karachi. Cash on delivery nationwide, free delivery over Rs. 4,500."
+      description={`Heels, slides, sandals and flats, handcrafted in Karachi with 40+ years of shoemaking experience. Free delivery from Rs ${STORE_CONFIG.freeDeliveryMinTotal.toLocaleString('en-PK')} and cash on delivery nationwide.`}
+      cta={{ label: 'Shop Heels', href: slippersCategoryHref('Heels') }}
+      searchPlaceholder="Search heels, sandals, slides…"
+      itemNoun="shoes"
       initialProducts={initialProducts}
     />
   );

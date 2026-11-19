@@ -67,7 +67,7 @@ export function getHomeFaqs(
       id: 'faq-handcrafted',
       question: 'Are Wear Adora products handcrafted?',
       answer: jewelryEnabled
-        ? 'Yes. Every pair of heels, sandals and slides is handcrafted in our Karachi workshop, backed by 40+ years of shoemaking experience, and our American diamond jewelry is handcrafted too.'
+        ? 'Yes. Every pair of heels, sandals and slides is handcrafted in our Karachi workshop, backed by 40+ years of shoemaking experience, and our American diamond jewellery is handcrafted too.'
         : 'Yes. Every pair of heels, sandals and slides is handcrafted in our Karachi workshop, backed by 40+ years of shoemaking experience.',
     },
     {

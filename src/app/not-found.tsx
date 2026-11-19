@@ -8,8 +8,8 @@ export default async function NotFound() {
 
   const links = [
     { href: '/shop', label: 'Shop All' },
-    { href: '/slippers', label: 'Shoes' },
-    ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewelry' }] : []),
+    { href: '/shoes', label: 'Shoes' },
+    ...(jewelryEnabled ? [{ href: '/jewelry', label: 'Jewellery' }] : []),
     { href: '/blog', label: 'Journal' },
     { href: '/faq', label: 'FAQs' },
   ];

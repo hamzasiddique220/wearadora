@@ -70,7 +70,7 @@ export default function AdminSettingsPage() {
       tail: '',
       description: 'Describe this slide.',
       primaryLabel: 'Shop Now',
-      primaryHref: kind === 'jewel' ? '/jewelry' : '/slippers',
+      primaryHref: kind === 'jewel' ? '/jewelry' : '/shoes',
       secondaryLabel: 'View All',
       secondaryHref: '/shop',
       kind,
@@ -337,7 +337,7 @@ export default function AdminSettingsPage() {
                       updateSlide(idx, { primaryHref: e.target.value })
                     }
                     className="input-field text-sm font-mono"
-                    placeholder="/slippers"
+                    placeholder="/shoes"
                   />
                 </div>
                 <div>
@@ -425,7 +425,7 @@ export default function AdminSettingsPage() {
       <section className="bg-white border border-stone p-5 md:p-6 mb-6">
         <h2 className="font-serif text-2xl mb-1">Page Heroes</h2>
         <p className="text-[11px] text-mocha mb-4">
-          Banner images on /jewelry and /slippers pages.
+          Banner images on /jewelry and /shoes pages.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

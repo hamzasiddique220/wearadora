@@ -195,8 +195,8 @@ export default function ProductDetail({
     showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
   };
 
-  const collectionHref = isSlippers ? '/slippers' : '/jewelry';
-  const collectionLabel = isSlippers ? 'Shoes' : 'Jewelry';
+  const collectionHref = isSlippers ? '/shoes' : '/jewelry';
+  const collectionLabel = isSlippers ? 'Shoes' : 'Jewellery';
 
   return (
     <>

@@ -9,7 +9,7 @@ export interface PriceRange {
 }
 
 /**
- * Products a shopper can actually see — jewelry is hidden while the admin
+ * Products a shopper can actually see — jewellery is hidden while the admin
  * toggle is off. Same rule as the home page, sitemap and product pages.
  */
 export function visibleProducts(products: Product[], jewelryEnabled: boolean): Product[] {

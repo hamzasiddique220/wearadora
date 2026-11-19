@@ -52,12 +52,14 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
             aria-label={STORE_CONFIG.name}
             className="inline-block mb-2"
           >
+            {/* Wordmark only — the tagline is the real text just below
+                (the full PNG repeated it as tiny unreadable text). */}
             <Image
-              src="/wearadora-wordmark-light.png"
+              src="/wearadora-wordmark-light-notag.png"
               alt={STORE_CONFIG.name}
-              width={2600}
-              height={760}
-              className="h-14 sm:h-16 w-auto object-contain"
+              width={1446}
+              height={372}
+              className="h-10 sm:h-12 w-auto object-contain"
             />
           </Link>
           <div className="font-tagline text-[10px] tracking-[0.35em] sm:tracking-[0.4em] text-bronze uppercase mb-3 sm:mb-4">
@@ -65,7 +67,7 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
           </div>
           <p className="text-[13px] sm:text-sm text-stone leading-relaxed max-w-md">
             {jewelryEnabled
-              ? 'Curated jewelry and artisan footwear for those who appreciate timeless elegance.'
+              ? 'Curated jewellery and artisan footwear for those who appreciate timeless elegance.'
               : 'Artisan handcrafted footwear for those who appreciate timeless elegance.'}
           </p>
         </div>
@@ -81,17 +83,17 @@ export default function Footer({ initialJewelryEnabled = false }: FooterProps) {
               </Link>
             </li>
             <li>
-              <Link href="/slippers/slides" className="hover:text-bronze">
+              <Link href="/shoes/slides" className="hover:text-bronze">
                 Slides
               </Link>
             </li>
             <li>
-              <Link href="/slippers/heels" className="hover:text-bronze">
+              <Link href="/shoes/heels" className="hover:text-bronze">
                 Heels
               </Link>
             </li>
             <li>
-              <Link href="/slippers/sandals" className="hover:text-bronze">
+              <Link href="/shoes/sandals" className="hover:text-bronze">
                 Sandals
               </Link>
             </li>

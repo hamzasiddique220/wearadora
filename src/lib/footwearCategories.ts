@@ -189,14 +189,29 @@ export function getSlippersCategoryDef(slug: string): CategoryDef | undefined {
   return SLIPPERS_CATEGORY_DEFS.find((d) => d.slug === slug.toLowerCase());
 }
 
-/** Resolve a Product.category value (or alias, e.g. "khussa") to its canonical /slippers/[slug] URL. */
+/**
+ * Public URL base for the footwear collection. Moved from the old
+ * "slippers" path to /shoes — next.config.mjs 301s every old URL here in ONE hop. Code
+ * names (productType 'slippers', SLIPPERS_CATEGORY_DEFS, …) stay unchanged.
+ */
+export const SHOES_BASE = '/shoes';
+
+/** Resolve a Product.category value (or alias, e.g. "khussa") to its canonical /shoes/[slug] URL. */
 export function slippersCategoryHref(categoryName?: string): string {
   const normalized = normalizeCategory(categoryName);
   const def = SLIPPERS_CATEGORY_DEFS.find((d) => d.category === normalized);
-  return def ? `/slippers/${def.slug}` : '/slippers';
+  return def ? `${SHOES_BASE}/${def.slug}` : SHOES_BASE;
 }
 
-/** Other category pages to cross-link from a given /slippers/[category] page. */
+/**
+ * Rewrite a legacy "slippers"-path link (e.g. hero-slide hrefs stored in Firestore
+ * siteSettings) to /shoes, so internal links never go through a redirect.
+ */
+export function canonicalHref(href: string): string {
+  return href.replace(/^\/slippers(?=\/|\?|#|$)/, SHOES_BASE);
+}
+
+/** Other category pages to cross-link from a given /shoes/[category] page. */
 export function relatedSlippersCategoryDefs(slug: string): CategoryDef[] {
   return SLIPPERS_CATEGORY_DEFS.filter((d) => d.slug !== slug);
 }

@@ -57,7 +57,7 @@ export async function generateMetadata({
 
   // Product titles stay product-specific — the "{Category} Online in
   // Pakistan" head term is owned by the category page (/jewelry/[category],
-  // /slippers/[category]) so every SKU in a category doesn't compete with its
+  // /shoes/[category]) so every SKU in a category doesn't compete with its
   // own parent page and every other product in it for the same phrase. Only
   // append the category when the product name doesn't already say it.
   const categorySuffix = product.name
@@ -183,8 +183,8 @@ export default async function ProductPage({ params }: PageProps) {
     )
     .slice(0, 4);
 
-  const categoryLabel = productType === 'jewelry' ? 'Jewelry' : 'Shoes';
-  const categoryHref = productType === 'jewelry' ? '/jewelry' : '/slippers';
+  const categoryLabel = productType === 'jewelry' ? 'Jewellery' : 'Shoes';
+  const categoryHref = productType === 'jewelry' ? '/jewelry' : '/shoes';
   const subcategoryHref =
     productType === 'jewelry'
       ? jewelryCategoryHref(product.category as string)

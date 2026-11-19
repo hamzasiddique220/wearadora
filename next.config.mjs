@@ -55,7 +55,7 @@ const nextConfig = {
     ].map(({ value, slug }) => ({
       source: '/jewelry',
       has: [{ type: 'query', key: 'category', value }],
-      destination: `/jewelry/${slug}`,
+      destination: `${SITE_URL}/jewelry/${slug}`,
       permanent: true,
     }));
 
@@ -68,26 +68,30 @@ const nextConfig = {
     ].map(({ value, slug }) => ({
       source: '/slippers',
       has: [{ type: 'query', key: 'category', value }],
-      destination: `/slippers/${slug}`,
+      destination: `${SITE_URL}/shoes/${slug}`,
       permanent: true,
     }));
 
+    // The footwear collection moved from /slippers to /shoes. These run
+    // BEFORE the www rule and use ABSOLUTE apex destinations, so every old
+    // URL (apex or www, with or without ?category=) reaches its final /shoes
+    // URL in exactly one 308 — no redirect chains.
+    const shoesMoveRedirects = [
+      ...slippersCategoryRedirects,
+      { source: '/slippers', destination: `${SITE_URL}/shoes`, permanent: true },
+      { source: '/slippers/:path+', destination: `${SITE_URL}/shoes/:path+`, permanent: true },
+    ];
+
     return [
-      // Force the www subdomain onto the canonical apex domain — serving both
-      // as 200s creates duplicate content in Google's eyes and splits ranking
-      // signals between the two hosts.
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: WWW_HOST }],
-        destination: `${SITE_URL}/:path*`,
-        permanent: true,
-      },
+      // Specific moves first, all with absolute apex destinations (one hop
+      // even when requested on www).
+      ...shoesMoveRedirects,
       {
         // Retired the "American Diamond" collection page. Permanently redirect
         // its old URL to the general jewellery landing so any indexed links or
         // bookmarks don't 404 and search equity carries over to /jewelry.
         source: '/collections/american-diamond-jewellery',
-        destination: '/jewelry',
+        destination: `${SITE_URL}/jewelry`,
         permanent: true,
       },
       // "Bangles" and "Bracelets" are the same catalog category — one
@@ -95,12 +99,20 @@ const nextConfig = {
       // targeting identical products.
       {
         source: '/jewelry/bracelets',
-        destination: '/jewelry/bangles',
+        destination: `${SITE_URL}/jewelry/bangles`,
         permanent: true,
       },
       // Old ?category= filter links now have dedicated SEO pages.
       ...jewelryCategoryRedirects,
-      ...slippersCategoryRedirects,
+      // Force the www subdomain onto the canonical apex domain — serving both
+      // as 200s creates duplicate content in Google's eyes and splits ranking
+      // signals between the two hosts. LAST, so the rules above win first.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: WWW_HOST }],
+        destination: `${SITE_URL}/:path*`,
+        permanent: true,
+      },
     ];
   },
   async headers() {

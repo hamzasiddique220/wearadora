@@ -12,6 +12,9 @@ const config: Config = {
         cream: '#f5f1ea',
         sand: '#e8ddc7',
         bronze: '#8b6f47',
+        // Darker bronze for SMALL text on cream: 5.3:1 (plain bronze is 4.2:1,
+        // below WCAG AA's 4.5:1 for body-size text).
+        'bronze-ink': '#7a5f3a',
         charcoal: '#1a1614',
         mocha: '#5a4e42',
         stone: '#d4c9b8',

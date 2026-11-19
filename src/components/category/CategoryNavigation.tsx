@@ -5,7 +5,7 @@ import type { CategoryDef } from '@/lib/categories';
 interface CategoryNavigationProps {
   /** Other category pages in this vertical to cross-link to. */
   others: CategoryDef[];
-  /** Base path for each category link, e.g. '/jewelry' or '/slippers'. */
+  /** Base path for each category link, e.g. '/jewelry' or '/shoes'. */
   basePath: string;
   /** Link back to the parent listing page, e.g. { href: '/jewelry', label: 'View All Jewellery' }. */
   viewAll: { href: string; label: string };

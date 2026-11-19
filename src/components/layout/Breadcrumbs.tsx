@@ -41,12 +41,14 @@ export default function Breadcrumbs({ items, className = '' }: BreadcrumbsProps)
         <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 min-w-0">
           {all.map((c, i) => {
             const isLast = i === all.length - 1;
-            // Nav items (Home, Jewelry, Shoes) get the high-fashion uppercase
-            // treatment; the current page (often a long product name) stays
-            // sentence-case so it wraps cleanly on narrow screens.
+            // One consistent style (the design system's uppercase tracked
+            // label) for every crumb; the current page is just darker. CSS
+            // uppercases it, so the text — and the BreadcrumbList schema name
+            // above — stays in normal case ("Jewellery").
+            const base = 'tracking-[0.2em] uppercase';
             const styling = isLast
-              ? 'text-charcoal max-w-full break-words'
-              : 'tracking-[0.2em] uppercase hover:text-bronze transition-colors';
+              ? `${base} text-charcoal max-w-full break-words`
+              : `${base} hover:text-bronze transition-colors`;
             return (
               <li key={`${c.label}-${i}`} className="flex items-center gap-1.5 min-w-0">
                 {c.href && !isLast ? (

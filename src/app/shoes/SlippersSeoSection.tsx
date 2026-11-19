@@ -7,7 +7,7 @@ interface SlippersSeoSectionProps {
 }
 
 /**
- * Server-rendered SEO/GEO block for /slippers: plain-text answer content plus
+ * Server-rendered SEO/GEO block for /shoes: plain-text answer content plus
  * ItemList + FAQPage JSON-LD. Rendered on the server so both search engines
  * and AI answer engines (which cite pages that answer questions in plain
  * text) see it in the initial HTML regardless of client hydration.

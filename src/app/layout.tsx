@@ -70,16 +70,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSiteSettings();
   const jewelryEnabled = settings?.jewelryEnabled === true;
 
-  // Both footwear and jewelry are handcrafted; jewelry is American diamond.
+  // Both footwear and jewellery are handcrafted; jewellery is American diamond.
   const headline = jewelryEnabled
-    ? 'Handcrafted Shoes & American Diamond Jewelry'
+    ? 'Handcrafted Shoes & American Diamond Jewellery'
     : 'Handcrafted Ladies Footwear';
   const defaultTitle = jewelryEnabled
     ? `${STORE_CONFIG.name} | ${headline}`
     : `${STORE_CONFIG.name} — ${headline} in Pakistan`;
 
   const description = jewelryEnabled
-    ? `Wear Adora — handcrafted heels, sandals and slides made in Karachi, and handcrafted American diamond jewelry. Cash on delivery across Pakistan, free delivery on Rs 4,500+.`
+    ? `Wear Adora — handcrafted heels, sandals and slides made in Karachi, and handcrafted American diamond jewellery. Cash on delivery across Pakistan, free delivery on Rs 4,500+.`
     : `Wear Adora — 40+ years of handcrafted ladies footwear. Heels, sandals and slides made in Karachi. Cash on delivery across Pakistan, free delivery on Rs 4,500+.`;
 
   const baseKeywords = [
@@ -104,7 +104,7 @@ export async function generateMetadata(): Promise<Metadata> {
     : baseKeywords;
 
   const twitterDescription = jewelryEnabled
-    ? 'Handcrafted ladies shoes (40+ years of craft) and handcrafted American diamond jewelry.'
+    ? 'Handcrafted ladies shoes (40+ years of craft) and handcrafted American diamond jewellery.'
     : 'Handcrafted ladies shoes. 40+ years of artisan experience.';
 
   return {
@@ -231,7 +231,7 @@ export default async function RootLayout({
         <Analytics />
         <StorageHydrator />
         <ScrollProgress />
-        <AnnouncementBar />
+        <AnnouncementBar sale={settings?.sale} />
         <Header initialJewelryEnabled={initialJewelryEnabled} />
         <main id="main-content" tabIndex={-1} className="min-h-screen focus:outline-none">
           {children}

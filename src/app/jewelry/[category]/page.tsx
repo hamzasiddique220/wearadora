@@ -103,7 +103,7 @@ export default async function JewelryCategoryPage({ params, searchParams }: Page
       />
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
         <Breadcrumbs
-          items={[{ label: 'Jewelry', href: '/jewelry' }, { label: def.plural }]}
+          items={[{ label: 'Jewellery', href: '/jewelry' }, { label: def.plural }]}
         />
       </div>
       <CategoryBanner def={def} image={bannerImage} eyebrow="✦ The Jewellery Collection" />

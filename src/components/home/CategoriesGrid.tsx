@@ -13,9 +13,9 @@ interface CategoryTile {
 }
 
 const CATEGORY_TILES: CategoryTile[] = [
-  { name: 'Slides', href: '/slippers/slides', kind: 'shoe' },
-  { name: 'Heels', href: '/slippers/heels', kind: 'shoe' },
-  { name: 'Sandal', href: '/slippers/sandals', kind: 'shoe' },
+  { name: 'Slides', href: '/shoes/slides', kind: 'shoe' },
+  { name: 'Heels', href: '/shoes/heels', kind: 'shoe' },
+  { name: 'Sandal', href: '/shoes/sandals', kind: 'shoe' },
   { name: 'Necklace', href: '/jewelry/necklace', kind: 'jewel' },
   { name: 'Ring', href: '/jewelry/rings', kind: 'jewel' },
   { name: 'Earring', href: '/jewelry/earrings', kind: 'jewel' },

@@ -14,10 +14,11 @@ import {
   SLIPPERS_CATEGORIES,
 } from '@/lib/constants';
 import { jewelryCategoryHref } from '@/lib/categories';
-import { slippersCategoryHref } from '@/lib/footwearCategories';
+import { SHOES_BASE, slippersCategoryHref } from '@/lib/footwearCategories';
 import ProductCard from '@/components/shop/ProductCard';
 import EmptyState from '@/components/ui/EmptyState';
 import Loading from '@/components/ui/Loading';
+import CategoryHero, { type HeroCta } from '@/components/category/CategoryHero';
 
 const ProductModal = dynamic(() => import('@/components/shop/ProductModal'), {
   ssr: false,
@@ -29,10 +30,16 @@ interface CategoryPageProps {
   title: string;
   heroImage: string;
   description: string;
-  /** 'photo' = background-cover editorial image, 'product' = centered transparent PNG on cream */
+  /** 'photo' = editorial crop, 'product' = cut-out PNG on cream */
   heroKind?: 'photo' | 'product';
   /** Optional list of additional images to cycle through as a slideshow. */
   heroImages?: string[];
+  /** One real primary CTA in the hero. */
+  cta?: HeroCta;
+  /** Short, specific placeholder — never the SEO H1. */
+  searchPlaceholder: string;
+  /** Plural noun for the empty state, e.g. "jewellery", "shoes". */
+  itemNoun: string;
   /**
    * Server-fetched products used to render the grid in the initial HTML.
    * Once the client-side store finishes loading its own copy, we switch to
@@ -49,6 +56,9 @@ function CategoryContent({
   description,
   heroKind = 'photo',
   heroImages,
+  cta,
+  searchPlaceholder,
+  itemNoun,
   initialProducts,
 }: CategoryPageProps) {
   const { products: storeProducts, loading: storeLoading } = useProductsData();
@@ -84,6 +94,8 @@ function CategoryContent({
 
   useEffect(() => {
     if (slideshow.length <= 1) return;
+    // Respect reduced-motion: no auto-advance, arrows/dots still work.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const t = setInterval(() => {
       setHeroIndex((c) => (c + 1) % slideshow.length);
     }, 4500);
@@ -126,203 +138,154 @@ function CategoryContent({
     });
   }, [products, selectedCategory, deferredQuery, productType]);
 
-  return (
+  const isProductShot = heroKind === 'product';
+
+  const media = (
     <>
-      {heroKind === 'product' ? (
-        <section
-          className="relative overflow-hidden grain"
-          style={{
-            background:
-              'linear-gradient(135deg, #f5f1ea 0%, #e8ddc7 55%, #d4c9b8 100%)',
-          }}
-        >
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-16 grid md:grid-cols-[1fr_1fr] gap-6 md:gap-8 items-center">
-            <div>
-              <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-3 inline-block">
-                {eyebrow}
-              </span>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-light leading-[1.05]">
-                {title}
-              </h1>
-              <p className="text-mocha mt-3 md:mt-4 max-w-xl text-[13px] sm:text-sm md:text-base leading-relaxed">
-                {description}
-              </p>
-              <div className="mt-4 md:mt-5 flex flex-wrap gap-2 text-[9px] sm:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">
-                <span className="bg-charcoal text-cream px-2.5 md:px-3 py-1.5">
-                  40+ Yrs Craft
-                </span>
-                <span className="border border-bronze text-bronze px-2.5 md:px-3 py-1.5">
-                  Handmade
-                </span>
-                <span className="border border-charcoal/40 px-2.5 md:px-3 py-1.5">
-                  Comfort + Design
-                </span>
-              </div>
-            </div>
-            <div className="relative aspect-[4/3] flex items-center justify-center">
-              <div
-                className="absolute inset-0 rounded-full blur-3xl opacity-60 float-3d"
-                style={{
-                  background:
-                    'radial-gradient(circle at center, rgba(139,111,71,0.55) 0%, transparent 65%)',
-                }}
-              />
-              <div className="relative w-full h-full max-h-[40vh] md:max-h-[55vh] float-3d scale-110">
-                {slideshow.map((src, i) => (
-                  <Image
-                    key={src}
-                    src={src}
-                    alt={title}
-                    fill
-                    priority={i === 0}
-                    fetchPriority={i === 0 ? 'high' : 'auto'}
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                    className={`object-contain drop-shadow-[0_30px_60px_rgba(26,22,20,0.35)] transition-opacity duration-[900ms] ease-in-out ${
-                      i === heroIndex ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          {slideshow.length > 1 && (
-            <>
-              <button
-                onClick={() =>
-                  setHeroIndex((c) => (c - 1 + slideshow.length) % slideshow.length)
-                }
-                aria-label="Previous slide"
-                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={() => setHeroIndex((c) => (c + 1) % slideshow.length)}
-                aria-label="Next slide"
-                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-white/80 hover:bg-white backdrop-blur items-center justify-center shadow transition"
-              >
-                <ChevronRight size={18} />
-              </button>
-              <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
-                {slideshow.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setHeroIndex(i)}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={`h-[3px] w-8 bg-charcoal origin-center transition-[transform,opacity] duration-300 ${
-                      i === heroIndex
-                        ? 'scale-x-100 opacity-100'
-                        : 'scale-x-[0.6] opacity-30 hover:opacity-60'
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </section>
-      ) : (
-        <section className="relative h-[36vh] sm:h-[42vh] md:h-[50vh] overflow-hidden grain">
-          {slideshow.map((src, i) => (
-            <Image
-              key={src}
-              src={src}
-              alt={title}
-              fill
-              priority={i === 0}
-              fetchPriority={i === 0 ? 'high' : 'auto'}
-              sizes="100vw"
-              className={`object-cover transition-opacity duration-[900ms] ease-in-out ${
-                i === heroIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/20 via-charcoal/30 to-cream" />
-          <div className="relative h-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 flex flex-col items-center justify-center text-center">
-            <span className="text-[10px] tracking-[0.35em] md:tracking-[0.4em] uppercase text-bronze mb-2 md:mb-3">
-              {eyebrow}
-            </span>
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl font-light text-white drop-shadow">
-              {title}
-            </h1>
-            <p className="text-white/90 mt-3 md:mt-4 max-w-xl text-[13px] sm:text-sm md:text-base px-2">
-              {description}
-            </p>
-          </div>
-          {slideshow.length > 1 && (
-            <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      {slideshow.map((src, i) => {
+        // Render only the previous (fading out), visible and next (preloaded)
+        // slides. The shoes slideshow can hold ~90 product images — rendering
+        // all of them made the browser download every one.
+        const n = slideshow.length;
+        const near = [heroIndex, (heroIndex + 1) % n, (heroIndex - 1 + n) % n];
+        if (!near.includes(i)) return null;
+        return (
+        <Image
+          key={src}
+          src={src}
+          alt={i === 0 ? title : ''}
+          fill
+          // Only the first (LCP) image is prioritised.
+          priority={i === 0}
+          fetchPriority={i === 0 ? 'high' : 'auto'}
+          sizes="(min-width: 768px) 58vw, 100vw"
+          className={`transition-opacity duration-[900ms] ease-in-out ${
+            isProductShot
+              ? 'object-contain p-5 md:p-8 drop-shadow-[0_24px_40px_rgba(26,22,20,0.28)]'
+              : 'object-cover object-center'
+          } ${i === heroIndex ? 'opacity-100' : 'opacity-0'}`}
+        />
+        );
+      })}
+      {slideshow.length > 1 && (
+        // Controls live INSIDE the image panel, next to the content — not at
+        // the far edges of the viewport.
+        <div className="absolute bottom-3 right-3 md:bottom-5 md:right-5 z-10 flex items-center gap-2">
+          {slideshow.length <= 8 ? (
+            <div className="hidden sm:flex items-center gap-1.5 mr-2">
               {slideshow.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setHeroIndex(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={`h-[3px] w-8 bg-cream origin-center transition-[transform,opacity] duration-300 ${
-                    i === heroIndex
-                      ? 'scale-x-100 opacity-100'
-                      : 'scale-x-[0.6] opacity-40 hover:opacity-70'
+                  aria-label={`Show image ${i + 1}`}
+                  aria-current={i === heroIndex}
+                  className={`h-[3px] w-6 bg-charcoal transition-opacity ${
+                    i === heroIndex ? 'opacity-100' : 'opacity-30 hover:opacity-60'
                   }`}
                 />
               ))}
             </div>
+          ) : (
+            // Many slides (e.g. every product's slide image): a counter
+            // instead of a long row of dashes across the photo.
+            <span className="mr-1 px-2.5 h-9 inline-flex items-center bg-cream/90 text-charcoal text-[11px] tracking-[0.15em] tabular-nums" aria-live="polite">
+              {heroIndex + 1} / {slideshow.length}
+            </span>
           )}
-        </section>
-      )}
-
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 py-8 md:py-12">
-        <div className="mb-6 md:mb-8 max-w-md mx-auto relative">
-          <Search
-            size={18}
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-bronze pointer-events-none"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search ${title.toLowerCase()}...`}
-            className="search-field"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-mocha hover:text-charcoal"
-              aria-label="Clear"
-            >
-              ✕
-            </button>
-          )}
+          <button
+            onClick={() =>
+              setHeroIndex((c) => (c - 1 + slideshow.length) % slideshow.length)
+            }
+            aria-label="Previous image"
+            className="w-9 h-9 bg-cream/90 hover:bg-cream text-charcoal flex items-center justify-center shadow-sm transition"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={() => setHeroIndex((c) => (c + 1) % slideshow.length)}
+            aria-label="Next image"
+            className="w-9 h-9 bg-cream/90 hover:bg-cream text-charcoal flex items-center justify-center shadow-sm transition"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
+      )}
+    </>
+  );
 
-        <div className="flex gap-2 mb-8 md:mb-10 overflow-x-auto scrollbar-hide pb-2 -mx-3 sm:mx-0 px-3 sm:px-0 justify-start md:justify-center">
-          {subCategories.map((cat) => {
-            const isActive = selectedCategory === cat;
-            const className = `whitespace-nowrap px-4 md:px-5 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
-              isActive
-                ? 'bg-charcoal text-cream border-charcoal'
-                : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
-            }`;
-            // Sub-categories are real SEO pages — link to them instead of
-            // filtering client-side.
-            const basePath = productType === 'jewelry' ? '/jewelry' : '/slippers';
-            const categoryHref =
-              productType === 'jewelry'
-                ? jewelryCategoryHref(cat)
-                : slippersCategoryHref(cat);
-            return (
-              <Link
-                key={cat}
-                href={cat === 'all' ? basePath : categoryHref}
-                className={className}
+  const basePath = productType === 'jewelry' ? '/jewelry' : SHOES_BASE;
+
+  return (
+    <>
+      <CategoryHero
+        eyebrow={eyebrow}
+        title={title}
+        description={description}
+        kind={heroKind}
+        media={media}
+        cta={cta}
+      />
+
+      <div id="products" className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 pt-4 md:pt-6 pb-10 md:pb-14 scroll-mt-24">
+        {/* One toolbar: category chips + search, directly above the grid. */}
+        <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between md:gap-6 mb-5 md:mb-6">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0 pb-1 md:pb-0">
+            {subCategories.map((cat) => {
+              const isActive = selectedCategory === cat;
+              const className = `whitespace-nowrap px-4 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
+                isActive
+                  ? 'bg-charcoal text-cream border-charcoal'
+                  : 'bg-transparent text-charcoal border-stone hover:border-charcoal'
+              }`;
+              // Sub-categories are real SEO pages — link to them instead of
+              // filtering client-side.
+              const categoryHref =
+                productType === 'jewelry'
+                  ? jewelryCategoryHref(cat)
+                  : slippersCategoryHref(cat);
+              return (
+                <Link
+                  key={cat}
+                  href={cat === 'all' ? basePath : categoryHref}
+                  className={className}
+                >
+                  {cat === 'all' ? 'All Items' : cat}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="relative w-full md:w-72 lg:w-80 shrink-0">
+            <Search
+              size={16}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-bronze-ink pointer-events-none"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder.replace(/…$/, '')}
+              className="w-full h-10 pl-10 pr-9 bg-white border border-stone rounded-full text-[13px] text-charcoal placeholder:text-mocha/70 focus:outline-none focus:border-bronze focus:ring-4 focus:ring-bronze/10 transition"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-mocha hover:text-charcoal text-sm"
+                aria-label="Clear search"
               >
-                {cat === 'all' ? 'All Items' : cat}
-              </Link>
-            );
-          })}
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
           <Loading message="Loading products..." />
         ) : filteredProducts.length === 0 ? (
           <EmptyState
-            message={`No ${title.toLowerCase()} found. Try a different search or category.`}
+            message={`No ${itemNoun} found. Try a different search or category.`}
           />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4">
@@ -332,7 +295,10 @@ function CategoryContent({
                 product={p}
                 onClick={() => setSelected(p)}
                 delay={i * 0.03}
-                priority={i < 4}
+                // The hero image is the page's only `priority` image (LCP).
+                // Cards use native lazy-loading; the browser still fetches
+                // the ones already in/near the viewport immediately.
+                priority={false}
               />
             ))}
           </div>

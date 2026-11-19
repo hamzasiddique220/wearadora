@@ -111,12 +111,12 @@ export default async function AboutPage() {
           brands charge.
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Link href="/slippers" className="hero-cta hero-cta--on-dark">
+          <Link href="/shoes" className="hero-cta hero-cta--on-dark">
             Shop Shoes
           </Link>
           {jewelryEnabled && (
             <Link href="/jewelry" className="hero-cta hero-cta--outline-on-dark">
-              Shop Jewelry
+              Shop Jewellery
             </Link>
           )}
         </div>

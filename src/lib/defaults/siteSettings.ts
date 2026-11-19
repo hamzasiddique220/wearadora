@@ -18,7 +18,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Discover our signature embellished slides — where contemporary design meets timeless sparkle. Crafted for the woman who makes every moment her own.',
     primaryLabel: 'Shop Now',
-    primaryHref: '/slippers',
+    primaryHref: '/shoes',
     secondaryLabel: 'View All',
     secondaryHref: '/shop',
     kind: 'shoe',
@@ -27,13 +27,13 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     image:
       'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=1200&q=85',
     bg: JEWELRY_BG,
-    eyebrow: '✦ Heritage Jewelry',
+    eyebrow: '✦ Heritage Jewellery',
     title: 'Adorned in',
     italic: 'artistry',
     tail: 'everyday',
     description:
       'Handcrafted necklaces inspired by heirloom silhouettes — pieces that move with you from morning rituals to midnight moments.',
-    primaryLabel: 'Shop Jewelry',
+    primaryLabel: 'Shop Jewellery',
     primaryHref: '/jewelry',
     secondaryLabel: 'Necklaces',
     secondaryHref: '/jewelry/necklace',
@@ -49,9 +49,9 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Shimmering golden bow heels for unforgettable occasions. Every detail handcrafted to make you shine — perfect for weddings, festivities, and defining moments.',
     primaryLabel: 'Shop Heels',
-    primaryHref: '/slippers/heels',
+    primaryHref: '/shoes/heels',
     secondaryLabel: 'Bestsellers',
-    secondaryHref: '/slippers',
+    secondaryHref: '/shoes',
     kind: 'shoe',
   },
   {
@@ -66,7 +66,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
       'Sculpted earrings catching candlelight at every turn. Designed to frame your face with unmistakable softness.',
     primaryLabel: 'Shop Earrings',
     primaryHref: '/jewelry/earrings',
-    secondaryLabel: 'View Jewelry',
+    secondaryLabel: 'View Jewellery',
     secondaryHref: '/jewelry',
     kind: 'jewel',
   },
@@ -80,8 +80,8 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Elegant nude bow slides — refined minimalism with a touch of glamour. Designed for comfort that never compromises on sophistication.',
     primaryLabel: 'Shop Slides',
-    primaryHref: '/slippers/slides',
-    secondaryLabel: 'View Jewelry',
+    primaryHref: '/shoes/slides',
+    secondaryLabel: 'View Jewellery',
     secondaryHref: '/jewelry',
     kind: 'shoe',
   },
@@ -95,7 +95,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlideOverride[] = [
     description:
       'Shimmering sandals for the season ahead — weightless comfort, unmistakable polish, and a finish that catches every eye.',
     primaryLabel: 'Shop Sandals',
-    primaryHref: '/slippers/sandals',
+    primaryHref: '/shoes/sandals',
     secondaryLabel: 'View All',
     secondaryHref: '/shop',
     kind: 'shoe',
@@ -119,7 +119,7 @@ export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
   Ring: '/images/ring-bangle1.jpeg',
   Earring: '/images/ring-01.jpeg',
   Bangles: '/images/bangles-01.jpeg',
-  // No dedicated anklet photo shot yet — falls back to the general jewelry
+  // No dedicated anklet photo shot yet — falls back to the general jewellery
   // hero image until one is uploaded via admin settings.
   Anklet: DEFAULT_JEWELRY_HERO.image,
   // No dedicated bridal-set photo yet — the necklace shot is the closest
@@ -147,7 +147,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
  */
 export function mergeSettings(
   stored: SiteSettings | null | undefined
-): Required<Omit<SiteSettings, 'updatedAt'>> & { updatedAt?: string } {
+): Required<Omit<SiteSettings, 'updatedAt' | 'sale'>> & {
+  updatedAt?: string;
+  sale?: SiteSettings['sale'];
+} {
   const heroSlides =
     stored?.heroSlides && stored.heroSlides.length > 0
       ? stored.heroSlides
@@ -169,6 +172,7 @@ export function mergeSettings(
       ? { ...DEFAULT_SLIPPERS_HERO, ...stored.slippersHero }
       : DEFAULT_SLIPPERS_HERO,
     jewelryEnabled: stored?.jewelryEnabled === true,
+    sale: stored?.sale,
     updatedAt: stored?.updatedAt,
   };
 }

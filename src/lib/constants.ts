@@ -39,7 +39,7 @@ export const DELIVERY_TEXT = {
   restOfPakistan: `${range(DELIVERY_TIMES.restOfPakistan)} working days`,
   /** Full sentence fragment for FAQs / footers. */
   summary: `${range(DELIVERY_TIMES.karachi)} working days in Karachi, ${range(DELIVERY_TIMES.restOfPakistan)} working days elsewhere in Pakistan`,
-  /** Short nationwide range for tight UI slots (badges, announcement bar). */
+  /** Short nationwide range for tight UI slots (announcement bar, cart). */
   short: `${DELIVERY_TIMES.karachi.min}–${DELIVERY_TIMES.restOfPakistan.max} working days`,
 } as const;
 
@@ -166,7 +166,7 @@ export const getProductType = (category?: string): ProductType => {
 };
 
 const CATEGORY_ALIASES: Record<string, string> = {
-  // Jewelry variations
+  // Jewellery variations
   bracelet: 'Bangles',
   bracelets: 'Bangles',
   bangle: 'Bangles',

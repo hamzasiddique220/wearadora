@@ -28,9 +28,9 @@ export default function OrganizationJsonLd({
     `https://wa.me/${CONTACT_PHONE.digits}`,
   ];
 
-  // Both are handcrafted; the jewelry is American diamond (artificial).
+  // Both are handcrafted; the jewellery is American diamond (artificial).
   const description = jewelryEnabled
-    ? 'Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi, and handcrafted American diamond (artificial) jewelry. Cash on delivery and nationwide delivery across Pakistan.'
+    ? 'Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi, and handcrafted American diamond (artificial) jewellery. Cash on delivery and nationwide delivery across Pakistan.'
     : 'Pakistani online store selling handcrafted ladies footwear (heels, sandals and slides) made in Karachi. Cash on delivery and nationwide delivery across Pakistan.';
 
   // Organization = brand-level entity. The @id lets other schema (Product,

@@ -149,22 +149,37 @@ function CategoryContent({
         const n = slideshow.length;
         const near = [heroIndex, (heroIndex + 1) % n, (heroIndex - 1 + n) % n];
         if (!near.includes(i)) return null;
+        const visible = i === heroIndex ? 'opacity-100' : 'opacity-0';
         return (
-        <Image
-          key={src}
-          src={src}
-          alt={i === 0 ? title : ''}
-          fill
-          // Only the first (LCP) image is prioritised.
-          priority={i === 0}
-          fetchPriority={i === 0 ? 'high' : 'auto'}
-          sizes="(min-width: 768px) 58vw, 100vw"
-          className={`transition-opacity duration-[900ms] ease-in-out ${
-            isProductShot
-              ? 'object-contain p-5 md:p-8 drop-shadow-[0_24px_40px_rgba(26,22,20,0.28)]'
-              : 'object-cover object-center'
-          } ${i === heroIndex ? 'opacity-100' : 'opacity-0'}`}
-        />
+          <div key={src} className={`absolute inset-0 transition-opacity duration-[900ms] ease-in-out ${visible}`}>
+            {isProductShot && (
+              // Soft blurred copy of the same photo fills the panel, so a
+              // portrait product shot can use the full height without empty
+              // side bands. Tiny (64px) request; decorative.
+              <Image
+                src={src}
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="64px"
+                className="object-cover scale-110 blur-2xl opacity-60"
+              />
+            )}
+            <Image
+              src={src}
+              alt={i === 0 ? title : ''}
+              fill
+              // Only the first (LCP) image is prioritised.
+              priority={i === 0}
+              fetchPriority={i === 0 ? 'high' : 'auto'}
+              sizes="(min-width: 768px) 58vw, 100vw"
+              className={
+                isProductShot
+                  ? 'object-contain py-3 md:py-5 drop-shadow-[0_24px_40px_rgba(26,22,20,0.30)]'
+                  : 'object-cover object-center'
+              }
+            />
+          </div>
         );
       })}
       {slideshow.length > 1 && (
@@ -229,7 +244,9 @@ function CategoryContent({
       <div id="products" className="max-w-[1400px] mx-auto px-3 sm:px-6 md:px-12 pt-4 md:pt-6 pb-10 md:pb-14 scroll-mt-24">
         {/* One toolbar: category chips + search, directly above the grid. */}
         <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between md:gap-6 mb-5 md:mb-6">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0 pb-1 md:pb-0">
+          {/* py/-my give the 2px focus ring + 3px offset room inside the
+              scroll container (overflow would otherwise clip it). */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:-mx-1.5 sm:px-1.5 py-1.5 -my-1.5">
             {subCategories.map((cat) => {
               const isActive = selectedCategory === cat;
               const className = `whitespace-nowrap px-4 py-2 text-[10px] tracking-[0.18em] md:tracking-[0.2em] uppercase border transition-all ${
@@ -267,7 +284,7 @@ function CategoryContent({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={searchPlaceholder}
               aria-label={searchPlaceholder.replace(/…$/, '')}
-              className="w-full h-10 pl-10 pr-9 bg-white border border-stone rounded-full text-[13px] text-charcoal placeholder:text-mocha/70 focus:outline-none focus:border-bronze focus:ring-4 focus:ring-bronze/10 transition"
+              className="w-full h-10 pl-10 pr-9 bg-white border border-stone rounded-full text-[13px] text-charcoal placeholder:text-mocha/70 focus:border-bronze transition"
             />
             {searchQuery && (
               <button

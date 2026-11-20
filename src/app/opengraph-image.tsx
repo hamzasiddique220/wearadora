@@ -6,6 +6,19 @@ export const alt = `${STORE_CONFIG.name} — ${STORE_CONFIG.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
+/**
+ * The ✦ glyph isn't in the font bundled with next/og, so using it as text
+ * made every render try to fetch a Google font for it (logged as "Failed to
+ * load dynamic font … Status: 400"). Drawn as SVG instead — no font needed.
+ */
+function Sparkle() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24">
+      <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#d4af37" />
+    </svg>
+  );
+}
+
 export default async function OpengraphImage() {
   return new ImageResponse(
     (
@@ -36,9 +49,13 @@ export default async function OpengraphImage() {
             fontSize: 22,
             letterSpacing: '0.5em',
             textTransform: 'uppercase',
+            alignItems: 'center',
+            gap: 18,
           }}
         >
-          ✦ Handcrafted Since 40+ Years ✦
+          <Sparkle />
+          Handcrafted · 40+ Years of Shoemaking
+          <Sparkle />
         </div>
 
         <div

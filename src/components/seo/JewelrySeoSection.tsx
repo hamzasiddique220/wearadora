@@ -6,9 +6,9 @@ interface JewelrySeoSectionProps {
   products: Product[];
   /**
    * `true` (default) renders the visible content block + FAQ + FAQPage schema
-   * — used on the primary jewellery SEO page. `false` renders only the
-   * ItemList JSON-LD, so a secondary page (e.g. /jewelry) still gets the
-   * product list schema without duplicating the visible prose/FAQ.
+   * — used on /jewelry (the only jewellery landing page since
+   * /collections/american-diamond-jewellery was retired). `false` renders
+   * only the ItemList JSON-LD, for a page that must not repeat the prose/FAQ.
    */
   full?: boolean;
 }
@@ -34,7 +34,7 @@ export default function JewelrySeoSection({
     {
       question: 'What is artificial jewellery?',
       answer:
-        'Artificial jewellery — also called fashion or bridal jewellery — is made with brilliant, high-clarity stones set in gold-, silver- or rose-tone plated metal. It shines like fine jewellery at a fraction of the price. It is not solid gold and does not contain real diamonds.',
+        'Artificial jewellery — also called fashion or bridal jewellery — is made with brilliant, high-clarity stones such as American diamond (zircon), set in gold-, silver- or rose-tone plated metal. It shines like fine jewellery at a fraction of the price. It is not solid gold and does not contain real diamonds.',
     },
     {
       question: 'What is the price range of jewellery at Wear Adora?',
@@ -110,10 +110,10 @@ export default function JewelrySeoSection({
           ✦ About the Collection
         </span>
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-light mt-3 mb-4">
-          Best Artificial &amp; Bridal Jewellery — Made in Pakistan
+          Artificial &amp; Bridal Jewellery — Handcrafted in Pakistan
         </h2>
         <p className="text-mocha leading-relaxed text-sm md:text-base">
-          Wear Adora offers the best handcrafted artificial jewellery online in
+          Wear Adora offers handcrafted artificial jewellery online in
           Pakistan — premium necklace sets, bridal choker sets with maang tikka,
           earrings, bracelets and rings, priced between {formatPrice(minPrice)}{' '}
           and {formatPrice(maxPrice)}. Every piece shines like fine jewellery at

@@ -30,9 +30,10 @@ export default async function JewelryPage() {
       <JewelryClient
         initialJewelryEnabled={settings?.jewelryEnabled === true}
         initialProducts={jewelryProducts}
+        initialSettings={settings}
       />
       {settings?.jewelryEnabled === true && (
-        <JewelrySeoSection products={jewelryProducts} full={false} />
+        <JewelrySeoSection products={jewelryProducts} />
       )}
     </>
   );

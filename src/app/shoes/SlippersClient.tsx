@@ -5,17 +5,29 @@ import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData, useVisibleProductsData } from '@/lib/stores/data';
 import { getProductType, STORE_CONFIG } from '@/lib/constants';
 import { slippersCategoryHref } from '@/lib/footwearCategories';
-import type { Product } from '@/types';
+import { mergeSettings } from '@/lib/defaults/siteSettings';
+import type { Product, SiteSettings } from '@/types';
 
 interface SlippersClientProps {
   initialProducts?: Product[];
+  /** Server-fetched settings doc — so SSR renders the real hero, not defaults. */
+  initialSettings?: SiteSettings | null;
 }
 
 export default function SlippersClient({
   initialProducts,
+  initialSettings,
 }: SlippersClientProps) {
-  const { settings } = useSiteSettingsData();
-  const { products } = useVisibleProductsData();
+  const { settings: storeSettings, loading: settingsLoading } = useSiteSettingsData();
+  const { products: storeProducts, loading: productsLoading } = useVisibleProductsData();
+  // The store hydrates in an effect (after the first render). Until then use
+  // the server's data, so the first paint is the same hero the client ends
+  // up showing — no default-image flash, no slideshow swap.
+  const settings = useMemo(
+    () => (settingsLoading && initialSettings ? mergeSettings(initialSettings) : storeSettings),
+    [settingsLoading, initialSettings, storeSettings]
+  );
+  const products = productsLoading && initialProducts ? initialProducts : storeProducts;
 
   const heroImages = useMemo(() => {
     const out: string[] = [];

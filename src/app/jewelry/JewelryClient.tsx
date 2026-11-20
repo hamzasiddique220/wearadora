@@ -1,25 +1,37 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import CategoryPage from '@/components/shop/CategoryPage';
 import { useSiteSettingsData } from '@/lib/stores/data';
 import { STORE_CONFIG } from '@/lib/constants';
 import { jewelryCategoryHref } from '@/lib/categories';
-import type { Product } from '@/types';
+import { mergeSettings } from '@/lib/defaults/siteSettings';
+import type { Product, SiteSettings } from '@/types';
 
 interface JewelryClientProps {
   /** Server-fetched flag — used until the client store hydrates. */
   initialJewelryEnabled?: boolean;
   /** Pre-filtered jewellery products fetched on the server for SSR grid. */
   initialProducts?: Product[];
+  /** Server-fetched settings doc — so the FIRST render (SSR) already shows
+   *  the admin-chosen hero, not the default stock photo. */
+  initialSettings?: SiteSettings | null;
 }
 
 export default function JewelryClient({
   initialJewelryEnabled = false,
   initialProducts,
+  initialSettings,
 }: JewelryClientProps) {
-  const { settings, loading } = useSiteSettingsData();
+  const { settings: storeSettings, loading } = useSiteSettingsData();
+  // The store hydrates in an effect, i.e. AFTER the first render — until
+  // then use the server's copy instead of the built-in defaults.
+  const settings = useMemo(
+    () => (loading && initialSettings ? mergeSettings(initialSettings) : storeSettings),
+    [loading, initialSettings, storeSettings]
+  );
   const jewelryEnabled = loading
     ? initialJewelryEnabled
     : settings.jewelryEnabled;

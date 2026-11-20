@@ -27,7 +27,7 @@ export default async function SlippersPage() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-1">
         <Breadcrumbs items={[{ label: 'Shoes' }]} />
       </div>
-      <SlippersClient initialProducts={slippersProducts} />
+      <SlippersClient initialProducts={slippersProducts} initialSettings={settings} />
       <SlippersSeoSection products={slippersProducts} />
     </>
   );

@@ -49,6 +49,28 @@ export function generateMetadata({ params }: PageProps): Metadata {
 export default function BlogPostPage({ params }: PageProps) {
   const post = getBlogPost(params.slug);
   if (!post) notFound();
+  const orgId = `${STORE_CONFIG.siteUrl}/#organization`;
+
+  // Visible, machine-readable dates right under the article's H1.
+  const fmt = (iso: string) =>
+    new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+  const validDate = (d?: string) => !!d && /^\d{4}-\d{2}-\d{2}$/.test(d);
+  const dateParts: string[] = [];
+  if (validDate(post.datePublished)) {
+    dateParts.push(`Published <time datetime="${post.datePublished}">${fmt(post.datePublished!)}</time>`);
+  }
+  if (validDate(post.dateModified) && post.dateModified !== post.datePublished) {
+    dateParts.push(`Updated <time datetime="${post.dateModified}">${fmt(post.dateModified!)}</time>`);
+  }
+  const dateLine = dateParts.length
+    ? `<p class="blog-dates">By ${STORE_CONFIG.name} · ${dateParts.join(' · ')}</p>`
+    : '';
+  const html = dateLine ? post.html.replace(/<\/h1>/, `</h1>${dateLine}`) : post.html;
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -58,9 +80,11 @@ export default function BlogPostPage({ params }: PageProps) {
     image: `${STORE_CONFIG.siteUrl}/opengraph-image`,
     ...(post.datePublished ? { datePublished: post.datePublished } : {}),
     ...(post.dateModified ? { dateModified: post.dateModified } : {}),
-    author: { '@type': 'Organization', name: STORE_CONFIG.name },
+    wordCount: post.wordCount,
+    author: { '@type': 'Organization', '@id': orgId, name: STORE_CONFIG.name },
     publisher: {
       '@type': 'Organization',
+      '@id': orgId,
       name: STORE_CONFIG.name,
       logo: {
         '@type': 'ImageObject',
@@ -90,7 +114,7 @@ export default function BlogPostPage({ params }: PageProps) {
       <article
         className="blog-article max-w-[800px] mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-14"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: post.html }}
+        dangerouslySetInnerHTML={{ __html: html }}
       />
     </>
   );

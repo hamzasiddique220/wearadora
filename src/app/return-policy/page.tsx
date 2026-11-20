@@ -79,7 +79,7 @@ export default function ReturnPolicyPage() {
               <strong>Contact us within 7 days</strong> of delivery on WhatsApp
               at{' '}
               <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                {STORE_CONFIG.phoneDisplay}
+                {STORE_CONFIG.whatsappDisplay}
               </a>{' '}
               or email{' '}
               <a href={mailLink}>{STORE_CONFIG.email}</a>.
@@ -171,7 +171,7 @@ export default function ReturnPolicyPage() {
                 WhatsApp
               </span>
               <span className="block text-charcoal font-medium truncate">
-                {STORE_CONFIG.phoneDisplay}
+                {STORE_CONFIG.whatsappDisplay}
               </span>
             </span>
           </a>

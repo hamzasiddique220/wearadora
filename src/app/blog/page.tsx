@@ -21,16 +21,24 @@ export const metadata: Metadata = {
 
 export default function BlogIndexPage() {
   const posts = listBlogPosts();
+  const orgId = `${STORE_CONFIG.siteUrl}/#organization`;
 
   const blogJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: 'Wear Adora Style Journal',
     url: `${STORE_CONFIG.siteUrl}/blog`,
+    publisher: { '@id': orgId },
     blogPost: posts.map((p) => ({
       '@type': 'BlogPosting',
       headline: p.title.replace(/\s*\|.*$/, ''),
+      ...(p.excerpt ? { description: p.excerpt } : {}),
       url: `${STORE_CONFIG.siteUrl}/blog/${p.slug}`,
+      mainEntityOfPage: `${STORE_CONFIG.siteUrl}/blog/${p.slug}`,
+      // Same Organization entity the site-wide schema declares (@id), so
+      // the author/publisher merge with it instead of being a bare name.
+      author: { '@type': 'Organization', '@id': orgId, name: STORE_CONFIG.name },
+      publisher: { '@id': orgId },
       ...(p.datePublished ? { datePublished: p.datePublished } : {}),
       ...(p.dateModified ? { dateModified: p.dateModified } : {}),
     })),

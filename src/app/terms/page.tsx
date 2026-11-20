@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   STORE_CONFIG,
   CONTACT_PHONE,
+  WHATSAPP_PHONE,
   DELIVERY_TEXT,
   DELIVERY_TIMES,
 } from '@/lib/constants';
@@ -71,7 +72,7 @@ export default function TermsPage() {
         <p>
           Orders placed through the website checkout are confirmed with you by
           call or WhatsApp before they ship. You can also order directly on
-          WhatsApp at {CONTACT_PHONE.display}. Items are subject to
+          WhatsApp at {WHATSAPP_PHONE.display}. Items are subject to
           availability.
         </p>
       ),
@@ -160,8 +161,9 @@ export default function TermsPage() {
       title: '9. Contact',
       body: (
         <p>
-          Call or WhatsApp {CONTACT_PHONE.display} ({CONTACT_PHONE.international}
-          ), available 24/7, or email {STORE_CONFIG.email}. See also our{' '}
+          Call {CONTACT_PHONE.display} ({CONTACT_PHONE.international}) or
+          WhatsApp {WHATSAPP_PHONE.display} ({WHATSAPP_PHONE.international}),
+          available 24/7, or email {STORE_CONFIG.email}. See also our{' '}
           <Link href="/contact" className={linkClass}>
             Contact page
           </Link>

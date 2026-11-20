@@ -330,7 +330,7 @@ export default function ReceiptPage({ params }: Params) {
             </p>
             <p className="mb-1">
               {STORE_CONFIG.siteUrl.replace('https://', '')} ·{' '}
-              {STORE_CONFIG.email} · WhatsApp {STORE_CONFIG.phoneDisplay}
+              {STORE_CONFIG.email} · Call {STORE_CONFIG.phoneDisplay} · WhatsApp {STORE_CONFIG.whatsappDisplay}
             </p>
             <p>
               Delivery {STORE_CONFIG.deliveryDays} · FREE on orders Rs{' '}

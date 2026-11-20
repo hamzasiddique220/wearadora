@@ -1,4 +1,4 @@
-import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE } from '@/lib/constants';
+import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE, WHATSAPP_PHONE } from '@/lib/constants';
 import type { PriceRange } from '@/lib/priceRange';
 
 interface OrganizationJsonLdProps {
@@ -25,7 +25,7 @@ export default function OrganizationJsonLd({
     SOCIAL_LINKS.instagram,
     SOCIAL_LINKS.facebook,
     SOCIAL_LINKS.tiktok,
-    `https://wa.me/${CONTACT_PHONE.digits}`,
+    `https://wa.me/${WHATSAPP_PHONE.digits}`,
   ];
 
   // Both are handcrafted; the jewellery is American diamond (artificial).

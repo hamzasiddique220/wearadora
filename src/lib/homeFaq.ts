@@ -1,4 +1,4 @@
-import { STORE_CONFIG, CONTACT_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from './constants';
+import { STORE_CONFIG, CONTACT_PHONE, WHATSAPP_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from './constants';
 import type { CategoryFaq } from './categories';
 import type { SizeRange } from './sizeRange';
 
@@ -55,7 +55,7 @@ export function getHomeFaqs(
       id: 'faq-size',
       question: 'How do I choose the right shoe size?',
       // Range comes from the live catalog (getFootwearSizeRange).
-      answer: `Our shoes use standard Pakistani/UK sizes${sizes} and fit true to size, so order your usual size. Not sure? Message us on WhatsApp at ${CONTACT_PHONE.display}, available 24/7, and we'll help you choose.`,
+      answer: `Our shoes use standard Pakistani/UK sizes${sizes} and fit true to size, so order your usual size. Not sure? Message us on WhatsApp at ${WHATSAPP_PHONE.display}, available 24/7, and we'll help you choose.`,
     },
     {
       id: 'faq-returns',
@@ -73,7 +73,7 @@ export function getHomeFaqs(
     {
       id: 'faq-whatsapp',
       question: 'How do I order on WhatsApp?',
-      answer: `Tap the WhatsApp button on any page, or message us on ${CONTACT_PHONE.display} (available 24/7), to place your order directly. Orders placed through the website checkout are also confirmed with you by call or WhatsApp before they ship.`,
+      answer: `Tap the WhatsApp button on any page, or message us on ${WHATSAPP_PHONE.display} (available 24/7), to place your order directly. Orders placed through the website checkout are also confirmed with you by call or WhatsApp before they ship.`,
     },
   ];
   return faqs.filter((f) => !f.todo);

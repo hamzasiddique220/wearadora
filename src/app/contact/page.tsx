@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
-import { STORE_CONFIG, CONTACT_PHONE } from '@/lib/constants';
+import { STORE_CONFIG, CONTACT_PHONE, WHATSAPP_PHONE } from '@/lib/constants';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: `Contact ${STORE_CONFIG.name} on call or WhatsApp ${CONTACT_PHONE.display}, available 24/7, or email ${STORE_CONFIG.email}. Online store based in Karachi, delivering across Pakistan.`,
+  description: `Contact ${STORE_CONFIG.name} by call on ${CONTACT_PHONE.display} or WhatsApp on ${WHATSAPP_PHONE.display}, available 24/7, or email ${STORE_CONFIG.email}. Online store based in Karachi, delivering across Pakistan.`,
   alternates: { canonical: '/contact' },
 };
 
@@ -15,8 +15,8 @@ export default function ContactPage() {
     {
       icon: <MessageCircle size={20} />,
       label: 'WhatsApp',
-      value: `${CONTACT_PHONE.display} (${CONTACT_PHONE.international})`,
-      href: `https://wa.me/${CONTACT_PHONE.digits}`,
+      value: `${WHATSAPP_PHONE.display} (${WHATSAPP_PHONE.international})`,
+      href: `https://wa.me/${WHATSAPP_PHONE.digits}`,
       external: true,
     },
     {

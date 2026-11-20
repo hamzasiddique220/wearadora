@@ -1,11 +1,10 @@
 import type { ProductType } from '@/types';
 
 /**
- * The ONE customer phone number — calls and WhatsApp, available 24/7.
- * Deliberately NOT overridable by env: production previously had
- * NEXT_PUBLIC_WHATSAPP_NUMBER set to a different number (+923111217189),
- * so every wa.me / tel: link silently pointed elsewhere while the visible
- * text said 0313 2166431. Change it here and only here.
+ * Customer CALL number (tel: links, schema telephone), available 24/7.
+ * WhatsApp uses a separate number — WHATSAPP_PHONE below.
+ * Neither is overridable by env (an old NEXT_PUBLIC_WHATSAPP_NUMBER once made
+ * links and visible text disagree). Change them here and only here.
  */
 export const CONTACT_PHONE = {
   /** wa.me format — digits only, country code, no + */
@@ -19,6 +18,16 @@ export const CONTACT_PHONE = {
   /** international display */
   international: '+92 313 2166431',
   availability: 'Available 24/7 on call and WhatsApp',
+} as const;
+
+/** Customer WHATSAPP number — every wa.me link and "WhatsApp …" text. */
+export const WHATSAPP_PHONE = {
+  /** wa.me format — digits only, country code, no + */
+  digits: '923111217189',
+  /** local display */
+  display: '0311 1217189',
+  /** international display */
+  international: '+92 311 1217189',
 } as const;
 
 /**
@@ -50,7 +59,8 @@ export const STORE_CONFIG = {
   // look regardless of this value.
   name: process.env.NEXT_PUBLIC_STORE_NAME || 'Wear Adora',
   tagline: process.env.NEXT_PUBLIC_STORE_TAGLINE || 'Adorned in Artistry',
-  whatsappNumber: CONTACT_PHONE.digits,
+  whatsappNumber: WHATSAPP_PHONE.digits,
+  whatsappDisplay: WHATSAPP_PHONE.display,
   phoneDisplay: CONTACT_PHONE.display,
   email: 'info@wearadora.com',
   location: 'Karachi, Pakistan',

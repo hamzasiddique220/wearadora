@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Truck, RefreshCw, Mail, Phone, MapPin } from 'lucide-react';
-import { STORE_CONFIG, CONTACT_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from '@/lib/constants';
+import { STORE_CONFIG, DELIVERY_TEXT, DELIVERY_TIMES } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Shipping & Returns | Wear Adora',
@@ -153,12 +152,14 @@ export default function ShippingPage() {
 
       <div className="mt-10 text-center text-sm text-mocha">
         Karachi-based · Free delivery on orders Rs 4,500+ · WhatsApp orders on{' '}
-        <Link
-          href={`tel:${CONTACT_PHONE.e164}`}
+        <a
+          href={`https://wa.me/${STORE_CONFIG.whatsappNumber}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-bronze hover:text-charcoal"
         >
-          {STORE_CONFIG.phoneDisplay}
-        </Link>
+          {STORE_CONFIG.whatsappDisplay}
+        </a>
       </div>
     </div>
   );

@@ -16,6 +16,41 @@ export interface BlogPostMeta {
 
 export interface BlogPost extends BlogPostMeta {
   html: string;
+  /** Words in the article body (markdown, minus syntax) — for schema wordCount. */
+  wordCount: number;
+}
+
+/** "3. Match the metal & stone" → "match-the-metal-stone" */
+function headingSlug(text: string): string {
+  return text
+    .replace(/<[^>]+>/g, '')
+    .replace(/&[a-z#0-9]+;/gi, ' ')
+    .toLowerCase()
+    .replace(/^\s*\d+[.)]\s*/, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Give every h2/h3 a stable, unique id so agents and readers can deep-link
+ * to a section (/blog/x#choose-the-right-length). marked v18 adds none.
+ */
+function addHeadingIds(html: string): string {
+  const used = new Set<string>();
+  return html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (_m, level: string, inner: string) => {
+    const base = headingSlug(inner) || 'section';
+    let id = base;
+    for (let n = 2; used.has(id); n++) id = `${base}-${n}`;
+    used.add(id);
+    return `<h${level} id="${id}">${inner}</h${level}>`;
+  });
+}
+
+function countWords(markdown: string): number {
+  const text = markdown
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_`|-]/g, ' ');
+  return text.split(/\s+/).filter((w) => /[A-Za-z0-9]/.test(w)).length;
 }
 
 const BLOG_DIR = path.join(process.cwd(), 'src', 'content', 'blog');
@@ -62,7 +97,7 @@ export function getBlogPost(slug: string): BlogPost | null {
   if (!fs.existsSync(file)) return null;
   const raw = fs.readFileSync(file, 'utf-8');
   const { meta, body } = parseFrontmatter(raw);
-  const html = marked.parse(body, { async: false }) as string;
+  const html = addHeadingIds(marked.parse(body, { async: false }) as string);
   return {
     slug: meta.slug || slug,
     title: meta.title || slug,
@@ -72,6 +107,7 @@ export function getBlogPost(slug: string): BlogPost | null {
     datePublished: meta.datePublished,
     dateModified: meta.dateModified,
     html,
+    wordCount: countWords(body),
   };
 }
 

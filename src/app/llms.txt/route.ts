@@ -1,4 +1,4 @@
-import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from '@/lib/constants';
+import { STORE_CONFIG, SOCIAL_LINKS, CONTACT_PHONE, WHATSAPP_PHONE, DELIVERY_TEXT, DELIVERY_TIMES } from '@/lib/constants';
 import { JEWELRY_CATEGORY_DEFS } from '@/lib/categories';
 import { SLIPPERS_CATEGORY_DEFS } from '@/lib/footwearCategories';
 import { fetchAllProducts, fetchSiteSettings } from '@/lib/server/firestoreRest';
@@ -32,7 +32,7 @@ export async function GET() {
     `- Name: ${STORE_CONFIG.name} (wordmark "WEARADORA"; tagline "${STORE_CONFIG.tagline}")`,
     '- Based in: Karachi, Sindh, Pakistan — workshop and warehouse; online only (no walk-in shop), delivers nationwide',
     `- Website: ${base}`,
-    `- Contact: call or WhatsApp ${CONTACT_PHONE.display} (${CONTACT_PHONE.international}), available 24/7 · ${STORE_CONFIG.email}`,
+    `- Contact: call ${CONTACT_PHONE.display} (${CONTACT_PHONE.international}) or WhatsApp ${WHATSAPP_PHONE.display} (${WHATSAPP_PHONE.international}), available 24/7 · ${STORE_CONFIG.email}`,
     '',
     '## Products',
     '- **Ladies footwear (handcrafted in Karachi)**: heels, sandals and slides.',
